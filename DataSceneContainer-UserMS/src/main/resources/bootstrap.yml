@@ -1,0 +1,14 @@
+server:
+  port: 8721
+  servlet:
+    context-path: /user
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 172.21.212.79:8848
+      config:
+        server-addr: 172.21.212.79:8848
+        file-extension: yml
+  application:
+    name: dsc-userMS

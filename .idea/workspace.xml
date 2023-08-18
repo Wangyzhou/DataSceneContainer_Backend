@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BeansEndpointTabSettings">
+    <option name="showContexts" value="false" />
+    <option name="showDoc" value="false" />
+    <option name="showFiles" value="false" />
+    <option name="showLibraryBeans" value="false" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/AuthTestMain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/config/AuthorizationServer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/config/TokenConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/config/WebSecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/constant/AuthConstants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/controller/DscUserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/controller/PublicKeyController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/entity/DscUser_Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/UserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/impl/JdbcClientDetailsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/impl/UserDetailsServiceIml.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/resources/public.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/test/java/nnu/wyz/testMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Authority/CustomReactiveAuthorizationManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Config/GatewaySecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Config/IgnoredUrls.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Config/JWTStoreConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Config/ReactiveSecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Controller/TestController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Filter/TokenFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/GatewayMain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Handler/CustomServerAccessDeniedHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Handler/CustomServerAuthenticationEntryPoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/application-dev.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/application-prod.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/security-whitelist.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/test/java/nnu/wyz/test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-UserMS/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-UserMS/src/main/java/nnu/wyz/userMS/UserMSMain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-UserMS/src/main/java/nnu/wyz/userMS/config/WebSecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-UserMS/src/main/java/nnu/wyz/userMS/controller/UserAuthenticationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-UserMS/src/main/java/nnu/wyz/userMS/controller/entity/dto/UserRegisterDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-UserMS/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-UserMS/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-common/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-common/src/main/java/nnu/wyz/domain/CommonResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-common/src/main/java/nnu/wyz/domain/IErrorCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-common/src/main/java/nnu/wyz/domain/ResultCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ninja.jks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$PROJECT_DIR$/../../majorSoftware/apache-maven-3.8.6" />
+        <option name="useMavenConfig" value="true" />
+        <option name="userSettingsFile" value="D:\majorSoftware\apache-maven-3.8.6\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2U051t0zqcTWsVFq7tUvEeTZ4C0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "jdk.selected.JAVA_MODULE": "corretto-1.8",
+    "last_opened_file_path": "D:/project/DataSceneContainer_Backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "spring.configuration.checksum": "aeed2977746db29358af2b61ae331584",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\project\DataSceneContainer_Backend" />
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Atuth-Central\src\main\resources\mapper" />
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Gateway\src\main\resources" />
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Atuth-Central\src\main\resources" />
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-common\src\main\java\nnu\wyz\Entities" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Atuth-Central\src\main\resources" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="nnu.wyz.entity" />
+      <recent name="nnu.wyz.mapper" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.testMapper.test1">
+    <configuration name="CodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.CodeGenerator" />
+      <module name="DataSceneContainer-Atuth-Central" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testMapper.createJWT" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Atuth-Central" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
+      <option name="METHOD_NAME" value="createJWT" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testMapper.parseJWT" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Atuth-Central" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
+      <option name="METHOD_NAME" value="parseJWT" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testMapper.test1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Atuth-Central" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
+      <option name="METHOD_NAME" value="test1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testMapper.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Atuth-Central" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
+      <option name="METHOD_NAME" value="test2" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testMapper.testGenerator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Atuth-Central" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
+      <option name="METHOD_NAME" value="testGenerator" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testMapper.testMapper1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Atuth-Central" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
+      <option name="METHOD_NAME" value="testMapper1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.test1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Gateway" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.test" />
+      <option name="METHOD_NAME" value="test1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AuthTestMain" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Atuth-Central" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="nnu.wyz.AuthTestMain" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayMain" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-Gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="nnu.wyz.GatewayMain" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserMSMain" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-UserMS" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="nnu.wyz.userMS.UserMSMain" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.userMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.test.test1" />
+      <item itemvalue="JUnit.testMapper.createJWT" />
+      <item itemvalue="JUnit.testMapper.parseJWT" />
+      <item itemvalue="JUnit.testMapper.test1" />
+      <item itemvalue="JUnit.testMapper.test2" />
+      <item itemvalue="JUnit.testMapper.testGenerator" />
+      <item itemvalue="JUnit.testMapper.testMapper1" />
+      <item itemvalue="Spring Boot.UserMSMain" />
+      <item itemvalue="Spring Boot.GatewayMain" />
+      <item itemvalue="Spring Boot.AuthTestMain" />
+      <item itemvalue="应用程序.CodeGenerator" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.UserMSMain" />
+        <item itemvalue="Spring Boot.GatewayMain" />
+        <item itemvalue="Spring Boot.AuthTestMain" />
+        <item itemvalue="JUnit.testMapper.test1" />
+        <item itemvalue="JUnit.test.test1" />
+        <item itemvalue="JUnit.testMapper.parseJWT" />
+        <item itemvalue="JUnit.testMapper.createJWT" />
+        <item itemvalue="JUnit.testMapper.test2" />
+        <item itemvalue="应用程序.CodeGenerator" />
+        <item itemvalue="JUnit.testMapper.testMapper1" />
+        <item itemvalue="JUnit.testMapper.testGenerator" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="" />
+      <created>1692063446141</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1692063446141</updated>
+      <workItem from="1692063447181" duration="6775000" />
+      <workItem from="1692084101350" duration="726000" />
+      <workItem from="1692084832950" duration="1910000" />
+      <workItem from="1692086748106" duration="86000" />
+      <workItem from="1692086942262" duration="150000" />
+      <workItem from="1692087121786" duration="142000" />
+      <workItem from="1692087328216" duration="968000" />
+      <workItem from="1692088301301" duration="130000" />
+      <workItem from="1692088434119" duration="246000" />
+      <workItem from="1692088683511" duration="195000" />
+      <workItem from="1692088881831" duration="11803000" />
+      <workItem from="1692110806706" duration="2716000" />
+      <workItem from="1692151035080" duration="1531000" />
+      <workItem from="1692152744071" duration="7729000" />
+      <workItem from="1692161888163" duration="14911000" />
+      <workItem from="1692179601727" duration="44249000" />
+      <workItem from="1692342137647" duration="12564000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.key" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/test/java/nnu/wyz/testMapper.java</url>
+          <line>66</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Filter/TokenFilter.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Authority/CustomReactiveAuthorizationManager.java</url>
+          <line>26</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/java/nnu/wyz/Config/ReactiveSecurityConfig.java</url>
+          <line>40</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="org.springframework.http.server.reactive.ReactorServerHttpRequest" memberName="headers" />
+        <PinnedItemInfo parentTag="org.springframework.http.server.reactive.ReactorServerHttpRequest" memberName="request" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

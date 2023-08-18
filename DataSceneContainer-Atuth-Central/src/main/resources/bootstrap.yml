@@ -1,0 +1,14 @@
+server:
+  port: 9400
+  servlet:
+    context-path: /dscuaa   #server的配置不能写在nacos中
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 172.21.212.79:8848
+      config:
+        file-extension: yml #指定yaml格式的配置
+        server-addr: 172.21.212.79:8848
+  application:
+    name: dsc-auth-central
