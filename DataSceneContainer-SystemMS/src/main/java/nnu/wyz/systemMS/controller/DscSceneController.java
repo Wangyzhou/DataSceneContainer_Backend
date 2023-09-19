@@ -6,7 +6,6 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.entity.DscScene;
 import nnu.wyz.systemMS.service.DscSceneService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +29,12 @@ public class DscSceneController {
     }
 
     @DeleteMapping("/delete/{userId}/{sceneId}")
-    public CommonResult<String> deleteScene(@PathVariable("userId") String userId,@PathVariable("sceneId") String sceneId) {
-        return dscSceneService.deleteScene(userId,sceneId);
+    public CommonResult<String> deleteScene(@PathVariable("userId") String userId, @PathVariable("sceneId") String sceneId) {
+        return dscSceneService.deleteScene(userId, sceneId);
+    }
+
+    @GetMapping("/getSceneConfig/{sceneType}/{sceneId}")
+    public CommonResult<JSONObject> getSceneConfig(@PathVariable("sceneType") String sceneType, @PathVariable("sceneId") String sceneId) {
+        return dscSceneService.getSceneConfig(sceneType, sceneId);
     }
 }

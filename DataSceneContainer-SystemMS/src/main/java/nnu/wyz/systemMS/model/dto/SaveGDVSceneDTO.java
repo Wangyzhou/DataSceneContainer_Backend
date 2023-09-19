@@ -17,10 +17,13 @@ import java.util.List;
 @Data
 @ApiModel(value = "地理数据可视化场景创建DTO")
 @AllArgsConstructor
-public class CreateGDVSceneDTO {
+public class SaveGDVSceneDTO {
 
     @ApiModelProperty(value = "创建用户")
     private String userId;
+
+    @ApiModelProperty(value = "场景Id")
+    private String sceneId;
 
     @ApiModelProperty(value = "场景名称")
     private String name;

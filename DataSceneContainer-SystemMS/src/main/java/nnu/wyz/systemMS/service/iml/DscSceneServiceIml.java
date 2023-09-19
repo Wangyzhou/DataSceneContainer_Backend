@@ -1,5 +1,7 @@
 package nnu.wyz.systemMS.service.iml;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import nnu.wyz.domain.CommonResult;
@@ -11,6 +13,7 @@ import nnu.wyz.systemMS.dao.DscUserSceneDAO;
 import nnu.wyz.systemMS.model.entity.DscGDVSceneConfig;
 import nnu.wyz.systemMS.model.entity.DscScene;
 import nnu.wyz.systemMS.model.entity.DscUserScene;
+import nnu.wyz.systemMS.service.DscGDVSceneService;
 import nnu.wyz.systemMS.service.DscSceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,10 +39,13 @@ public class DscSceneServiceIml implements DscSceneService {
     private DscGDVSceneConfigDAO dscGDVSceneConfigDAO;
 
     @Autowired
+    private DscGDVSceneService dscGDVSceneService;
+    @Autowired
     private MinioConfig minioConfig;
 
     @Autowired
     private AmazonS3 amazonS3;
+
     @Override
     public CommonResult<List<DscScene>> getSceneList(String userId) {
         List<DscUserScene> allByUserId = dscUserSceneDAO.findAllByUserId(userId);
@@ -49,7 +55,7 @@ public class DscSceneServiceIml implements DscSceneService {
             DscUserScene dscUserScene = iterator.next();
             String sceneId = dscUserScene.getSceneId();
             Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
-            if(byId.isPresent()){
+            if (byId.isPresent()) {
                 DscScene dscScene = byId.get();
                 sceneList.add(dscScene);
             }
@@ -61,7 +67,7 @@ public class DscSceneServiceIml implements DscSceneService {
     @MongoTransactional
     public CommonResult<String> deleteScene(String userId, String sceneId) {
         DscUserScene byUserIdAndSceneId = dscUserSceneDAO.findByUserIdAndSceneId(userId, sceneId);
-        if(Objects.isNull(byUserIdAndSceneId)) {
+        if (Objects.isNull(byUserIdAndSceneId)) {
             return CommonResult.failed("场景不存在！");
         }
         Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
@@ -74,8 +80,27 @@ public class DscSceneServiceIml implements DscSceneService {
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(minioConfig.getSceneThumbnailsBucket(), objectKey);
         amazonS3.deleteObject(deleteObjectRequest);
         //删除scene和config
+        dscUserSceneDAO.delete(byUserIdAndSceneId);
         dscSceneDAO.delete(dscScene);
         dscGDVSceneConfigDAO.delete(dscGDVSceneConfig);
         return CommonResult.success("删除场景成功！");
+    }
+
+    @Override
+    public CommonResult<JSONObject> getSceneConfig(String sceneType, String sceneId) {
+        JSONObject sceneConfig;
+        switch (sceneType) {
+            case "GDV":
+                DscGDVSceneConfig gdvSceneConfig = dscGDVSceneService.getGDVSceneConfig(sceneId);
+                sceneConfig = BeanUtil.toBean(gdvSceneConfig, JSONObject.class);
+                break;
+            case "GDA":
+                sceneConfig = new JSONObject();
+                break;
+            default:
+                sceneConfig = new JSONObject();
+                break;
+        }
+        return CommonResult.success(sceneConfig, "获取场景配置成功！");
     }
 }

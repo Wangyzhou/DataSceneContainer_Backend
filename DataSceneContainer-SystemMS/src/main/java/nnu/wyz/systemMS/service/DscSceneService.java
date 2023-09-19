@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS.service;
 
+import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.entity.DscScene;
 
@@ -11,4 +12,5 @@ public interface DscSceneService {
 
     CommonResult<String> deleteScene(String userId, String sceneId);
 
+    CommonResult<JSONObject> getSceneConfig(String sceneType, String sceneId);
 }

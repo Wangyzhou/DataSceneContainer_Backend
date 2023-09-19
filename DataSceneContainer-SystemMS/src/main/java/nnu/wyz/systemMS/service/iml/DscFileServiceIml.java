@@ -267,6 +267,11 @@ public class DscFileServiceIml implements DscFileService {
         return CommonResult.success(fileInfo);
     }
 
+    /**
+     * 获取文件预览url
+     * @param fileId
+     * @return
+     */
     @Override
     public CommonResult<String> getFilePreviewUrl(String fileId) {
         Optional<DscFileInfo> byId = dscFileDAO.findById(fileId);

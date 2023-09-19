@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
@@ -8,6 +9,8 @@ import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
+import nnu.wyz.systemMS.model.entity.DscGDVSceneConfig;
+import nnu.wyz.systemMS.service.DscGDVSceneService;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,9 @@ public class test {
 
     @Autowired
     private DscCatalogDAO dscCatalogDAO;
+
+    @Autowired
+    private DscGDVSceneService dscGDVSceneService;
 
     @Test
     void test1() {
@@ -132,5 +138,11 @@ public class test {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
         String code = bufferedReader.readLine();
         System.out.println("code = " + code);
+    }
+    @Test
+    void testBeanUtil() {
+        DscGDVSceneConfig gdvSceneConfig = dscGDVSceneService.getGDVSceneConfig("f9ef4a6e-7796-45a4-b9cb-d795e9eff0d6");
+        JSONObject sceneConfig = BeanUtil.toBean(gdvSceneConfig, JSONObject.class);
+        System.out.println("sceneConfig = " + sceneConfig);
     }
 }
