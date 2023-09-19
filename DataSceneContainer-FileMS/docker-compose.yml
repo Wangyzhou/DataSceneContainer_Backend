@@ -1,0 +1,23 @@
+version: 1.0
+services:
+  dsc-fileS:
+    image: dsc-file_ms
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dsc_filems
+    volumes:
+      - /home/yzwang/minio/data/:/home/minio-data/
+    ports:
+      - 8765:8765
+    depends_on:
+      - postgis
+  postgis:
+    image: mdillon/postgis
+    ports:
+      - 25432:5432
+    container_name: dsc-file_ms_pg
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=wyz980903
+      - POSTGRES_DB=dsc_postdb

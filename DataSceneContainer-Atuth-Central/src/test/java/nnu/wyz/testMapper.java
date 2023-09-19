@@ -1,23 +1,26 @@
 package nnu.wyz;
 
 import com.alibaba.fastjson.JSON;
+import nnu.wyz.dao.DscCatalogDAO;
+import nnu.wyz.dao.DscUserDAO;
+import nnu.wyz.entity.DscCatalog;
 import nnu.wyz.entity.DscUser;
-import nnu.wyz.entity.DscUser_Role;
-import nnu.wyz.mapper.DscUserMapper;
+import nnu.wyz.service.impl.MongoClientDetailsServiceIml;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.RsaSigner;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+
+
 
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
@@ -36,18 +39,15 @@ import java.util.Map;
 public class testMapper {
 
     @Autowired
-    DscUserMapper dscUserMapper;
+    DscUserDAO dao;
 
+    @Autowired
+    DscCatalogDAO dscCatalogDAO;
     @Autowired
     PasswordEncoder bCryptPasswordEncoder;
 
-    @Test
-    void test1() {
-        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-        List<DscUser_Role> DscUser_Roles = dscUserMapper.findAuthoritiesByUserId("a270426e-fc90-4e19-932a-839d5274e9e9");
-        DscUser_Roles.forEach(perms -> authorities.add(new SimpleGrantedAuthority(perms.getPerm_code())));
-        System.out.println("authoritiesByUserId = " + authorities);
-    }
+    @Autowired
+    MongoClientDetailsServiceIml mongoClientDetailsServiceIml;
 
     @Test
     void test2() {
@@ -55,7 +55,7 @@ public class testMapper {
 //        System.out.println("encoded = " + encoded);
 //        boolean matches = bCryptPasswordEncoder.matches("ninja123", "$2a$10$uhaBziJIo4Lbsf.s94avwOtwBn7Hj/MJVXQcuIfVbfTJ0Am0FWJsy");
 //        System.out.println("matches = " + matches);
-        String encoded = bCryptPasswordEncoder.encode("123456");
+        String encoded = bCryptPasswordEncoder.encode("opengms@uo~U%VGPm38S5HV");
         System.out.println("encoded = " + encoded);
     }
 
@@ -111,5 +111,38 @@ public class testMapper {
         //解析令牌，获取令牌中的载荷
         String claims = token.getClaims();
         System.out.println(claims);//打印结果为{"address":"beijing","company":"heima"}
+
+    }
+    @Test
+    void Test111() {
+        DscUser dscUser = new DscUser();
+        dscUser.setId("1111").setUserName("wyz1").setPassword("testtest").setEmail("1111");
+        dao.insert(dscUser);
+    }
+    @Test
+    void testClient() {
+        BaseClientDetails baseClientDetails = new BaseClientDetails();
+        baseClientDetails.setClientId("scene_container");
+        baseClientDetails.setClientSecret(bCryptPasswordEncoder.encode("opengms@uo~U%VGPm38S5HV"));
+        baseClientDetails.setAccessTokenValiditySeconds(7200);
+        baseClientDetails.setRefreshTokenValiditySeconds(259200);
+        ArrayList<String> scopes = new ArrayList<>();
+        scopes.add("all");
+        baseClientDetails.setScope(scopes);
+        ArrayList<String> grantedTypes = new ArrayList<>();
+        grantedTypes.add("password");
+        grantedTypes.add("refresh_token");
+        baseClientDetails.setAuthorizedGrantTypes(grantedTypes);
+        mongoClientDetailsServiceIml.addClientDetails(baseClientDetails);
+    }
+    @Test
+    void testFind() {
+        ClientDetails sceneContainer = mongoClientDetailsServiceIml.loadClientByClientId("scene_container");
+        System.out.println("sceneContainer = " + sceneContainer);
+    }
+    @Test
+    void testCatalog() {
+        DscCatalog catalog = dscCatalogDAO.findDscCatalogByUserIdAndParent("64ed97384debb752beab152c", "-1");
+        System.out.println("catalog = " + catalog);
     }
 }

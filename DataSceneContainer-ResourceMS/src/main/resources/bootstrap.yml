@@ -1,0 +1,12 @@
+server:
+  port: 8722
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 172.21.212.79:8848
+        file-extension: yml
+      discovery:
+        server-addr: 172.21.212.79:8848
+  application:
+    name: dsc-resMS

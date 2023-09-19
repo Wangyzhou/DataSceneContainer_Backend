@@ -1,0 +1,13 @@
+server:
+  port: 7890
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 172.21.212.79:8848
+        ip: 172.21.213.250
+      config:
+        server-addr: 172.21.212.79:8848
+        file-extension: yml
+  application:
+    name: dsc-systemMS

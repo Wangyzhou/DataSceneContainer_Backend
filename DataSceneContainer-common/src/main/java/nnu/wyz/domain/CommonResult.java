@@ -20,13 +20,17 @@ public class CommonResult<T> {
      */
     private T data;
 
-    protected CommonResult() {
+    public CommonResult() {
     }
 
-    protected CommonResult(long code, String message, T data) {
+    public CommonResult(long code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
+    }
+    public CommonResult(long code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
     /**
@@ -38,6 +42,9 @@ public class CommonResult<T> {
         return new CommonResult<T>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
     }
 
+    public static <T> CommonResult<T> success(String message) {
+        return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message);
+    }
     /**
      * 成功返回结果
      *

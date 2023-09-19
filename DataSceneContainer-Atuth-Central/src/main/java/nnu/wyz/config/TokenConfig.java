@@ -19,7 +19,6 @@ import java.security.KeyPair;
 @Configuration
 public class TokenConfig {
 
-//    private String SIGNING_KEY = "opengms:dsc:2!q@3$6&";
 
     //使用JwtToken
     @Bean
@@ -31,7 +30,6 @@ public class TokenConfig {
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-//        converter.setSigningKey(SIGNING_KEY); //对称秘钥，资源服务器使用该秘钥来验证
         converter.setKeyPair(keyPair());  //非对称加密
         return converter;
     }

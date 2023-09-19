@@ -1,7 +1,7 @@
 server:
   port: 8721
-  servlet:
-    context-path: /user
+  max-http-header-size: 1024KB
+
 spring:
   cloud:
     nacos:

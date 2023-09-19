@@ -3,6 +3,8 @@
 //import cn.hutool.core.collection.ListUtil;
 //import nnu.wyz.Config.IgnoredUrls;
 //import org.apache.commons.lang3.StringUtils;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 //import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -11,7 +13,9 @@
 //import org.springframework.web.server.ServerWebExchange;
 //import reactor.core.publisher.Mono;
 //
+//import java.net.URI;
 //import java.util.List;
+//import java.util.Objects;
 //
 ///**
 // * @description:
@@ -24,24 +28,15 @@
 //    @Autowired
 //    private IgnoredUrls ignoredUrls;
 //
+//    Logger logger = LoggerFactory.getLogger(TokenFilter.class);
 //    @Override
 //    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-//        String path = exchange.getRequest().getURI().getPath();
-//        System.out.println("path = " + path);
-//        System.out.println("exchange = " + exchange.getRequest());
-//        //1、白名单放行
-//        List<String> urls = ignoredUrls.getUrls();
-//        System.out.println("urls = " + urls);
-//        if (urls.stream().anyMatch(url -> url.equals(path))) {
-//            return chain.filter(exchange);
-//        }
-//        //2、拿出token
-//
+//        logger.info(exchange.getRequest().getRemoteAddress() + "访问资源: " + exchange.getRequest().getURI());
 //        return chain.filter(exchange);
 //    }
 //
 //    @Override
 //    public int getOrder() {
-//        return 0;
+//        return -99;
 //    }
 //}

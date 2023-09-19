@@ -1,16 +1,12 @@
 package nnu.wyz.config;
 
-import nnu.wyz.constant.AuthConstants;
-//import nnu.wyz.service.impl.JdbcClientDetailsServiceImpl;
+import nnu.wyz.service.impl.MongoClientDetailsServiceIml;
 import nnu.wyz.service.impl.UserDetailsServiceIml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -19,11 +15,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
-import javax.sql.DataSource;
 import java.util.Arrays;
 
 /**
@@ -36,13 +30,11 @@ import java.util.Arrays;
 @EnableAuthorizationServer
 public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
-    @Autowired
-    private DataSource dataSource;
 
     @Autowired
     private TokenStore tokenStore;
     @Autowired
-    private ClientDetailsService clientDetailsService;
+    private MongoClientDetailsServiceIml clientDetailsService;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -54,7 +46,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     //1、配置客户端详情服务，客户端详情信息在这里初始化
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.jdbc(dataSource).passwordEncoder(new BCryptPasswordEncoder());
+        clients.withClientDetails(clientDetailsService);
     }
 
     //2、配置令牌访问端点（token）和令牌服务（token service）
@@ -85,8 +77,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     @Bean
     public AuthorizationCodeServices authorizationCodeServices() {
-        //设置授权码模式的授权码如何存取，暂时采用内存方式
-        return new JdbcAuthorizationCodeServices(dataSource);
+        return new InMemoryAuthorizationCodeServices();
     }
 
     //3、配置令牌端点的安全约束

@@ -1,12 +1,11 @@
 server:
   port: 9400
-  servlet:
-    context-path: /dscuaa   #server的配置不能写在nacos中
 spring:
   cloud:
     nacos:
       discovery:
         server-addr: 172.21.212.79:8848
+        ip: 172.21.213.250
       config:
         file-extension: yml #指定yaml格式的配置
         server-addr: 172.21.212.79:8848

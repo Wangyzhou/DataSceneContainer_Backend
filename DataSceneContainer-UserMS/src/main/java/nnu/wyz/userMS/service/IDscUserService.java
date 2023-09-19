@@ -1,16 +1,13 @@
 package nnu.wyz.userMS.service;
 
-import nnu.wyz.userMS.entity.DscUser;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import nnu.wyz.domain.CommonResult;
+import nnu.wyz.userMS.entity.dto.UserRegisterDTO;
 
-/**
- * <p>
- *  服务类
- * </p>
- *
- * @author wyz
- * @since 2023-08-18
- */
-public interface IDscUserService extends IService<DscUser> {
+public interface IDscUserService {
+    CommonResult<String> register(UserRegisterDTO userRegisterDTO);
 
+    CommonResult<String> active(String code);
+
+    CommonResult<String> logout(String token) throws JsonProcessingException;
 }

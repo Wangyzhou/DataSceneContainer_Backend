@@ -1,16 +1,13 @@
 package nnu.wyz.userMS.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.sql.Blob;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -21,34 +18,31 @@ import lombok.experimental.Accessors;
  * @since 2023-08-18
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
-@TableName("dsc_user")
 @ApiModel(value="DscUser对象", description="")
 public class DscUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @Id
     private String id;
 
-    @TableField("user_name")
     private String userName;
 
-    @TableField("password")
     private String password;
 
-    @TableField("email")
     private String email;
 
-    @TableField("institution")
     private String institution;
 
-    @TableField("register_date")
     private String registerDate;
 
-    @TableField("avatar")
     private Byte[] avatar;
 
+    private int enabled;
+
+    private String activeCode;
 
 }
