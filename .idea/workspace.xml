@@ -11,44 +11,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="modify commit">
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/config/WebSocketConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscMessageController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscMessageDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/FileShareDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/FileShareImportDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/MapParamsDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/MessagePageDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/ReturnUsersByEmailLikeDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/GDVSceneSource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/Message.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/MsgPageInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/server/WebSocketServer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscMessageService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscMessageServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/DscAuthMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/DscAuthMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/config/AuthorizationServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/config/AuthorizationServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/config/TokenConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/config/TokenConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/config/WebSecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/constant/AuthConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/constant/AuthConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/controller/DscUserAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/controller/DscUserAuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/controller/PublicKeyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/controller/PublicKeyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/dao/DscCatalogDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/dao/DscCatalogDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/dao/DscUserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/dao/DscUserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/entity/DscCatalog.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/DscCatalog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/entity/DscUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/DscUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/entity/DscUser_Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/DscUser_Role.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/entity/dto/CatalogChildrenDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/dto/CatalogChildrenDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/entity/dto/ReturnLoginUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/dto/ReturnLoginUserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/IDscUserAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/IDscUserAuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/UserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/UserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/impl/IDscUserAuthServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/impl/IDscUserAuthServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/impl/MongoClientDetailsServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/impl/MongoClientDetailsServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/java/nnu/wyz/service/impl/UserDetailsServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/impl/UserDetailsServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/resources/bootstrap.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/main/resources/public.key" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/resources/public.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Atuth-Central/src/test/java/nnu/wyz/testMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/test/java/nnu/wyz/testMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/config/TokenConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/config/TokenConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/jks/ninja.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/config/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscFileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscFileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGDVSceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGDVSceneController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscSceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscSceneController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/CreateGDVSceneDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/SaveGDVSceneDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGDVSceneService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGDVSceneService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscSceneService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscSceneService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscFileDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscFileDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscUserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscUserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/SaveGDVSceneDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/SaveGDVSceneDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscFileInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscFileInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscGDVSceneConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscGDVSceneConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscFileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscFileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscUserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscSceneServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscSceneServiceIml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-common/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +60,12 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://E:/mavenRepository/repository/org/springframework/spring-aop/5.3.23/spring-aop-5.3.23.jar!/org/springframework/aop/framework/CglibAopProxy.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -96,7 +97,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
     "jdk.selected.JAVA_MODULE": "corretto-1.8",
-    "last_opened_file_path": "D:/project/DataSceneContainer_Backend/DataSceneContainer-Auth-Central",
+    "last_opened_file_path": "C:/Users/Administrator/Desktop/codeium-1.2.89.zip",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -105,8 +106,8 @@
     "project.structure.last.edited": "模块",
     "project.structure.proportion": "0.15527344",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsDialog.application.dockerMachine",
-    "spring.configuration.checksum": "154c0627c91bf4a20a24464aa32a22f8",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "spring.configuration.checksum": "6459ab1fa8b5414f17cd5f0d41cb7060",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -122,24 +123,25 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Auth-Central\src\main\java\nnu\wyz\jks" />
       <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Auth-Central" />
       <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-SystemMS\src\main\resources\static" />
       <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-SystemMS\src\main\resources\static\test" />
       <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-FileMS\src\main\java\nnu\wyz\fileMS\model" />
-      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-FilePublishMS\src\main\java\nnu\wyz\filePublishMS\config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Auth-Central\src\main\java" />
+      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Auth-Central\src\main\java\nnu\wyz" />
       <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-SystemMS\src\main\resources\static" />
       <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-FileMS" />
       <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-ResourceMS\src\main\resources\mapper" />
-      <recent name="D:\project\DataSceneContainer_Backend\DataSceneContainer-Atuth-Central\src\main\resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="nnu.wyz.systemMS.server" />
+      <recent name="nnu.wyz.systemMS.config" />
       <recent name="nnu.wyz.fileMS.model.entity" />
       <recent name="nnu.wyz.systemMS.utils" />
       <recent name="nnu.wyz.systemMS.dao" />
-      <recent name="nnu.wyz.fileMS.config" />
-      <recent name="nnu.wyz.fileMS.utils" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -149,7 +151,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Docker.dsc认证中心">
+  <component name="RunManager" selected="JUnit.test.testLikeQuery">
     <configuration name="CodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.CodeGenerator" />
       <module name="DataSceneContainer-Auth-Central" />
@@ -203,7 +205,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AuthTestMain | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/AuthTestMain.http" requestIdentifier="#1" runType="运行单个请求">
+    <configuration name="AuthTestMain | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/AuthTestMain.http" requestIdentifier="#1">
       <method v="2" />
     </configuration>
     <configuration name="test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
@@ -360,38 +362,6 @@
       <option name="PACKAGE_NAME" value="nnu.wyz" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
       <option name="METHOD_NAME" value="testFind" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.testGenerator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="testGenerator" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.testMapper1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="testMapper1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -637,6 +607,54 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test.testLikeQuery" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testLikeQuery" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testMessageCRUD" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testMessageCRUD" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testRedis" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testRedis" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test.testRemote" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-FileMS" />
       <extension name="coverage">
@@ -712,6 +730,22 @@
       <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
       <option name="METHOD_NAME" value="testUpload" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testWebSocket" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testWebSocket" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -900,16 +934,24 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Application.CodeGenerator" />
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Application.Solution" />
+      <item itemvalue="Application.test" />
       <item itemvalue="Docker.dsc认证中心" />
       <item itemvalue="Docker.DataSceneContainer-FileMS: Compose 部署" />
       <item itemvalue="Docker.Docker 镜像" />
       <item itemvalue="Docker.Docker 镜像1" />
       <item itemvalue="Docker.Docker 镜像3" />
-      <item itemvalue="HTTP 请求.AuthTestMain | #1" />
+      <item itemvalue="HTTP Request.AuthTestMain | #1" />
       <item itemvalue="JUnit.test.readCpgFile" />
       <item itemvalue="JUnit.test.test222" />
       <item itemvalue="JUnit.test.testBeanUtil" />
+      <item itemvalue="JUnit.test.testLikeQuery" />
+      <item itemvalue="JUnit.test.testMessageCRUD" />
+      <item itemvalue="JUnit.test.testRedis" />
       <item itemvalue="JUnit.test.testStaticFile" />
+      <item itemvalue="JUnit.test.testWebSocket" />
       <item itemvalue="JUnit.test.testtt" />
       <item itemvalue="JUnit.test.testCatalogTree" />
       <item itemvalue="JUnit.test" />
@@ -936,31 +978,27 @@
       <item itemvalue="JUnit.testMapper.parseJWT" />
       <item itemvalue="JUnit.testMapper.test1" />
       <item itemvalue="JUnit.testMapper.test2" />
-      <item itemvalue="JUnit.testMapper.testGenerator" />
-      <item itemvalue="JUnit.testMapper.testMapper1" />
       <item itemvalue="Spring Boot.DscFileMain" />
       <item itemvalue="Spring Boot.DscAuthMain" />
       <item itemvalue="Spring Boot.DscGatewayMain" />
       <item itemvalue="Spring Boot.DscSystemMain" />
       <item itemvalue="Spring Boot.ResourceMSMain" />
       <item itemvalue="Spring Boot.UserMSMain" />
-      <item itemvalue="应用程序.Main" />
-      <item itemvalue="应用程序.Solution" />
-      <item itemvalue="应用程序.test" />
-      <item itemvalue="应用程序.CodeGenerator" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Spring Boot.DscSystemMain" />
         <item itemvalue="Spring Boot.DscGatewayMain" />
+        <item itemvalue="JUnit.test.testLikeQuery" />
+        <item itemvalue="JUnit.test.testWebSocket" />
+        <item itemvalue="JUnit.test.testMessageCRUD" />
+        <item itemvalue="JUnit.test.testRedis" />
         <item itemvalue="Docker.dsc认证中心" />
         <item itemvalue="Spring Boot.DscAuthMain" />
         <item itemvalue="JUnit.test.testBeanUtil" />
         <item itemvalue="JUnit.test.readCpgFile" />
-        <item itemvalue="应用程序.Main" />
         <item itemvalue="JUnit.test.test222" />
         <item itemvalue="JUnit.test.testtt" />
-        <item itemvalue="应用程序.Solution" />
         <item itemvalue="JUnit.test.testUpload" />
         <item itemvalue="JUnit.test.testStaticFile" />
         <item itemvalue="Spring Boot.DscFileMain" />
@@ -975,7 +1013,6 @@
         <item itemvalue="JUnit.test" />
         <item itemvalue="JUnit.test.testRemote" />
         <item itemvalue="JUnit.test.test1 (3)" />
-        <item itemvalue="应用程序.test" />
         <item itemvalue="JUnit.test.testGetFile" />
         <item itemvalue="JUnit.test.testCopyFile" />
         <item itemvalue="JUnit.test.test1 (2)" />
@@ -990,16 +1027,12 @@
         <item itemvalue="JUnit.test.test3" />
         <item itemvalue="JUnit.test.test2" />
         <item itemvalue="JUnit.test.test1 (1)" />
-        <item itemvalue="HTTP 请求.AuthTestMain | #1" />
         <item itemvalue="JUnit.testMapper.test2" />
         <item itemvalue="JUnit.testMapper.base64" />
         <item itemvalue="JUnit.testMapper.test1" />
         <item itemvalue="JUnit.test.test1" />
         <item itemvalue="JUnit.testMapper.parseJWT" />
         <item itemvalue="JUnit.testMapper.createJWT" />
-        <item itemvalue="应用程序.CodeGenerator" />
-        <item itemvalue="JUnit.testMapper.testMapper1" />
-        <item itemvalue="JUnit.testMapper.testGenerator" />
       </list>
     </recent_temporary>
   </component>
@@ -1035,7 +1068,26 @@
       <workItem from="1693807293121" duration="8577000" />
       <workItem from="1693877202524" duration="78554000" />
       <workItem from="1694349555124" duration="58402000" />
-      <workItem from="1694660850317" duration="87769000" />
+      <workItem from="1694660850317" duration="167693000" />
+      <workItem from="1695605124318" duration="23877000" />
+      <workItem from="1695710678191" duration="454000" />
+      <workItem from="1695711139880" duration="147000" />
+      <workItem from="1695711293835" duration="173000" />
+      <workItem from="1695711474278" duration="402000" />
+      <workItem from="1695711935213" duration="81000" />
+      <workItem from="1695712334585" duration="98000" />
+      <workItem from="1695712440132" duration="57000" />
+      <workItem from="1695712504109" duration="233000" />
+      <workItem from="1695712751686" duration="1676000" />
+      <workItem from="1695715329925" duration="42000" />
+      <workItem from="1695715379364" duration="65000" />
+      <workItem from="1695715452139" duration="85000" />
+      <workItem from="1695716131082" duration="211000" />
+      <workItem from="1695716350094" duration="18000" />
+      <workItem from="1695716375987" duration="258000" />
+      <workItem from="1695716641735" duration="266000" />
+      <workItem from="1695716933309" duration="677000" />
+      <workItem from="1695717619755" duration="1237000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -1061,7 +1113,15 @@
       <option name="project" value="LOCAL" />
       <updated>1695086501797</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="modify commit">
+      <option name="closed" value="true" />
+      <created>1695112531550</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1695112531550</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1099,105 +1159,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="modify commit" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-FileMS/src/test/java/nnu/wyz/fileMS/test.java</url>
-          <line>61</line>
-          <option name="timeStamp" value="88" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
-          <line>150</line>
-          <option name="timeStamp" value="89" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-FileMS/src/test/java/nnu/wyz/fileMS/test.java</url>
-          <line>101</line>
-          <option name="timeStamp" value="99" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-FileMS/src/test/java/nnu/wyz/fileMS/test.java</url>
-          <line>92</line>
-          <option name="timeStamp" value="100" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>85</line>
-          <option name="timeStamp" value="101" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>79</line>
-          <option name="timeStamp" value="102" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGDVSceneController.java</url>
-          <line>35</line>
-          <option name="timeStamp" value="107" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>109</line>
-          <option name="timeStamp" value="110" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>70</line>
-          <option name="timeStamp" value="111" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java</url>
-          <line>71</line>
-          <option name="timeStamp" value="113" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java</url>
-          <line>275</line>
-          <option name="timeStamp" value="121" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java</url>
-          <line>65</line>
-          <option name="timeStamp" value="122" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java</url>
-          <line>74</line>
-          <option name="timeStamp" value="124" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java</url>
-          <line>356</line>
-          <option name="timeStamp" value="126" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java</url>
-          <line>342</line>
-          <option name="timeStamp" value="127" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
-          <line>69</line>
-          <option name="timeStamp" value="130" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
-          <line>108</line>
-          <option name="timeStamp" value="131" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
-          <line>237</line>
-          <option name="timeStamp" value="132" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java</url>
-          <line>59</line>
-          <option name="timeStamp" value="136" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="java.util.AbstractMap$SimpleImmutableEntry" memberName="value" />

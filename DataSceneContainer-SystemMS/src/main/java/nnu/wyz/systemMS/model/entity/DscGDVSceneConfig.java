@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import nnu.wyz.systemMS.model.dto.MapParamsDTO;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class DscGDVSceneConfig {
     private String sceneId;
 
     @ApiModelProperty(value = "场景数据源")
-    private List<JSONObject> sources;
+    private List<GDVSceneSource> sources;
 
     @ApiModelProperty(value = "场景图层")
     private List<JSONObject> layers;
@@ -37,5 +38,5 @@ public class DscGDVSceneConfig {
     private JSONObject pos;
 
     @ApiModelProperty(value = "地图相关参数")
-    private JSONObject mapParams;
+    private MapParamsDTO mapParams;
 }

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nnu.wyz.systemMS.model.entity.GDVSceneSource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class SaveGDVSceneDTO {
     private MultipartFile thumbnail;
 
     @ApiModelProperty(value = "场景数据源")
-    private List<JSONObject> sources;
+    private List<GDVSceneSource> sources;
 
     @ApiModelProperty(value = "场景图层")
     private List<JSONObject> layers;
@@ -41,5 +42,5 @@ public class SaveGDVSceneDTO {
     private JSONObject pos;
 
     @ApiModelProperty(value = "场景地图参数")
-    private JSONObject mapParams;
+    private MapParamsDTO mapParams;
 }

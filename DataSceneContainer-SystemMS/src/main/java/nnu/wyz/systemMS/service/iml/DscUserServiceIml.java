@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS.service.iml;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
@@ -12,6 +13,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
 import nnu.wyz.systemMS.dao.DscUserDAO;
 import nnu.wyz.systemMS.model.dto.ReturnLoginUserDTO;
+import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.dto.UserLoginDTO;
 import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
 import nnu.wyz.systemMS.model.entity.DscUser;
@@ -25,6 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +43,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 
 /**
@@ -54,6 +60,9 @@ public class DscUserServiceIml implements DscUserService {
 
     @Autowired
     private DscUserDAO dscUserDAO;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
     @Autowired
     private MailService iMailService;
     @Autowired
@@ -365,5 +374,19 @@ public class DscUserServiceIml implements DscUserService {
         user.setPassword(bCryptPasswordEncoder.encode(password));
         dscUserDAO.save(user);
         return CommonResult.success("重置密码成功！");
+    }
+
+    @Override
+    public CommonResult<List<ReturnUsersByEmailLikeDTO>> getUserByEmailLike(String keyWord) {
+        Criteria criteria = new Criteria();
+        Pattern pattern = Pattern.compile("^" + keyWord + ".*$");
+        Query query = Query.query(criteria.andOperator(Criteria.where("email").regex(pattern), Criteria.where("enabled").is(1)));
+        List<DscUser> dscUser = mongoTemplate.find(query, DscUser.class, "dscUser");
+        ArrayList<ReturnUsersByEmailLikeDTO> returnUsers = new ArrayList<>();
+        dscUser.forEach(dscUser1 -> {
+            ReturnUsersByEmailLikeDTO returnUser = BeanUtil.copyProperties(dscUser1, ReturnUsersByEmailLikeDTO.class);
+            returnUsers.add(returnUser);
+        });
+        return CommonResult.success(returnUsers, "获取成功！");
     }
 }

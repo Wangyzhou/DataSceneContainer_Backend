@@ -62,7 +62,7 @@ public class DscFileInfo implements Serializable {
     @ApiModelProperty(value = "文件发布成服务的次数")
     private Long publishCount;
 
-    @ApiModelProperty(value = "文件拥有用户的个数，为0则删除该资源，也不存在该文件发布的服务")
+    @ApiModelProperty(value = "文件拥有用户的个数，为0则删除该资源")
     private Long ownerCount;
 
     @ApiModelProperty(value = "文件所属桶")

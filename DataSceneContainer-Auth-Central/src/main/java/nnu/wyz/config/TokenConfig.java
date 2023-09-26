@@ -36,7 +36,7 @@ public class TokenConfig {
     @Bean
     public KeyPair keyPair() {
         KeyStoreKeyFactory factory = new KeyStoreKeyFactory(
-                new ClassPathResource("nnu/wyz/jks/ninja.jks"), "ninja980903".toCharArray());
+                new ClassPathResource("ninja.jks"), "ninja980903".toCharArray());
         return factory.getKeyPair(
                 "ninja-key", "ninja980903".toCharArray());
     }

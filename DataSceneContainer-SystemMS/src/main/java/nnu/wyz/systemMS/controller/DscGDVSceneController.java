@@ -3,7 +3,9 @@ package nnu.wyz.systemMS.controller;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.dto.MapParamsDTO;
 import nnu.wyz.systemMS.model.dto.SaveGDVSceneDTO;
+import nnu.wyz.systemMS.model.entity.GDVSceneSource;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +35,10 @@ public class DscGDVSceneController {
                                        @RequestParam("layers") String layers,
                                        @RequestParam("pos") String pos,
                                        @RequestParam("mapParams") String mapParams) {
-        List<JSONObject> sceneSources = JSONObject.parseArray(sources, JSONObject.class);
+        List<GDVSceneSource> sceneSources = JSONObject.parseArray(sources, GDVSceneSource.class);
         List<JSONObject> sceneLayers = JSONObject.parseArray(layers, JSONObject.class);
         JSONObject scenePosition = JSONObject.parseObject(pos, JSONObject.class);
-        JSONObject sceneMapParams = JSONObject.parseObject(mapParams, JSONObject.class);
+        MapParamsDTO sceneMapParams = JSONObject.parseObject(mapParams, MapParamsDTO.class);
         SaveGDVSceneDTO saveGDVSceneDTO = new SaveGDVSceneDTO(userId, sceneId, name, thumbnail, sceneSources, sceneLayers, scenePosition, sceneMapParams);
         return dscGDVSceneService.saveGDVScene(saveGDVSceneDTO);
     }

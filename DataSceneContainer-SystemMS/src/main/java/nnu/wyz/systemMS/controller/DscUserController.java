@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.dto.UserLoginDTO;
 import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
 import nnu.wyz.systemMS.service.DscUserService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -74,5 +76,11 @@ public class DscUserController {
         String email = (String) param.get("email");
         String password = (String) param.get("password");
         return dscUserService.resetPassword(resetToken, email, password);
+    }
+
+    @ApiOperation(value = "根据邮箱模糊查询用户")
+    @GetMapping(value = "/getUserByEmailLike/{keyWord}")
+    public CommonResult<List<ReturnUsersByEmailLikeDTO>> getUserByEmailLike(@PathVariable("keyWord") String keyWord) {
+        return dscUserService.getUserByEmailLike(keyWord);
     }
 }

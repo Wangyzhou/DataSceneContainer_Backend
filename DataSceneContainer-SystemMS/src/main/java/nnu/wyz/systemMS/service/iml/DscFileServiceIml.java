@@ -2,6 +2,7 @@ package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -14,13 +15,11 @@ import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.MongoTransactional;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.dao.DscFileDAO;
+import nnu.wyz.systemMS.dao.DscUserDAO;
 import nnu.wyz.systemMS.dao.SysUploadTaskDAO;
-import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
-import nnu.wyz.systemMS.model.dto.DeleteFileDTO;
-import nnu.wyz.systemMS.model.dto.UploadFileDTO;
-import nnu.wyz.systemMS.model.entity.DscCatalog;
-import nnu.wyz.systemMS.model.entity.DscFileInfo;
-import nnu.wyz.systemMS.model.entity.SysUploadTask;
+import nnu.wyz.systemMS.model.dto.*;
+import nnu.wyz.systemMS.model.entity.*;
+import nnu.wyz.systemMS.server.WebSocketServer;
 import nnu.wyz.systemMS.service.DscFileService;
 import nnu.wyz.systemMS.utils.FilePermission;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
@@ -32,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -55,7 +55,13 @@ public class DscFileServiceIml implements DscFileService {
     private DscCatalogDAO dscCatalogDAO;
 
     @Autowired
+    private DscUserDAO dscUserDAO;
+
+    @Autowired
     private MinioConfig minioConfig;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 文件上传，文件可以重复上传，但同一目录下不能有同名文件
@@ -140,7 +146,7 @@ public class DscFileServiceIml implements DscFileService {
 
 
     /**
-     * 文件删除，未实现源文件的删除，TODO:需要文件服务器的支持(后续开发)
+     * 文件删除
      *
      * @param deleteFileDTO
      * @return
@@ -158,6 +164,7 @@ public class DscFileServiceIml implements DscFileService {
         DscFileInfo dscFileInfo = byId.get();
         dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);     //文件拥有者数 - 1
         dscFileDAO.save(dscFileInfo);
+
         //进行目录孩子节点的摘除
         DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogByIdAndUserId(catalogId, userId);
         List<CatalogChildrenDTO> children = dscCatalog.getChildren();
@@ -172,6 +179,7 @@ public class DscFileServiceIml implements DscFileService {
         dscCatalog.setTotal(dscCatalog.getTotal() - 1);
         dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MMMM-dddd HH:mm:ss"));
         dscCatalogDAO.save(dscCatalog);
+
         if (dscFileInfo.getOwnerCount() < 1) {   //未有人拥有该资源，删除任务、删除源文件、删除文件记录
             SysUploadTask task = sysUploadTaskDAO.findSysUploadTaskByFileId(fileId);
             DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(minioConfig.getBucketName(), dscFileInfo.getObjectKey());
@@ -269,6 +277,7 @@ public class DscFileServiceIml implements DscFileService {
 
     /**
      * 获取文件预览url
+     *
      * @param fileId
      * @return
      */
@@ -284,5 +293,53 @@ public class DscFileServiceIml implements DscFileService {
         return CommonResult.success(minioConfig.getEndpoint() + "/" + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey(), "获取预览地址成功！");
     }
 
+    @Override
+    public CommonResult<String> shareFile(FileShareDTO fileShareDTO) {
+        String fromUserEmail = fileShareDTO.getFromUser();
+        String sourceId = fileShareDTO.getFileId();
+        List<String> toUsers = fileShareDTO.getToUsers();
+        DscUser fromDscUser = dscUserDAO.findDscUserByEmail(fromUserEmail);
+        toUsers.forEach(toUser -> {
+            Message message = new Message();
+            message.setFrom(fromUserEmail)
+                    .setTo(toUser)
+                    .setTopic("文件分享")
+                    .setResource(sourceId)
+                    .setType("fileMsg")
+                    .setIsRead(false)
+                    .setText(MessageFormat.format("用户{0}给您分享了一份文件，请查收！", fromDscUser.getUserName()));
+            webSocketServer.sendInfo(toUser, JSON.toJSONString(message));
+        });
+        return CommonResult.success("消息发送成功！");
+    }
 
+    @Override
+    @MongoTransactional
+    public CommonResult<String> importResource(FileShareImportDTO fileShareImportDTO) {
+        String fileId = fileShareImportDTO.getFileId();
+        String catalogId = fileShareImportDTO.getCatalogId();
+        Optional<DscFileInfo> byId = dscFileDAO.findById(fileId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed("意料之外的错误！");
+        }
+        DscFileInfo dscFileInfo = byId.get();
+        dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1);
+        dscFileDAO.save(dscFileInfo);
+        CatalogChildrenDTO catalogChildrenDTO = new CatalogChildrenDTO();
+        catalogChildrenDTO.setId(dscFileInfo.getId())
+                .setName(dscFileInfo.getFileName())
+                .setType(dscFileInfo.getFileSuffix())
+                .setSize(dscFileInfo.getSize())
+                .setUpdatedTime(dscFileInfo.getUpdatedTime());
+        Optional<DscCatalog> byId1 = dscCatalogDAO.findById(catalogId);
+        if(!byId1.isPresent()) {
+            return CommonResult.failed("意料之外的错误！");
+        }
+        DscCatalog dscCatalog = byId1.get();
+        dscCatalog.getChildren().add(catalogChildrenDTO);
+        dscCatalog.setTotal(dscCatalog.getTotal() + 1);
+        dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MMMM-dddd HH:mm:ss"));
+        dscCatalogDAO.save(dscCatalog);
+        return CommonResult.success("导入个人空间成功！");
+    }
 }

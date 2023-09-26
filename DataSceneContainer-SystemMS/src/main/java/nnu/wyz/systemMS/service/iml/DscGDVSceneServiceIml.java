@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @description:
@@ -77,7 +78,16 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             PutObjectRequest putObjectRequest = new PutObjectRequest(minioConfig.getSceneThumbnailsBucket(), objectKey, thumbnailInputStream, objectMetadata);
             amazonS3.putObject(putObjectRequest);
             String createdTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
-            DscScene dscScene = new DscScene(sceneId, saveGDVSceneDTO.getName(),SCENE_TYPE, MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), objectKey),userId, 0L, createdTime,createdTime,false, 16);
+            Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
+            DscScene dscScene;
+            if(!byId.isPresent()) {
+                dscScene = new DscScene(sceneId, saveGDVSceneDTO.getName(),SCENE_TYPE, MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), objectKey),userId, 1L, createdTime,createdTime,false, 16);
+            } else {
+                dscScene = byId.get();
+                dscScene.setName(saveGDVSceneDTO.getName());
+                dscScene.setEditCount(dscScene.getEditCount() + 1);
+                dscScene.setUpdatedTime(createdTime);
+            }
             dscSceneDAO.save(dscScene);
             DscUserScene userIdAndSceneId = dscUserSceneDAO.findByUserIdAndSceneId(userId, sceneId);
             String userSceneId = Objects.isNull(userIdAndSceneId) ? IdUtil.randomUUID() : userIdAndSceneId.getId();
