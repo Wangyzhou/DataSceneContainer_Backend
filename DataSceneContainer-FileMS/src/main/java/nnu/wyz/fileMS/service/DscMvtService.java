@@ -113,4 +113,8 @@ public class DscMvtService {
         return CommonResult.success("删除成功！");
     }
 
+    public CommonResult<List<DscMvtServiceInfo>> getMvtByFileId(String fileId) {
+        List<DscMvtServiceInfo> mvtInfos = dscMvtServiceInfoDAO.findAllByFileId(fileId);
+        return CommonResult.success(mvtInfos, "获取成功！");
+    }
 }

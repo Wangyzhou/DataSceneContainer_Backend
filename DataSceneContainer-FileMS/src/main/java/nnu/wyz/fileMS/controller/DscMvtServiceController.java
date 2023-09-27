@@ -48,4 +48,8 @@ public class DscMvtServiceController {
         return dscMvtService.deleteMvtService(userId, mvtSId);
     }
 
+    @GetMapping(value = "/getMvtByFileId/{fileId}")
+    public CommonResult<List<DscMvtServiceInfo>> getMvtByFileId(@PathVariable("fileId") String fileId) {
+        return dscMvtService.getMvtByFileId(fileId);
+    }
 }

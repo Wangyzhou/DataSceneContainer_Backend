@@ -151,7 +151,7 @@ public class DscFileServiceIml implements DscFileService {
      * @param deleteFileDTO
      * @return
      */
-    @Transactional
+    @MongoTransactional
     @Override
     public CommonResult<String> delete(DeleteFileDTO deleteFileDTO) {
         String fileId = deleteFileDTO.getFileId();
@@ -248,15 +248,6 @@ public class DscFileServiceIml implements DscFileService {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED, "未找到此文件！");
         }
         DscFileInfo dscFileInfo = byId.get();
-        String createdUser = dscFileInfo.getCreatedUser();
-        FilePermission filePermission = new FilePermission();
-        filePermission.setPer(dscFileInfo.getPerms());
-        HashMap<String, Object> perm = new HashMap<>();
-        perm.put("preview", userId.equals(createdUser) || filePermission.isAllow(FilePermission.ALLOW_PREVIEW));
-        perm.put("download", userId.equals(createdUser) || filePermission.isAllow(FilePermission.ALLOW_DOWNLOAD));
-        perm.put("publish", userId.equals(createdUser) || filePermission.isAllow(FilePermission.ALLOW_PUBLISH));
-        perm.put("share", userId.equals(createdUser) || filePermission.isAllow(FilePermission.ALLOW_SHARE));
-        perm.put("edit", userId.equals(createdUser) || filePermission.isAllow(FilePermission.ALLOW_EDIT));
         HashMap<String, Object> fileInfoMap = new HashMap<>();
         fileInfoMap.put("id", dscFileInfo.getId());
         fileInfoMap.put("name", dscFileInfo.getFileName());
@@ -269,8 +260,6 @@ public class DscFileServiceIml implements DscFileService {
         fileInfoMap.put("ownerCount", dscFileInfo.getOwnerCount());
         fileInfoMap.put("createdTime", dscFileInfo.getCreatedTime());
         fileInfoMap.put("updatedTime", dscFileInfo.getUpdatedTime());
-        fileInfoMap.put("createdUser", dscFileInfo.getCreatedUser());
-        fileInfoMap.put("permissions", perm);
         JSONObject fileInfo = new JSONObject(fileInfoMap);
         return CommonResult.success(fileInfo);
     }

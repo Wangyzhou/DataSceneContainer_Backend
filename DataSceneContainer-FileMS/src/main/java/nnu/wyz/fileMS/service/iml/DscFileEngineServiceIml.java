@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.model.*;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
+import nnu.wyz.fileMS.config.MongoTransactional;
 import nnu.wyz.fileMS.dao.*;
 import nnu.wyz.fileMS.model.dto.*;
 import nnu.wyz.fileMS.model.entity.DscCatalog;
@@ -184,6 +185,7 @@ public class DscFileEngineServiceIml implements DscFileEngineService {
     }
 
     @Override
+    @MongoTransactional
     public CommonResult<String> publishShapefile(PublishShapefileDTO publishShapefileDTO) {
         String userId = publishShapefileDTO.getUserId();
         String fileId = publishShapefileDTO.getFileId();
@@ -287,6 +289,8 @@ public class DscFileEngineServiceIml implements DscFileEngineService {
                         .setMvtSName(publishShapefileDTO.getName())
                         .setMvtId(mvtId);
                 dscUserMvtSDAO.insert(dscUserMvtS);
+                dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() + 1L);
+                dscFileDAO.save(dscFileInfo);
                 return CommonResult.success("发布成功！");
             }
             return CommonResult.failed("发布失败！");
