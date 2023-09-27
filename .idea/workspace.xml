@@ -10,7 +10,9 @@
     <option name="showLibraryBeans" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="modify commit" />
+    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="modify commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,6 +27,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
@@ -954,52 +961,56 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Spring Boot.DscGatewayMain" />
+        <item itemvalue="Spring Boot.UserMSMain" />
+        <item itemvalue="Spring Boot.ResourceMSMain" />
         <item itemvalue="Spring Boot.DscSystemMain" />
-        <item itemvalue="JUnit.test.testLikeQuery" />
-        <item itemvalue="JUnit.test.testWebSocket" />
-        <item itemvalue="JUnit.test.testMessageCRUD" />
-        <item itemvalue="JUnit.test.testRedis" />
-        <item itemvalue="Docker.dsc认证中心" />
+        <item itemvalue="Spring Boot.DscGatewayMain" />
         <item itemvalue="Spring Boot.DscAuthMain" />
-        <item itemvalue="JUnit.test.testBeanUtil" />
-        <item itemvalue="JUnit.test.readCpgFile" />
-        <item itemvalue="JUnit.test.test222" />
-        <item itemvalue="JUnit.test.testtt" />
-        <item itemvalue="JUnit.test.testUpload" />
-        <item itemvalue="JUnit.test.testStaticFile" />
         <item itemvalue="Spring Boot.DscFileMain" />
-        <item itemvalue="Docker.DataSceneContainer-FileMS: Compose 部署" />
-        <item itemvalue="JUnit.test.testCatalogTree" />
-        <item itemvalue="Docker.Docker 镜像3" />
-        <item itemvalue="Docker.Docker 镜像3" />
-        <item itemvalue="Docker.Docker 镜像" />
-        <item itemvalue="Docker.Docker 镜像1" />
-        <item itemvalue="JUnit.test.testCMD" />
-        <item itemvalue="JUnit.test.testUnzip" />
-        <item itemvalue="JUnit.test" />
-        <item itemvalue="JUnit.test.testRemote" />
-        <item itemvalue="JUnit.test.test1 (3)" />
+        <item itemvalue="JUnit.testMapper.test2" />
+        <item itemvalue="JUnit.testMapper.test1" />
+        <item itemvalue="JUnit.testMapper.parseJWT" />
+        <item itemvalue="JUnit.testMapper.createJWT" />
+        <item itemvalue="JUnit.test.test1" />
+        <item itemvalue="JUnit.testMapper.base64" />
+        <item itemvalue="JUnit.test.test1 (1)" />
+        <item itemvalue="JUnit.test.testSelectUserByEmail" />
+        <item itemvalue="JUnit.test.test4" />
+        <item itemvalue="JUnit.test.test3" />
+        <item itemvalue="JUnit.test.test2" />
+        <item itemvalue="JUnit.testMapper.testFind" />
+        <item itemvalue="JUnit.testMapper.testClient" />
+        <item itemvalue="JUnit.testMapper.testCatalog" />
+        <item itemvalue="JUnit.testMapper.Test111" />
         <item itemvalue="JUnit.test.testGetFile" />
         <item itemvalue="JUnit.test.testCopyFile" />
         <item itemvalue="JUnit.test.test1 (2)" />
-        <item itemvalue="JUnit.testMapper.testCatalog" />
-        <item itemvalue="Spring Boot.ResourceMSMain" />
-        <item itemvalue="Spring Boot.UserMSMain" />
-        <item itemvalue="JUnit.testMapper.testClient" />
-        <item itemvalue="JUnit.testMapper.testFind" />
-        <item itemvalue="JUnit.testMapper.Test111" />
-        <item itemvalue="JUnit.test.test4" />
-        <item itemvalue="JUnit.test.testSelectUserByEmail" />
-        <item itemvalue="JUnit.test.test3" />
-        <item itemvalue="JUnit.test.test2" />
-        <item itemvalue="JUnit.test.test1 (1)" />
-        <item itemvalue="JUnit.testMapper.test2" />
-        <item itemvalue="JUnit.testMapper.base64" />
-        <item itemvalue="JUnit.testMapper.test1" />
-        <item itemvalue="JUnit.test.test1" />
-        <item itemvalue="JUnit.testMapper.parseJWT" />
-        <item itemvalue="JUnit.testMapper.createJWT" />
+        <item itemvalue="JUnit.test.testUpload" />
+        <item itemvalue="JUnit.test.testUnzip" />
+        <item itemvalue="JUnit.test.testRemote" />
+        <item itemvalue="JUnit.test.testCMD" />
+        <item itemvalue="JUnit.test.test1 (3)" />
+        <item itemvalue="JUnit.test" />
+        <item itemvalue="JUnit.test.testCatalogTree" />
+        <item itemvalue="JUnit.test.testtt" />
+        <item itemvalue="JUnit.test.testWebSocket" />
+        <item itemvalue="JUnit.test.testStaticFile" />
+        <item itemvalue="JUnit.test.testRedis" />
+        <item itemvalue="JUnit.test.testMessageCRUD" />
+        <item itemvalue="JUnit.test.testLikeQuery" />
+        <item itemvalue="JUnit.test.testBeanUtil" />
+        <item itemvalue="JUnit.test.test222" />
+        <item itemvalue="JUnit.test.readCpgFile" />
+        <item itemvalue="HTTP Request.AuthTestMain | #1" />
+        <item itemvalue="Docker.Docker 镜像3" />
+        <item itemvalue="Docker.Docker 镜像1" />
+        <item itemvalue="Docker.Docker 镜像" />
+        <item itemvalue="Docker.DataSceneContainer-FileMS: Compose 部署" />
+        <item itemvalue="Docker.dsc认证中心" />
+        <item itemvalue="Application.test" />
+        <item itemvalue="Application.Solution" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.CodeGenerator" />
       </list>
     </recent_temporary>
   </component>
@@ -1054,7 +1065,7 @@
       <workItem from="1695716375987" duration="258000" />
       <workItem from="1695716641735" duration="266000" />
       <workItem from="1695716933309" duration="677000" />
-      <workItem from="1695717619755" duration="15654000" />
+      <workItem from="1695717619755" duration="16600000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -1109,7 +1120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1695800656442</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="modify commit">
+      <created>1695800800222</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1695800800222</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
