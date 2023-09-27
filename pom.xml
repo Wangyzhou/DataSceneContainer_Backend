@@ -12,8 +12,6 @@
         <module>DataSceneContainer-common</module>
         <module>DataSceneContainer-Gateway</module>
         <module>DataSceneContainer-Auth-Central</module>
-        <module>DataSceneContainer-UserMS</module>
-        <module>DataSceneContainer-ResourceMS</module>
         <module>DataSceneContainer-SystemMS</module>
         <module>DataSceneContainer-FileMS</module>
     </modules>
