@@ -7,4 +7,4 @@ EXPOSE 8765
 #将当前 target 目录下的 jar 放置在根目录下，命名为 app.jar，推荐使用绝对路径。
 ADD target/DataSceneContainer-FileMS-1.0-SNAPSHOT.jar /DataSceneContainer-FileMS-1.0-SNAPSHOT.jar
 #执行启动命令
-ENTRYPOINT ["java", "-jar", "-Dfile.encoding=UTF-8","/DataSceneContainer-FileMS-1.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "-Duser.timezone=GMT+8", "-Dfile.encoding=UTF-8","/DataSceneContainer-FileMS-1.0-SNAPSHOT.jar"]

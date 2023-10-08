@@ -2,9 +2,13 @@ package nnu.wyz.fileMS;
 
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
+import nnu.wyz.domain.CommonResult;
+import nnu.wyz.fileMS.dao.ShpProcessDAO;
 import nnu.wyz.fileMS.model.param.InitTaskParam;
 import nnu.wyz.fileMS.service.DscRemoteFileMS;
+import nnu.wyz.fileMS.service.DscShapefileService;
 import nnu.wyz.fileMS.utils.FileUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +39,13 @@ public class test {
 
     @Autowired
     private DscRemoteFileMS dscRemoteFileMS;
+
+    @Autowired
+    private ShpProcessDAO shpProcessDAO;
+
+    @Autowired
+    private DscShapefileService dscShapefileService;
+
     @Test
     void test1() throws IOException {
 //        String bucket = "dsc";
@@ -113,5 +124,23 @@ public class test {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+    @Test
+    void testGetFields() {
+        String tableName = "global_earthquake_652169cee4b0141dff290904";
+        CommonResult<List<String>> fields = dscShapefileService.getFields(tableName);
+        System.out.println("fields = " + fields.getData());
+    }
+    @Test
+    void testGetUniqueValue() {
+        String tableName = "global_earthquake_652169cee4b0141dff290904";
+        CommonResult<List<Object>> uniqueValues = dscShapefileService.getUniqueValues(tableName, "mag", "asc");
+        System.out.println("uniqueValues = " + uniqueValues.getData());
+    }
+    @Test
+    void testGetShpAttrInfoFromPG() {
+        String tableName = "global_earthquake_652169cee4b0141dff290904";
+        CommonResult<List<Map<String, Object>>> shpAttrInfoFromPG = dscShapefileService.getShpAttrInfoFromPG(tableName);
+        System.out.println("attrArray = " + shpAttrInfoFromPG.getData());
     }
 }

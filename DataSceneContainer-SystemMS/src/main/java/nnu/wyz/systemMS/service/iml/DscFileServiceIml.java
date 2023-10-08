@@ -21,11 +21,10 @@ import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.server.WebSocketServer;
 import nnu.wyz.systemMS.service.DscFileService;
-import nnu.wyz.systemMS.utils.FilePermission;
-import nnu.wyz.systemMS.utils.MimeTypesUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -151,8 +150,9 @@ public class DscFileServiceIml implements DscFileService {
      * @param deleteFileDTO
      * @return
      */
-    @MongoTransactional
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
     @Override
+//    @MongoTransactional
     public CommonResult<String> delete(DeleteFileDTO deleteFileDTO) {
         String fileId = deleteFileDTO.getFileId();
         String userId = deleteFileDTO.getUserId();

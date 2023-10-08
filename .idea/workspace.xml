@@ -11,7 +11,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="modify commit">
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-FileMS/src/main/java/nnu/wyz/fileMS/controller/DscShapefileController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-FileMS/src/main/java/nnu/wyz/fileMS/service/DscShapefileService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-FileMS/src/main/java/nnu/wyz/fileMS/service/iml/DscShapefileServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-FileMS/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-FileMS/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-FileMS/src/main/java/nnu/wyz/fileMS/dao/ShpProcessDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-FileMS/src/main/java/nnu/wyz/fileMS/dao/ShpProcessDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-FileMS/src/test/java/nnu/wyz/fileMS/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-FileMS/src/test/java/nnu/wyz/fileMS/test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/application-prod.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Gateway/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/DscSystemMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/DscSystemMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +108,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;6459ab1fa8b5414f17cd5f0d41cb7060&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;eb3c57350d4716f94f063a02d8eca20e&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -138,60 +152,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.test.testLikeQuery">
-    <configuration name="CodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.CodeGenerator" />
-      <module name="DataSceneContainer-Auth-Central" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.utils.Main" />
-      <module name="DataSceneContainer-Gateway" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Solution" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.Solution" />
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.test" />
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Docker.dsc-gateway">
     <configuration name="AuthTestMain | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/AuthTestMain.http" requestIdentifier="#1">
       <method v="2" />
     </configuration>
@@ -578,6 +539,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test.testGetFields" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-FileMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
+      <option name="METHOD_NAME" value="testGetFields" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test.testGetFile" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-SystemMS" />
       <extension name="coverage">
@@ -589,6 +566,38 @@
       <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
       <option name="METHOD_NAME" value="testGetFile" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testGetShpAttrInfoFromPG" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-FileMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
+      <option name="METHOD_NAME" value="testGetShpAttrInfoFromPG" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testGetUniqueValue" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-FileMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
+      <option name="METHOD_NAME" value="testGetUniqueValue" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -903,16 +912,41 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="dsc认证中心" type="docker-deploy" factoryName="docker-image" temporary="true" server-name="Docker">
+    <configuration name="dsc-filems" type="docker-deploy" factoryName="docker-image" temporary="true" server-name="Docker">
       <deployment type="docker-image">
         <settings>
-          <option name="imageTag" value="dsc-auth-central:latest" />
-          <option name="containerName" value="dsc-auth-central" />
+          <option name="imageTag" value="dsc-filems:latest" />
+          <option name="containerName" value="dsc-filems" />
           <option name="portBindings">
             <list>
               <DockerPortBindingImpl>
-                <option name="containerPort" value="9400" />
-                <option name="hostPort" value="9400" />
+                <option name="containerPort" value="8765" />
+                <option name="hostPort" value="8765" />
+              </DockerPortBindingImpl>
+            </list>
+          </option>
+          <option name="volumeBindings">
+            <list>
+              <DockerVolumeBindingImpl>
+                <option name="containerPath" value="/home/minio-data" />
+                <option name="hostPath" value="/home/yzwang/dsc-minio/data" />
+              </DockerVolumeBindingImpl>
+            </list>
+          </option>
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="dsc-gateway" type="docker-deploy" factoryName="docker-image" temporary="true" server-name="Docker">
+      <deployment type="docker-image">
+        <settings>
+          <option name="imageTag" value="dsc-gateway:latest" />
+          <option name="containerName" value="dsc-gateway" />
+          <option name="portBindings">
+            <list>
+              <DockerPortBindingImpl>
+                <option name="containerPort" value="9527" />
+                <option name="hostPort" value="9527" />
               </DockerPortBindingImpl>
             </list>
           </option>
@@ -921,16 +955,16 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Application.CodeGenerator" />
-      <item itemvalue="Application.Main" />
-      <item itemvalue="Application.Solution" />
-      <item itemvalue="Application.test" />
-      <item itemvalue="Docker.dsc认证中心" />
+      <item itemvalue="Docker.dsc-gateway" />
+      <item itemvalue="Docker.dsc-filems" />
       <item itemvalue="Docker.DataSceneContainer-FileMS: Compose 部署" />
       <item itemvalue="Docker.Docker 镜像" />
       <item itemvalue="Docker.Docker 镜像1" />
       <item itemvalue="Docker.Docker 镜像3" />
       <item itemvalue="HTTP Request.AuthTestMain | #1" />
+      <item itemvalue="JUnit.test.testGetFields" />
+      <item itemvalue="JUnit.test.testGetShpAttrInfoFromPG" />
+      <item itemvalue="JUnit.test.testGetUniqueValue" />
       <item itemvalue="JUnit.test.readCpgFile" />
       <item itemvalue="JUnit.test.test222" />
       <item itemvalue="JUnit.test.testBeanUtil" />
@@ -974,10 +1008,17 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.dsc-gateway" />
+        <item itemvalue="JUnit.test.testGetShpAttrInfoFromPG" />
+        <item itemvalue="JUnit.test.testGetUniqueValue" />
+        <item itemvalue="JUnit.test.testGetFields" />
+        <item itemvalue="Spring Boot.DscGatewayMain" />
+        <item itemvalue="Spring Boot.DscSystemMain" />
+        <item itemvalue="Docker.dsc-filems" />
+        <item itemvalue="Docker.Docker 镜像3" />
+        <item itemvalue="Docker.dsc-filems" />
         <item itemvalue="Spring Boot.UserMSMain" />
         <item itemvalue="Spring Boot.ResourceMSMain" />
-        <item itemvalue="Spring Boot.DscSystemMain" />
-        <item itemvalue="Spring Boot.DscGatewayMain" />
         <item itemvalue="Spring Boot.DscAuthMain" />
         <item itemvalue="Spring Boot.DscFileMain" />
         <item itemvalue="JUnit.testMapper.test2" />
@@ -1015,15 +1056,8 @@
         <item itemvalue="JUnit.test.test222" />
         <item itemvalue="JUnit.test.readCpgFile" />
         <item itemvalue="HTTP Request.AuthTestMain | #1" />
-        <item itemvalue="Docker.Docker 镜像3" />
         <item itemvalue="Docker.Docker 镜像1" />
         <item itemvalue="Docker.Docker 镜像" />
-        <item itemvalue="Docker.DataSceneContainer-FileMS: Compose 部署" />
-        <item itemvalue="Docker.dsc认证中心" />
-        <item itemvalue="Application.test" />
-        <item itemvalue="Application.Solution" />
-        <item itemvalue="Application.Main" />
-        <item itemvalue="Application.CodeGenerator" />
       </list>
     </recent_temporary>
   </component>
@@ -1078,7 +1112,9 @@
       <workItem from="1695716375987" duration="258000" />
       <workItem from="1695716641735" duration="266000" />
       <workItem from="1695716933309" duration="677000" />
-      <workItem from="1695717619755" duration="19046000" />
+      <workItem from="1695717619755" duration="28923000" />
+      <workItem from="1696658730840" duration="17220000" />
+      <workItem from="1696728458186" duration="9620000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -1154,7 +1190,14 @@
       <option name="project" value="LOCAL" />
       <updated>1695803865987</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="modify commit">
+      <created>1695804298510</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1695804298510</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1194,10 +1237,60 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
           <line>160</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java</url>
+          <line>112</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java</url>
+          <line>139</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java</url>
+          <line>148</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java</url>
+          <line>119</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java</url>
+          <line>128</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java</url>
+          <line>162</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
+          <line>180</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
+          <line>165</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java</url>
+          <line>142</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java</url>
+          <line>185</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

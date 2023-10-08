@@ -14,6 +14,8 @@ import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -106,27 +108,29 @@ public class DscCatalogServiceIml implements DscCatalogService {
      * @param catalogId
      * @return
      */
-    @MongoTransactional
     @Override
     public CommonResult<String> delete(String catalogId) {
         Boolean isDelete = this.deleteByRecursion(catalogId);
         return isDelete ? CommonResult.success("删除成功！") : CommonResult.failed("删除失败！");
     }
-
-    @MongoTransactional
+//    @MongoTransactional
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
     public Boolean deleteByRecursion(String catalogId) {
         //递归出口：当前目录为空目录
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
         DscCatalog dscCatalog = byId.get();
         if (dscCatalog.getTotal() == 0) {
-            this.deleteEmptyCatalog(catalogId, dscCatalog.getParent());
+             this.deleteEmptyCatalog(catalogId, dscCatalog.getParent());
             return true;
         }
         //遍历孩子节点，循环删除
         List<CatalogChildrenDTO> children = dscCatalog.getChildren();
         for (CatalogChildrenDTO catalogChildrenDTO : children) {
             if (catalogChildrenDTO.getType().equals("folder")) {
-                deleteByRecursion(catalogChildrenDTO.getId());
+                Boolean isFolderDelete = deleteByRecursion(catalogChildrenDTO.getId());
+                if(!isFolderDelete) {
+                   throw new RuntimeException("删除失败，未知的错误！");
+                }
             } else {
                 DeleteFileDTO deleteFileDTO = new DeleteFileDTO();
                 deleteFileDTO.setUserId(dscCatalog.getUserId())
@@ -139,7 +143,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
         this.deleteEmptyCatalog(catalogId, dscCatalog.getParent());
         return true;
     }
-
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
+//    @MongoTransactional
     public void deleteEmptyCatalog(String catalogId, String parentCatalogId) {
         Optional<DscCatalog> byId = dscCatalogDAO.findById(parentCatalogId);
         DscCatalog parentCatalog = byId.get();
