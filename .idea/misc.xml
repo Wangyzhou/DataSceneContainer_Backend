@@ -10,6 +10,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/DataSceneContainer-FileMS/pom.xml" />
         <option value="$PROJECT_DIR$/DataSceneContainer-ResourceMS/pom.xml" />
         <option value="$PROJECT_DIR$/DataSceneContainer-UserMS/pom.xml" />
       </set>

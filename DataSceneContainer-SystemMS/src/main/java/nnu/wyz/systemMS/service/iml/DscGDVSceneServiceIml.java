@@ -55,7 +55,6 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
     private DscGDVSceneConfigDAO dscGDVSceneConfigDAO;
     private final static String SCENE_TYPE = "GDV";
     @Override
-    @MongoTransactional
     public CommonResult<String> saveGDVScene(SaveGDVSceneDTO saveGDVSceneDTO) {
         String userId = saveGDVSceneDTO.getUserId();
         String sceneId = Objects.equals(saveGDVSceneDTO.getSceneId(), "") ? IdUtil.randomUUID() : saveGDVSceneDTO.getSceneId();

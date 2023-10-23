@@ -1,13 +1,17 @@
 server:
   port: 9400
+  servlet:
+    context-path: /dsc-auth-central
 spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 172.21.212.79:8848
-        ip: 172.21.213.86
-      config:
-        file-extension: yml #指定yaml格式的配置
-        server-addr: 172.21.212.79:8848
+#  cloud:
+#    nacos:
+#      discovery:
+##        server-addr: 172.21.212.79:8848
+##        ip: 172.21.213.86
+#        server-addr: 119.45.181.127:8848
+#        ip: 119.45.181.127
+#      config:
+#        file-extension: yml
+#        server-addr: 119.45.181.127:8848
   application:
     name: dsc-auth-central

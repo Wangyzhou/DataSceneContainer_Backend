@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
-import nnu.wyz.systemMS.config.MongoTransactional;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
@@ -14,8 +13,6 @@ import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -33,7 +30,6 @@ public class DscCatalogServiceIml implements DscCatalogService {
     @Autowired
     private DscFileService dscFileService;
 
-    @MongoTransactional
     @Override
     public CommonResult<String> create(CreateCatalogDTO createCatalogDTO) {
         String parentCatalogId = createCatalogDTO.getParentCatalogId();
@@ -77,7 +73,6 @@ public class DscCatalogServiceIml implements DscCatalogService {
     }
 
     @Override
-    @MongoTransactional
     public void createRootCatalog(String userId) {
         DscCatalog dscCatalog = new DscCatalog();
         String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");

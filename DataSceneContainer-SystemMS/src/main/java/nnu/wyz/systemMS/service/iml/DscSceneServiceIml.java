@@ -64,7 +64,6 @@ public class DscSceneServiceIml implements DscSceneService {
     }
 
     @Override
-    @MongoTransactional
     public CommonResult<String> deleteScene(String userId, String sceneId) {
         DscUserScene byUserIdAndSceneId = dscUserSceneDAO.findByUserIdAndSceneId(userId, sceneId);
         if (Objects.isNull(byUserIdAndSceneId)) {

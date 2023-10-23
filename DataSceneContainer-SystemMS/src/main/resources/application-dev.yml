@@ -1,0 +1,50 @@
+spring:
+  web:
+    resources:
+      static-locations: classpath:/resources/, classpath:/static/
+  servlet:
+    multipart:
+      max-file-size: 2048MB     #单文件不超过2G
+      max-request-size: 5120MB    #所有文件不超过5G
+  data:
+    mongodb:
+      uri: mongodb://172.21.213.250:27017/dsc
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://172.21.213.86:25432/dsc_postdb
+    username: postgres
+    password: wyz980903
+  mail:
+    host: smtp.qq.com
+    username: 2740962735@qq.com
+    from: 2740962735@qq.com
+    password: ozokzadmaxwedccd
+  redis:                          #redis存jwt黑名单
+    host: 172.21.212.79
+    port: 6379
+    password: ninja980903
+    jedis:
+      pool:
+        max-active: 200
+        max-idle: 10
+        max-wait: -1
+        min-idle: 0
+    timeout: 1000
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    static-path-pattern: /static/**
+
+gateway_addr: http://172.21.213.250:9527   # gateway
+user_active_url: /dsc-systemMS/dsc-user/active/{0}
+fileSavePath: D:/Test/
+unzipTempPath: D:/Test/temp/{0}
+shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h 172.21.213.86 -p 25432 -U postgres -d dsc_postdb
+pg_password: wyz980903
+
+minio:
+  endpoint: http://172.21.213.86:9000
+  accessKey: yzwang
+  secretKey: wyz980903
+  bucketName: dsc-file
+  sceneThumbnailsBucket: scene-thumbnails

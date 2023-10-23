@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import nnu.wyz.domain.CommonResult;
-import nnu.wyz.systemMS.model.dto.DeleteFileDTO;
-import nnu.wyz.systemMS.model.dto.FileShareDTO;
-import nnu.wyz.systemMS.model.dto.FileShareImportDTO;
-import nnu.wyz.systemMS.model.dto.UploadFileDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.service.DscFileService;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,9 +46,9 @@ public class DscFileController {
     }
 
     @ApiOperation(value = "获取文件详细信息")
-    @GetMapping("/getFileInfo/{userId}/{fileId}")
-    public CommonResult<JSONObject> getFileInfo(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId) {
-        return dscFileService.getFileInfo(userId, fileId);
+    @GetMapping("/getFileInfo/{fileId}")
+    public CommonResult<JSONObject> getFileInfo(@PathVariable("fileId") String fileId) {
+        return dscFileService.getFileInfo(fileId);
     }
 
     @ApiOperation(value = "获取文件预览url")
@@ -66,9 +63,12 @@ public class DscFileController {
         return dscFileService.shareFile(fileShareDTO);
     }
 
-    @ApiOperation(value = "导入分享资源")
-    @PostMapping(value = "/importResource")
-    public CommonResult<String> importResource(@RequestBody FileShareImportDTO fileShareImportDTO) {
-        return dscFileService.importResource(fileShareImportDTO);
+
+    @ApiOperation(value = "zip解压")
+    @PostMapping(value = "/unzip")
+    public CommonResult<String> unzip(@RequestBody UnzipFileDTO unzipFileDTO) {
+        return dscFileService.unzip(unzipFileDTO);
     }
+
+
 }

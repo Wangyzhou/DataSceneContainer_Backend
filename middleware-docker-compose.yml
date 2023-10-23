@@ -1,0 +1,23 @@
+version: '1.0.0'
+services:
+  dsc-minio:
+    image: minio/minio
+    ports:
+      - 9000:9000
+      - 9090:9090
+    environment:
+      MINIO_ACCESS_KEY: yzwang
+      MINIO_SECRET_KEY: wyz980903
+    volumes:
+      - /home/dsc-minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+      - /home/dsc-minio/config:/root/.minio/     #映射配置目录
+    command: server --console-address ':9090' /data  #指定容器中的目录 /data
+    privileged: true
+    restart: always
+  dsc-fileview:
+    image: keking/kkfileview
+    container_name: dsc-fileview
+    restart: always
+    ports:
+      - 8012:8012
+

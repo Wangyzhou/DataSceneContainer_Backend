@@ -1,0 +1,44 @@
+deployIp: 172.21.213.86
+#deployIp: 119.45.181.127
+
+spring:
+  redis:
+    host: ${deployIp}
+    port: 6379
+    password: ninja980903
+    jedis:
+      pool:
+        max-active: 200
+        max-idle: 10
+        max-wait: -1
+        min-idle: 0
+    timeout: 1000
+  cloud:
+    gateway:
+      routes:
+        - id: dsc-systemMS
+          uri: http://${deployIp}:7890/
+          predicates:
+            - Path=/dsc-systemMS/**
+        - id: dsc-auth-central
+          uri: http://${deployIp}:9400/
+          predicates:
+            - Path=/dsc-auth-central/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://${deployIp}:9400/dsc-auth-central/rsa/publicKey'
+secure:
+  ignore:
+    urls: #配置白名单路径，更新白名单必须重启网关服务，否则不生效！
+      - "/actuator/**"
+      - "/dsc-auth-central/oauth/token"
+      - "/dsc-auth-central/oauth/check_token"
+      - "/dsc-systemMS/dsc-user/register"
+      - "/dsc-systemMS/dsc-user/login"
+      - "/dsc-systemMS/dsc-user/resetPassword/**"
+      - "/dsc-systemMS/static/**"
+      - "/dsc-systemMS/dsc-user/active/**"
+      - "/dsc-systemMS/dsc-vector-service/getMvt/**"
+      # - "/dsc-systemMS/dsc-file-uploader/**"

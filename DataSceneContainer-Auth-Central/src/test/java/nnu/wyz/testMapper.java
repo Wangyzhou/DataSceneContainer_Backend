@@ -98,21 +98,19 @@ public class testMapper {
         System.out.println(jwtEncoded);
     }
 
-    @Value("${jwt.publicKey}")
-    String publicKey;
 
-    @Test
-    void parseJWT() {
-//        String jwt = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiYmVpamluZyIsImNvbXBhbnkiOiJoZWltYSJ9.JpvJgbmmMnH6WnujaPNAdhON9_cL4zDSXbe_esIHxPb3OniJK969En9r0SCaLLb_vZ1xTLHKDUx8bEhCG2SCGKv3PLCSF_RfFtUiBr4Qo3txaJjdX0O4ffgsvpCwkAqfuFoenLxW9L0wuz1O9fObw9I75AEddoyae5Hj9G_g99fGjAFiQMvIqIHVctLums0MKAWXSxHGp39U_qcqaLohx-0wOXM9jdZB2j68UwDcJcIzVOQrKmzCYKHX__6NYUIRF2L5_fzBzFqrTLpnslRmqmpbdAbrKjkJXJFcfyBUs3dzEQnhyelBrMbPpGz7zPaYCuZNIum0TwoVi8M49sk0HQ";
-        String jwt = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTIyNjE0MzUsInVzZXJfbmFtZSI6IntcImVtYWlsXCI6XCJuaW5qYUAxNjMuY29tXCIsXCJpZFwiOlwiYTI3MDQyNmUtZmM5MC00ZTE5LTkzMmEtODM5ZDUyNzRlOWU5XCIsXCJpbnN0aXR1dGlvblwiOlwiTkpOVVwiLFwicGFzc3dvcmRcIjpcIiQyYSQxMCR1aGFCemlKSW80TGJzZi5zOTRhdndPdHdCbjdIai9NSlZYUWN1SWZWYmZUSjBBbTBGV0pzeVwiLFwidXNlck5hbWVcIjpcIm5pbmphXCJ9IiwiYXV0aG9yaXRpZXMiOlsicDEiXSwianRpIjoiMGJhNWZhYWEtN2E2YS00NDgwLTg1MGMtYmYzMGRkN2E1YjI3IiwiY2xpZW50X2lkIjoidGVzdDEiLCJzY29wZSI6WyJ3cml0ZSJdfQ.RrK-5YQtq1d3qV9vhBH2LJxNUUpom64PZ5c2j-Tl7AThCcW2z1Lqeu8Vs_-AF6FTwxEL96KicEsxcrHvmcX5pUPYO4N3exMLMnz2MDfN-esVFMjcswoNv4A7nle0vnppbF0h6IVk_a2JUgyRra47hsCAGrNjeagONJlHSVQrcAB7HKYj1pWRxAEcu69b0u3dS8x7Fb6ttG75Ldy59ITKRTu6DTp5Sa-HYGIA86JbJNMHipXQunMZxQi-c0zKU0Ri1Cx-N89FeqhPWe3lTKPovrHy0AKV1mz0zn61Vp9A2USjShGT3M_LqOvpPOyZ8zL29uehdbbpIdcn97KeTZbLdQ";
-//        String publicKey = "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiluRji4NLXRxoyQsYH2Y1jGSjx9U22rX6sVe7Kvsw2Og7Ndhbwu/BbGW34xqoB5LL+99fT70LT14TCvRxVn4MnUyguH0WMlMklGOosGxjkRaXxovJaDW8tm2SN05C3bXn+/SBXsD5LIqhSjdbJxA6aEUXu8qFqQjhe2vMzwup/0XHxtyfHTfY3azEaFTzlfem88acHFkr5HtiJrXj0SdxxNehf0ylr+vLYQUjnww8RtJ7voTZIrtQqbXJIlcJ1puZGJOE6AuHVZtpcZoeJYFjEHR9CucFgjtkEUiyilKee3k2qPxaTnBsPCXon1jWcKoP9MFTVsvG5B8ipFQRRxyHwIDAQAB-----END PUBLIC KEY-----";
-        //解析和验签jwt，获取令牌
-        Jwt token = JwtHelper.decodeAndVerify(jwt, new RsaVerifier(publicKey));
-        //解析令牌，获取令牌中的载荷
-        String claims = token.getClaims();
-        System.out.println(claims);//打印结果为{"address":"beijing","company":"heima"}
-
-    }
+//    @Test
+//    void parseJWT() {
+////        String jwt = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiYmVpamluZyIsImNvbXBhbnkiOiJoZWltYSJ9.JpvJgbmmMnH6WnujaPNAdhON9_cL4zDSXbe_esIHxPb3OniJK969En9r0SCaLLb_vZ1xTLHKDUx8bEhCG2SCGKv3PLCSF_RfFtUiBr4Qo3txaJjdX0O4ffgsvpCwkAqfuFoenLxW9L0wuz1O9fObw9I75AEddoyae5Hj9G_g99fGjAFiQMvIqIHVctLums0MKAWXSxHGp39U_qcqaLohx-0wOXM9jdZB2j68UwDcJcIzVOQrKmzCYKHX__6NYUIRF2L5_fzBzFqrTLpnslRmqmpbdAbrKjkJXJFcfyBUs3dzEQnhyelBrMbPpGz7zPaYCuZNIum0TwoVi8M49sk0HQ";
+//        String jwt = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTIyNjE0MzUsInVzZXJfbmFtZSI6IntcImVtYWlsXCI6XCJuaW5qYUAxNjMuY29tXCIsXCJpZFwiOlwiYTI3MDQyNmUtZmM5MC00ZTE5LTkzMmEtODM5ZDUyNzRlOWU5XCIsXCJpbnN0aXR1dGlvblwiOlwiTkpOVVwiLFwicGFzc3dvcmRcIjpcIiQyYSQxMCR1aGFCemlKSW80TGJzZi5zOTRhdndPdHdCbjdIai9NSlZYUWN1SWZWYmZUSjBBbTBGV0pzeVwiLFwidXNlck5hbWVcIjpcIm5pbmphXCJ9IiwiYXV0aG9yaXRpZXMiOlsicDEiXSwianRpIjoiMGJhNWZhYWEtN2E2YS00NDgwLTg1MGMtYmYzMGRkN2E1YjI3IiwiY2xpZW50X2lkIjoidGVzdDEiLCJzY29wZSI6WyJ3cml0ZSJdfQ.RrK-5YQtq1d3qV9vhBH2LJxNUUpom64PZ5c2j-Tl7AThCcW2z1Lqeu8Vs_-AF6FTwxEL96KicEsxcrHvmcX5pUPYO4N3exMLMnz2MDfN-esVFMjcswoNv4A7nle0vnppbF0h6IVk_a2JUgyRra47hsCAGrNjeagONJlHSVQrcAB7HKYj1pWRxAEcu69b0u3dS8x7Fb6ttG75Ldy59ITKRTu6DTp5Sa-HYGIA86JbJNMHipXQunMZxQi-c0zKU0Ri1Cx-N89FeqhPWe3lTKPovrHy0AKV1mz0zn61Vp9A2USjShGT3M_LqOvpPOyZ8zL29uehdbbpIdcn97KeTZbLdQ";
+////        String publicKey = "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiluRji4NLXRxoyQsYH2Y1jGSjx9U22rX6sVe7Kvsw2Og7Ndhbwu/BbGW34xqoB5LL+99fT70LT14TCvRxVn4MnUyguH0WMlMklGOosGxjkRaXxovJaDW8tm2SN05C3bXn+/SBXsD5LIqhSjdbJxA6aEUXu8qFqQjhe2vMzwup/0XHxtyfHTfY3azEaFTzlfem88acHFkr5HtiJrXj0SdxxNehf0ylr+vLYQUjnww8RtJ7voTZIrtQqbXJIlcJ1puZGJOE6AuHVZtpcZoeJYFjEHR9CucFgjtkEUiyilKee3k2qPxaTnBsPCXon1jWcKoP9MFTVsvG5B8ipFQRRxyHwIDAQAB-----END PUBLIC KEY-----";
+//        //解析和验签jwt，获取令牌
+//        Jwt token = JwtHelper.decodeAndVerify(jwt, new RsaVerifier(publicKey));
+//        //解析令牌，获取令牌中的载荷
+//        String claims = token.getClaims();
+//        System.out.println(claims);//打印结果为{"address":"beijing","company":"heima"}
+//
+//    }
     @Test
     void Test111() {
         DscUser dscUser = new DscUser();

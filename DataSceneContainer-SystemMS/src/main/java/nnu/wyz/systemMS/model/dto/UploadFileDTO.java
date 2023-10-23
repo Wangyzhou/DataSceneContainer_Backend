@@ -3,6 +3,7 @@ package nnu.wyz.systemMS.model.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @description:
@@ -10,6 +11,7 @@ import lombok.Data;
  * @time: 2023/8/29 16:22
  */
 @Data
+@Accessors(chain = true)
 @ApiModel(value = "文件上传DTO")
 public class UploadFileDTO {
 

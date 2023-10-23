@@ -1,13 +1,18 @@
 server:
   port: 7890
+  servlet:
+    context-path: /dsc-systemMS
 spring:
   cloud:
     nacos:
       discovery:
+#        server-addr: 119.45.181.127:8848   # cloud
         server-addr: 172.21.212.79:8848
-        ip: 172.21.213.250
-      config:
-        server-addr: 172.21.212.79:8848
-        file-extension: yml
+        ip: 172.21.213.250       #wyz
+#        ip: 172.21.212.39       #mfz
+#        ip: 119.45.181.127      #cloud
+#      config:
+#        server-addr: 172.21.212.79:8848
+#        file-extension: yml
   application:
     name: dsc-systemMS

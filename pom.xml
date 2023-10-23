@@ -13,7 +13,6 @@
         <module>DataSceneContainer-Gateway</module>
         <module>DataSceneContainer-Auth-Central</module>
         <module>DataSceneContainer-SystemMS</module>
-        <module>DataSceneContainer-FileMS</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -66,7 +65,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.47</version>
+                <version>1.2.83</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
             <dependency>

@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+#      host: 119.45.181.127   # 腾讯云
+      host: 172.21.213.86   # opengms组内服务器
+      port: 27017
+      authentication-database: admin
+      database: dsc
+      username: yzwang
+      password: wyz980903

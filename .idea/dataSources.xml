@@ -8,11 +8,11 @@
       <jdbc-url>jdbc:mysql://172.21.212.79:3306/scene_container_db?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="redis0@172.21.212.79" uuid="85b7ff20-85a9-47fc-b77e-2835d0a58fa9">
+    <data-source source="LOCAL" name="redis0@172.21.213.86" uuid="85b7ff20-85a9-47fc-b77e-2835d0a58fa9">
       <driver-ref>redis</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>jdbc.RedisDriver</jdbc-driver>
-      <jdbc-url>jdbc:redis://172.21.212.79:6379/0</jdbc-url>
+      <jdbc-url>jdbc:redis://172.21.213.86:6379/0</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="dsc@localhost" uuid="76165c9b-c1ce-4a67-b521-dbacf82cb195">
@@ -20,6 +20,13 @@
       <synchronize>true</synchronize>
       <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
       <jdbc-url>mongodb://localhost:27017/dsc</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="0@119.45.181.127" uuid="a7ab6516-54d0-418d-8426-1737a76ee17c">
+      <driver-ref>redis</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>jdbc.RedisDriver</jdbc-driver>
+      <jdbc-url>jdbc:redis://119.45.181.127:6379/0</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

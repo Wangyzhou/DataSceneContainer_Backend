@@ -6,17 +6,29 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.minio.MinioClient;
+import io.minio.RemoveObjectsArgs;
+import io.minio.Result;
+import io.minio.errors.*;
+import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteObject;
+import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
+import nnu.wyz.systemMS.dao.DscFileDAO;
 import nnu.wyz.systemMS.dao.DscMessageDAO;
+import nnu.wyz.systemMS.dao.SysUploadTaskDAO;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
-import nnu.wyz.systemMS.model.entity.DscCatalog;
-import nnu.wyz.systemMS.model.entity.DscGDVSceneConfig;
-import nnu.wyz.systemMS.model.entity.DscUser;
-import nnu.wyz.systemMS.model.entity.Message;
+import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.server.WebSocketServer;
+import nnu.wyz.systemMS.service.DscFileService;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
+import nnu.wyz.systemMS.service.DscGeoJSONService;
+import nnu.wyz.systemMS.utils.GeoJSONUtil;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import nnu.wyz.systemMS.utils.RedisCache;
 import org.junit.jupiter.api.Test;
@@ -30,10 +42,11 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -45,6 +58,7 @@ public class test {
 
     @Autowired
     private AmazonS3 amazonS3;
+
     @Autowired
     private MinioConfig minioConfig;
 
@@ -52,6 +66,9 @@ public class test {
     private DscCatalogDAO dscCatalogDAO;
     @Autowired
     private DscMessageDAO dscMessageDAO;
+
+    @Autowired
+    private DscFileDAO dscFileDAO;
     @Autowired
     private DscGDVSceneService dscGDVSceneService;
     @Autowired
@@ -183,8 +200,10 @@ public class test {
         List<Message> allMsg = mongoTemplate.find(query, Message.class, "message");
         System.out.println("allMsg = " + allMsg);
     }
+
     @Autowired
     private WebSocketServer webSocketServer;
+
     @Test
     void testWebSocket() {
         Message message = new Message();
@@ -209,5 +228,132 @@ public class test {
         });
         System.out.println("returnUsers = " + returnUsers);
         System.out.println("dscUser = " + dscUser);
+    }
+
+    @Autowired
+    private SysUploadTaskDAO sysUploadTaskDAO;
+
+    @Test
+    void testDeleteObjects() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        MinioClient minioClient = MinioClient.builder()
+                .endpoint(minioConfig.getEndpoint())
+                .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
+                .build();
+        List<DscFileInfo> allByOwnerCount = dscFileDAO.findAllByOwnerCount(0L);
+        dscFileDAO.deleteAll(allByOwnerCount);
+        List<SysUploadTask> collect = allByOwnerCount.stream().map(dscFileInfo -> sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId())).filter(Objects::nonNull).collect(Collectors.toList());
+        sysUploadTaskDAO.deleteAll(collect);
+        List<DeleteObject> objects = allByOwnerCount.stream().map(dscFileInfo -> new DeleteObject(dscFileInfo.getObjectKey())).collect(Collectors.toList());
+        Iterable<Result<DeleteError>> results =
+                minioClient.removeObjects(
+                        RemoveObjectsArgs.builder().bucket(minioConfig.getBucketName()).objects(objects).build());
+        for (Result<DeleteError> result : results) {
+            DeleteError error = result.get();
+            System.out.println(
+                    "Error in deleting object " + error.objectName() + "; " + error.message());
+        }
+        System.out.println("objects = " + objects);
+    }
+
+    @Test
+    void test1431() {
+        List<SysUploadTask> sysUploadTaskList = sysUploadTaskDAO.findAllByUploader("64f989e54deb825d3258d99f");
+        sysUploadTaskDAO.deleteAll(sysUploadTaskList);
+    }
+
+    @Test
+    void test14312() {
+        List<DscFileInfo> dscFileInfoList = dscFileDAO.findAllByCreatedUser("64f989e54deb825d3258d99f");
+        dscFileDAO.deleteAll(dscFileInfoList);
+    }
+
+    @Test
+    void testParseGeoJSON() throws IOException {
+//        jsonParser.parseGeoJSON();
+        String fullPath = "D:\\global_earthquake.geojson";
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> rootJSON = objectMapper.readValue(new File(fullPath), Map.class);
+        if (!rootJSON.containsKey("features") || !rootJSON.containsKey("type") || !"FeatureCollection".equals(rootJSON.get("type"))) {
+            System.out.println("不支持的geojson结构");
+        }
+        ArrayList<Map<String, Object>> features = (ArrayList<Map<String, Object>>) rootJSON.get("features");
+        int featureCount = features.size();
+        System.out.println("featureCount = " + featureCount);
+        Map<String, Object> geometry = (Map<String, Object>) features.get(0).get("geometry");
+        System.out.println("geometry = " + geometry);
+        String type = (String) geometry.get("type");
+        System.out.println("type = " + type);
+        List<Map<String, Object>> properties = features.stream().map(feature -> (Map<String, Object>) feature.get("properties")).collect(Collectors.toList());
+        System.out.println("properties = " + properties);
+        List<List<Object>> coordinatesList = features.stream().map(feature -> (List<Object>) (((Map<String, Object>) feature.get("geometry")).get("coordinates"))).collect(Collectors.toList());
+
+
+    }
+
+    List<Double> getBBOX(List<List<Double>> arr) {
+        double minLng = 0.0, maxLng = 0.0, minLat = 0.0, maxLat = 0.0;
+        for (List<Double> lngLat : arr) {
+            double lng = lngLat.get(0);
+            double lat = lngLat.get(1);
+            minLng = Math.min(minLng, lng);
+            maxLng = Math.max(maxLng, lng);
+            minLat = Math.min(minLat, lat);
+            maxLat = Math.max(maxLat, lat);
+        }
+        ArrayList<Double> bbox = new ArrayList<>();
+        bbox.add(minLng);
+        bbox.add(minLat);
+        bbox.add(maxLng);
+        bbox.add(maxLat);
+        return bbox;
+    }
+
+    List<Double> getBBOXFromCoordinates(List<List<Object>> coordinatesList, String type) {
+        double minLng = 0.0, maxLng = 0.0, minLat = 0.0, maxLat = 0.0;
+        switch (type) {
+            case "Point":
+
+                break;
+            case "MultiPoint":
+
+                break;
+            case "LineString":
+
+                break;
+            case "MultiLineString":
+
+                break;
+            case "Polygon":
+
+                break;
+            case "MultiPolygon":
+                break;
+        }
+
+        return null;
+    }
+
+    @Test
+    void testGeoJSONUtil() {
+        GeoJSONUtil.initUtil("D:\\polygon.geojson");
+        String geoJSONType = GeoJSONUtil.getGeoJSONType();
+        List<Double> geoJSONBBOX = GeoJSONUtil.getGeoJSONBBOX(geoJSONType);
+        System.out.println("bbox = " + geoJSONBBOX);
+    }
+
+    @Autowired
+    private DscGeoJSONService dscGeoJSONService;
+
+    @Test
+    void testGetGeoJSON() {
+        GeoJSONUtil.initUtil("D:\\global_earthquake.geojson");
+        List uniqueValues = GeoJSONUtil.getUniqueValues("date", "asc");
+        uniqueValues.forEach(System.out::println);
+        List<String> fields = GeoJSONUtil.getFields();
+        fields.forEach(System.out::println);
+        int featureCount = GeoJSONUtil.getFeatureCount();
+        System.out.println("featureCount = " + featureCount);
+        List<Map<String, Object>> attrs = GeoJSONUtil.getAttrs();
+        attrs.forEach(System.out::println);
     }
 }

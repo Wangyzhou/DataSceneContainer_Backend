@@ -1,0 +1,59 @@
+version: '1.0.0'
+services:
+  mongo:
+    image: mongo:4.4.17
+    container_name: dsc-mongo
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: yzwang
+      MONGO_INITDB_ROOT_PASSWORD: wyz980903
+    volumes:
+      - /home/dsc-mongo/data:/data/db
+  mongo-express:
+    image: mongo-express
+    container_name: dsc-mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_OPTIONS_EDITORTHEME: 3024-night
+      ME_CONFIG_BASICAUTH_USERNAME: yzwang
+      ME_CONFIG_BASICAUTH_PASSWORD: wyz980903
+      ME_CONFIG_MONGODB_URL: mongodb://yzwang:wyz980903@mongo:27017/
+    depends_on:
+      - mongo
+  postgres:
+    image: mdillon/postgis
+    container_name: dsc-postdb
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_DB: dsc_postdb
+      POSTGRES_PASSWORD: wyz980903
+    volumes:
+      - /home/dsc-postdb/data:/var/lib/postgresql/data
+  pgadmin:
+    container_name: dsc-pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: wyz980903@163.com
+      PGADMIN_DEFAULT_PASSWORD: wyz980903
+    ports:
+      - "5050:80"
+  redis:
+    image: redis:7.0.2
+    container_name: dsc-redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - /home/dsc-redis/data:/data
+      - /home/dsc-redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - /home/dsc-redis/logs:/logs
+    command: redis-server --requirepass ninja980903
+
+

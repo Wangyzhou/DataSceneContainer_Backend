@@ -5,31 +5,32 @@ import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
+import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
 import nnu.wyz.systemMS.config.MinioConfig;
-import nnu.wyz.systemMS.config.MongoTransactional;
-import nnu.wyz.systemMS.dao.DscCatalogDAO;
-import nnu.wyz.systemMS.dao.DscFileDAO;
-import nnu.wyz.systemMS.dao.DscUserDAO;
-import nnu.wyz.systemMS.dao.SysUploadTaskDAO;
+import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
+import nnu.wyz.systemMS.model.param.InitTaskParam;
 import nnu.wyz.systemMS.server.WebSocketServer;
 import nnu.wyz.systemMS.service.DscFileService;
 
+import nnu.wyz.systemMS.service.SysUploadTaskService;
+import nnu.wyz.systemMS.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -39,6 +40,7 @@ import java.util.*;
  * @time: 2023/8/29 16:24
  */
 @Service
+@Slf4j
 public class DscFileServiceIml implements DscFileService {
 
     @Resource
@@ -57,10 +59,20 @@ public class DscFileServiceIml implements DscFileService {
     private DscUserDAO dscUserDAO;
 
     @Autowired
+    private SysUploadTaskService sysUploadTaskService;
+
+    @Autowired
     private MinioConfig minioConfig;
 
     @Autowired
     private WebSocketServer webSocketServer;
+
+    @Value("${fileSavePath}")
+    private String fileRootPath;
+
+    @Value("${unzipTempPath}")
+    private String unzipTempPath;
+
 
     /**
      * 文件上传，文件可以重复上传，但同一目录下不能有同名文件
@@ -69,7 +81,6 @@ public class DscFileServiceIml implements DscFileService {
      * @param uploadFileDTO
      * @return
      */
-    @MongoTransactional
     @Override
     public CommonResult<String> create(UploadFileDTO uploadFileDTO) {
         String userId = uploadFileDTO.getUserId();
@@ -80,27 +91,42 @@ public class DscFileServiceIml implements DscFileService {
             return CommonResult.failed("上传任务不存在");
         }
         SysUploadTask task = sysUploadTaskDAOById.get();
-        String fileId;
-        if ((fileId = task.getFileId()) != null) {
-            return CommonResult.failed("用户空间存在相同文件资源" + fileId + "，请勿重复上传！");
-        }
+        String fileId = task.getFileId();
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
         if (!byId.isPresent()) {
             return CommonResult.failed("未找到载体目录!");
         }
         DscCatalog dscCatalog = byId.get();
         List<CatalogChildrenDTO> children = dscCatalog.getChildren();
-        //2、判断 当前目录有无同名文件，有则上传失败，删除minio中已上传的文件，删除s3任务信息，返回失败信息
-        for (CatalogChildrenDTO next : children) {
+        for (CatalogChildrenDTO next : children) {  //判断该目录下是否有同名文件或相同文件，即判断上传环境
             //孩子节点不为folder且文件名出现冲突
             if (!next.getType().equals("folder") && next.getName().equals(task.getFileName())) {
-                DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(task.getBucketName(), task.getObjectKey());
-                amazonS3.deleteObject(deleteObjectRequest);
-                sysUploadTaskDAO.delete(task);
-                return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在同名文件，上传失败！");
+                return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在同名文件，请更改文件名或更换文件夹进行上传！");
+            }
+            if (next.getId().equals(fileId)) {
+                return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在相同文件，请更换文件夹进行上传！");
             }
         }
-        //3、利用S3文件接口获取文件信息，入库、父目录更新、完成上传
+        if (fileId != null) {  //说明用户空间存在该文件
+            String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+            Optional<DscFileInfo> dscFileDAOById = dscFileDAO.findById(fileId);
+            DscFileInfo dscFileInfo = dscFileDAOById.get();
+            String fileName = dscFileInfo.getFileName();
+            CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
+            childrenDTO.setId(fileId)
+                    .setName(fileName)
+                    .setType(dscFileInfo.getFileSuffix())
+                    .setSize(dscFileInfo.getSize())
+                    .setUpdatedTime(dateTime);
+            dscCatalog.getChildren().add(childrenDTO);
+            dscCatalog.setTotal(dscCatalog.getTotal() + 1);
+            dscCatalog.setUpdatedTime(dateTime);
+            dscCatalogDAO.save(dscCatalog);
+            dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1);
+            dscFileDAO.save(dscFileInfo);
+            return CommonResult.success("文件：" + fileName + "上传成功！");
+        }
+        //若用户未上传过该文件，则创建该文件记录并更新目录
         GetObjectRequest getObjectRequest = new GetObjectRequest(task.getBucketName(), task.getObjectKey());
         S3Object s3Object = amazonS3.getObject(getObjectRequest);
         ObjectMetadata objectMetadata = s3Object.getObjectMetadata();
@@ -117,7 +143,6 @@ public class DscFileServiceIml implements DscFileService {
                 .setMd5(task.getFileIdentifier())
                 .setFileName(fileName)
                 .setFileSuffix(ext)
-                .setIsEnablePublish(ext.equals("shp"))
                 .setCreatedUser(userId)
                 .setSize(size)
                 .setCreatedTime(dateTime)
@@ -127,8 +152,7 @@ public class DscFileServiceIml implements DscFileService {
                 .setOwnerCount(1L)
                 .setPublishCount(0L)
                 .setBucketName(task.getBucketName())
-                .setObjectKey(task.getObjectKey())
-                .setPerms(31);  //默认文件分享时具有全部的权限，也就是完全分享
+                .setObjectKey(task.getObjectKey());
         dscFileDAO.insert(dscFileInfo);
         CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
         childrenDTO.setId(fileId)
@@ -150,9 +174,7 @@ public class DscFileServiceIml implements DscFileService {
      * @param deleteFileDTO
      * @return
      */
-//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
     @Override
-//    @MongoTransactional
     public CommonResult<String> delete(DeleteFileDTO deleteFileDTO) {
         String fileId = deleteFileDTO.getFileId();
         String userId = deleteFileDTO.getUserId();
@@ -164,9 +186,8 @@ public class DscFileServiceIml implements DscFileService {
         DscFileInfo dscFileInfo = byId.get();
         dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);     //文件拥有者数 - 1
         dscFileDAO.save(dscFileInfo);
-
-        //进行目录孩子节点的摘除
-        DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogByIdAndUserId(catalogId, userId);
+        //父目录孩子节点的摘除，更新父目录
+        DscCatalog dscCatalog = dscCatalogDAO.findById(catalogId).get();
         List<CatalogChildrenDTO> children = dscCatalog.getChildren();
         Iterator<CatalogChildrenDTO> iterator = children.iterator();
         while (iterator.hasNext()) {
@@ -179,16 +200,6 @@ public class DscFileServiceIml implements DscFileService {
         dscCatalog.setTotal(dscCatalog.getTotal() - 1);
         dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MMMM-dddd HH:mm:ss"));
         dscCatalogDAO.save(dscCatalog);
-
-        if (dscFileInfo.getOwnerCount() < 1) {   //未有人拥有该资源，删除任务、删除源文件、删除文件记录
-            SysUploadTask task = sysUploadTaskDAO.findSysUploadTaskByFileId(fileId);
-            DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(minioConfig.getBucketName(), dscFileInfo.getObjectKey());
-            amazonS3.deleteObject(deleteObjectRequest);
-            if (!Objects.isNull(task)) {
-                sysUploadTaskDAO.delete(task);
-            }
-            dscFileDAO.delete(dscFileInfo);
-        }
         return CommonResult.success("删除成功!");
     }
 
@@ -197,7 +208,6 @@ public class DscFileServiceIml implements DscFileService {
      *
      * @param response
      */
-    @MongoTransactional
     @Override
     public void download(String fileId, HttpServletResponse response) {
         Optional<DscFileInfo> byId = dscFileDAO.findById(fileId);
@@ -215,13 +225,15 @@ public class DscFileServiceIml implements DscFileService {
         dscFileDAO.save(dscFileInfo);
         String bucketName = dscFileInfo.getBucketName();
         String objectKey = dscFileInfo.getObjectKey();
-        GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, objectKey);
-        S3Object s3Object = amazonS3.getObject(getObjectRequest);
-        InputStream delegateStream = s3Object.getObjectContent().getDelegateStream();
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(delegateStream);
+        String fullPath = fileRootPath + bucketName + "/" + objectKey;
+//        GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, objectKey);
+//        S3Object s3Object = amazonS3.getObject(getObjectRequest);
+//        InputStream delegateStream = s3Object.getObjectContent().getDelegateStream();
+        BufferedInputStream bufferedInputStream = null;
         OutputStream out;
         try {
-            response.setContentType(s3Object.getObjectMetadata().getContentType());
+            bufferedInputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fullPath)));
+            response.setContentType("application/octet-stream");
             out = response.getOutputStream();
             byte[] buf = new byte[1024 * 8];
             int len;
@@ -242,7 +254,7 @@ public class DscFileServiceIml implements DscFileService {
      * @return
      */
     @Override
-    public CommonResult<JSONObject> getFileInfo(String userId, String fileId) {
+    public CommonResult<JSONObject> getFileInfo(String fileId) {
         Optional<DscFileInfo> byId = dscFileDAO.findById(fileId);
         if (!byId.isPresent()) {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED, "未找到此文件！");
@@ -252,7 +264,6 @@ public class DscFileServiceIml implements DscFileService {
         fileInfoMap.put("id", dscFileInfo.getId());
         fileInfoMap.put("name", dscFileInfo.getFileName());
         fileInfoMap.put("type", dscFileInfo.getFileSuffix());
-        fileInfoMap.put("isEnablePublish", dscFileInfo.getIsEnablePublish());
         fileInfoMap.put("size", dscFileInfo.getSize());
         fileInfoMap.put("previewCount", dscFileInfo.getPreviewCount());
         fileInfoMap.put("downloadCount", dscFileInfo.getDownloadCount());
@@ -303,7 +314,6 @@ public class DscFileServiceIml implements DscFileService {
     }
 
     @Override
-    @MongoTransactional
     public CommonResult<String> importResource(FileShareImportDTO fileShareImportDTO) {
         String fileId = fileShareImportDTO.getFileId();
         String catalogId = fileShareImportDTO.getCatalogId();
@@ -321,7 +331,7 @@ public class DscFileServiceIml implements DscFileService {
                 .setSize(dscFileInfo.getSize())
                 .setUpdatedTime(dscFileInfo.getUpdatedTime());
         Optional<DscCatalog> byId1 = dscCatalogDAO.findById(catalogId);
-        if(!byId1.isPresent()) {
+        if (!byId1.isPresent()) {
             return CommonResult.failed("意料之外的错误！");
         }
         DscCatalog dscCatalog = byId1.get();
@@ -331,4 +341,95 @@ public class DscFileServiceIml implements DscFileService {
         dscCatalogDAO.save(dscCatalog);
         return CommonResult.success("导入个人空间成功！");
     }
+
+    @Override
+    public CommonResult<String> unzip(UnzipFileDTO unzipFileDTO) {
+        String fileId = unzipFileDTO.getFileId();
+        String userId = unzipFileDTO.getUserId();
+        String catalogId = unzipFileDTO.getCatalogId();
+        Optional<DscFileInfo> byId = dscFileDAO.findById(fileId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed(ResultCode.VALIDATE_FAILED, "文件不存在！");
+        }
+
+        DscFileInfo dscFileInfo = byId.get();
+        String bucket = dscFileInfo.getBucketName();
+        String objectKey = dscFileInfo.getObjectKey();
+        GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, objectKey);
+        S3Object s3Object = amazonS3.getObject(getObjectRequest);
+        String contentType = s3Object.getObjectMetadata().getContentType();
+        if (!contentType.equals("application/zip")) {
+            return CommonResult.failed(ResultCode.VALIDATE_FAILED, "文件类型不支持解压！");
+        }
+        String fullPath = fileRootPath + bucket + "/" + objectKey; //拿到文件存储位置
+        String unzipDirPath = MessageFormat.format(unzipTempPath, UUID.randomUUID());
+        File unzipDir = new File(unzipDirPath);
+        unzipDir.mkdirs();  //创建临时解压文件夹
+        int successCount = 0;
+        List<JSONObject> fileObjects;
+        try {
+            fileObjects = FileUtils.zipUncompress(fullPath, unzipDirPath);
+            ArrayList<Map<String, String>> records = new ArrayList<>();
+            for (JSONObject fileObject :
+                    fileObjects) {
+                String fileName = (String) fileObject.get("fileName");
+                String fileNameWithoutSuffix = fileName.substring(0, fileName.lastIndexOf("."));
+                String objectName = UUID.randomUUID().toString();
+                boolean isRepeat = false;
+                for (Map<String, String> record :
+                        records) {
+                    if (record.get("name").equals(fileNameWithoutSuffix)) {
+                        isRepeat = true;
+                        objectName = record.get("id");
+                    }
+                }
+                if (!isRepeat) {
+                    HashMap<String, String> record = new HashMap<>();
+                    record.put("name", fileNameWithoutSuffix);
+                    record.put("id", objectName);
+                    records.add(record);
+                }
+                String path = (String) fileObject.get("path");
+                InputStream fileInputStream = Files.newInputStream(Paths.get(path));
+                File file = new File(path);
+                Long fileSize = file.length();
+                String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
+                InitTaskParam initTaskParam = new InitTaskParam();
+                initTaskParam.setIdentifier(md5)
+                        .setFileName(fileName)
+                        .setTotalSize(fileSize)
+                        .setChunkSize(fileSize)
+                        .setObjectName(objectName)
+                        .setUserId(userId);
+                TaskInfoDTO data = sysUploadTaskService.initTask(initTaskParam);
+                String bucketName = data.getTaskRecord().getBucketName();
+                String objectKey1 = data.getTaskRecord().getObjectKey();
+                String contentType2 = MediaTypeFactory.getMediaType(objectKey1).orElse(MediaType.APPLICATION_OCTET_STREAM).toString();
+                ObjectMetadata objectMetadata = new ObjectMetadata();
+                objectMetadata.setContentType(contentType2);
+                PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectKey1, file);
+                putObjectRequest.setMetadata(objectMetadata);
+                amazonS3.putObject(putObjectRequest);
+                UploadFileDTO uploadFileDTO = new UploadFileDTO();
+                uploadFileDTO.setUserId(userId)
+                        .setTaskId(data.getTaskRecord().getId())
+                        .setCatalogId(catalogId);
+                CommonResult<String> upload = this.create(uploadFileDTO);
+                if (upload.getCode() == 200) {
+                    successCount++;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return CommonResult.failed("解压失败！");
+        }
+        //删除临时解压文件夹
+        FileUtils.deleteDirectory(unzipDirPath);
+        if (successCount >= fileObjects.size()) {
+            return CommonResult.success("解压全部完成！");
+        } else {
+            return CommonResult.success("解压部分完成！");
+        }
+    }
+
 }

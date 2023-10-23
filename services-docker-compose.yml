@@ -1,0 +1,23 @@
+version: '1.0.0'
+services:
+  gateway:
+    image: dsc-gateway
+    build:
+      context: ./DataSceneContainer-Gateway
+      dockerfile: Dockerfile
+    container_name: dsc-gateway
+    ports:
+      - 9527:9527
+    restart: always
+
+  system-core:
+    image: dsc-systemms
+    build:
+      context: ./DataSceneContainer-SystemMS
+      dockerfile: Dockerfile
+    container_name: dsc-systemms
+    volumes:
+      - /home/dsc-minio/data/:/home/minio-data/
+    ports:
+      - 7890:7890
+    restart: always

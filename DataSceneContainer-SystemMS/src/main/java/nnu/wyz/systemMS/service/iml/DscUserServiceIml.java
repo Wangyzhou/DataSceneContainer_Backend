@@ -20,7 +20,7 @@ import nnu.wyz.systemMS.model.entity.DscUser;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscUserService;
 import nnu.wyz.systemMS.service.MailService;
-import nnu.wyz.systemMS.service.UserAuthService;
+//import nnu.wyz.systemMS.service.UserAuthService;
 import nnu.wyz.systemMS.utils.RedisCache;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
 import java.time.Duration;
@@ -52,12 +53,15 @@ import java.util.regex.Pattern;
  * @time: 2023/8/28 20:40
  */
 @Service
-@Transactional
+//@Transactional
+@SuppressWarnings("all")
 public class DscUserServiceIml implements DscUserService {
 
-    @Autowired
-    private UserAuthService userAuthService;
+//    @Autowired
+//    private UserAuthService userAuthService;          //OpenFeign
 
+    @Autowired
+    private RestTemplate restTemplate;
     @Autowired
     private DscUserDAO dscUserDAO;
 
@@ -76,6 +80,9 @@ public class DscUserServiceIml implements DscUserService {
 
     @Value("${gateway_addr}")
     private String gateway_addr;
+
+    @Value("${frontend_url}")
+    private String frontend_url;
 
     @Value("${user_active_url}")
     private String user_active_url;
@@ -198,7 +205,7 @@ public class DscUserServiceIml implements DscUserService {
                 "                            <strong style=\"display:block;margin-bottom:15px;\">尊敬的" + userRegisterDTO.getUsername() + "老师：<span\n" +
                 "                                    style=\"color:#f60;font-size: 16px;\"></span>您好！</strong>\n" +
                 "                            <strong style=\"display:block;margin-bottom:15px;\">\n" +
-                "                                您正在进行<span style=\"color: red\">账号激活</span>操作，请点击右侧链接进行账号激活：<a href=\"" + gateway_addr + MessageFormat.format(user_active_url, activeCode) + "\">点击激活</a>\n" +
+                "                                您正在进行<span style=\"color: red\">账号激活</span>操作，请点击右侧链接进行账号激活：<a href=\"" + MessageFormat.format(frontend_url, activeCode) + "\">点击激活</a>\n" +
                 "                            </strong>\n" +
                 "                        </div>\n" +
                 "                        <div style=\"margin-bottom:30px;\">\n" +
@@ -237,7 +244,7 @@ public class DscUserServiceIml implements DscUserService {
         parameters.add("username", userLoginDTO.getUsername());
         parameters.add("password", userLoginDTO.getPassword());
         logger.info("用户：" + userLoginDTO.getUsername() + "已登录。");
-        return userAuthService.postAccessToken(parameters);
+        return restTemplate.postForObject(gateway_addr + "/dsc-auth-central/oauth/token", parameters, CommonResult.class);
     }
 
     @Override
