@@ -25,4 +25,5 @@ public interface DscUserService {
     CommonResult<String> resetPassword(String resetToken,String email, String password);
 
     CommonResult<List<ReturnUsersByEmailLikeDTO>> getUserByEmailLike(String keyWord);
+
 }

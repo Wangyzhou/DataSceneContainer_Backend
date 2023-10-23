@@ -14,7 +14,7 @@ import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
-import nnu.wyz.systemMS.server.WebSocketServer;
+import nnu.wyz.systemMS.websocket.WebSocketServer;
 import nnu.wyz.systemMS.service.DscFileService;
 
 import nnu.wyz.systemMS.service.SysUploadTaskService;

@@ -40,4 +40,6 @@ public class DscUser implements Serializable {
     private int enabled;
 
     private String activeCode;
+
+
 }

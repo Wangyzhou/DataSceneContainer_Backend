@@ -1,3 +1,6 @@
+deployIp: 172.21.212.79
+frontendIp: 172.21.212.79
+
 spring:
   web:
     resources:
@@ -8,19 +11,24 @@ spring:
       max-request-size: 5120MB    #所有文件不超过5G
   data:
     mongodb:
-      uri: mongodb://172.21.213.250:27017/dsc
+      host: ${deployIp}
+      port: 27017
+      authentication-database: admin
+      database: dsc
+      username: yzwang
+      password: wyz980903
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://172.21.213.86:25432/dsc_postdb
+    url: jdbc:postgresql://${deployIp}:5432/dsc_postdb
     username: postgres
     password: wyz980903
   mail:
     host: smtp.qq.com
     username: 2740962735@qq.com
     from: 2740962735@qq.com
-    password: ozokzadmaxwedccd
+    password: uxkmfprmynvhdeai
   redis:                          #redis存jwt黑名单
-    host: 172.21.212.79
+    host: ${deployIp}
     port: 6379
     password: ninja980903
     jedis:
@@ -36,14 +44,15 @@ spring:
     static-path-pattern: /static/**
 
 gateway_addr: http://172.21.213.250:9527   # gateway
+frontend_url: http://${frontendIp}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
 fileSavePath: D:/Test/
 unzipTempPath: D:/Test/temp/{0}
-shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h 172.21.213.86 -p 25432 -U postgres -d dsc_postdb
+shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
 pg_password: wyz980903
 
 minio:
-  endpoint: http://172.21.213.86:9000
+  endpoint: http://${deployIp}:9000
   accessKey: yzwang
   secretKey: wyz980903
   bucketName: dsc-file

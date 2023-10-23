@@ -1,13 +1,10 @@
 package nnu.wyz.systemMS;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.MinioClient;
 import io.minio.RemoveObjectsArgs;
@@ -15,7 +12,6 @@ import io.minio.Result;
 import io.minio.errors.*;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
-import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.dao.DscFileDAO;
@@ -24,8 +20,7 @@ import nnu.wyz.systemMS.dao.SysUploadTaskDAO;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
-import nnu.wyz.systemMS.server.WebSocketServer;
-import nnu.wyz.systemMS.service.DscFileService;
+import nnu.wyz.systemMS.websocket.WebSocketServer;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
 import nnu.wyz.systemMS.service.DscGeoJSONService;
 import nnu.wyz.systemMS.utils.GeoJSONUtil;
@@ -38,7 +33,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.core.parameters.P;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -355,5 +349,11 @@ public class test {
         System.out.println("featureCount = " + featureCount);
         List<Map<String, Object>> attrs = GeoJSONUtil.getAttrs();
         attrs.forEach(System.out::println);
+    }
+
+    @Test
+    void testInitMinio() {
+        boolean existV2 = amazonS3.doesBucketExistV2("dsc-file");
+        System.out.println("existV2 = " + existV2);
     }
 }

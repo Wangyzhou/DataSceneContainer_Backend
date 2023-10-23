@@ -1,4 +1,12 @@
+deploy_ip: 172.21.212.79
+
 spring:
   data:
     mongodb:
-      uri: mongodb://172.21.213.250:27017/dsc
+      #      host: 119.45.181.127   # 腾讯云
+      host: ${deploy_ip}   # opengms组内服务器
+      port: 27017
+      authentication-database: admin
+      database: dsc
+      username: yzwang
+      password: wyz980903

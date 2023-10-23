@@ -1,4 +1,4 @@
-package nnu.wyz.systemMS.server;
+package nnu.wyz.systemMS.websocket;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
@@ -9,9 +9,6 @@ import nnu.wyz.systemMS.dao.DscUserDAO;
 import nnu.wyz.systemMS.model.entity.DscUser;
 import nnu.wyz.systemMS.model.entity.Message;
 import nnu.wyz.systemMS.utils.RedisCache;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -20,7 +17,6 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;

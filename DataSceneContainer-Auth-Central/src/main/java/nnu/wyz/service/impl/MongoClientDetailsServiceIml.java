@@ -29,16 +29,13 @@ public class MongoClientDetailsServiceIml implements ClientDetailsService {
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        BaseClientDetails client = mongoTemplate.findOne(new Query(Criteria.where("clientId").is(clientId)), BaseClientDetails.class, COLLECTIONNAME);
-        
-        if(client==null){
-            throw new RuntimeException("没有查询到客户端信息");
-        }
-        return client;
+        return mongoTemplate.findOne(new Query(Criteria.where("clientId").is(clientId)), BaseClientDetails.class, COLLECTIONNAME);
     }
+
     public void addClientDetails(ClientDetails clientDetails) {
         mongoTemplate.insert(clientDetails, COLLECTIONNAME);
     }
+
     public void updateClientDetails(ClientDetails clientDetails) {
         Update update = new Update();
         update.set("resourceIds", clientDetails.getResourceIds());
@@ -63,7 +60,7 @@ public class MongoClientDetailsServiceIml implements ClientDetailsService {
         mongoTemplate.remove(new Query(Criteria.where("clientId").is(clientId)), COLLECTIONNAME);
     }
 
-    public List<ClientDetails> listClientDetails(){
+    public List<ClientDetails> listClientDetails() {
         return mongoTemplate.findAll(ClientDetails.class, COLLECTIONNAME);
     }
 }
