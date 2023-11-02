@@ -1,4 +1,5 @@
-deployIp: 172.21.213.86
+deployIp: 172.21.212.245
+#deployIp: 172.21.213.86
 #deployIp: 119.45.181.127
 
 spring:

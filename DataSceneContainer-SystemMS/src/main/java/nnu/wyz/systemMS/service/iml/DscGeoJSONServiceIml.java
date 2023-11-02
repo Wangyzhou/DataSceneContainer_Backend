@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +37,10 @@ public class DscGeoJSONServiceIml implements DscGeoJSONService {
 
     @Value("${fileSavePath}")
     private String fileRootPath;
+
+    @Value("${fileSavePathWin}")
+    private String fileRootPathWin;
+
     @Override
     public CommonResult<List<String>> getFields(String vectorSId) {
         CommonResult initialGeoJSONUtilResult = this.initialGeoJSONUtil(vectorSId);
@@ -89,7 +94,8 @@ public class DscGeoJSONServiceIml implements DscGeoJSONService {
         DscFileInfo dscFileInfo = byId1.get();
         String bucketName = dscFileInfo.getBucketName();
         String objectKey = dscFileInfo.getObjectKey();
-        String fullPath = fileRootPath + bucketName + "/" + objectKey;
+        String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;
+        String fullPath = fileRoot + bucketName + File.separator + objectKey;
         CommonResult initUtilResult = GeoJSONUtil.initUtil(fullPath);
         if(initUtilResult.getCode() != 200) {
             return initUtilResult;

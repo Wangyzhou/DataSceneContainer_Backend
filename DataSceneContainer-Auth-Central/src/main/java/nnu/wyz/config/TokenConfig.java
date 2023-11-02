@@ -1,8 +1,10 @@
 package nnu.wyz.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -19,7 +21,8 @@ import java.security.KeyPair;
 @Configuration
 public class TokenConfig {
 
-
+    @Value("${jks_path}")
+    private String jksPath;
     //使用JwtToken
     @Bean
     public TokenStore tokenStore() {
@@ -36,7 +39,7 @@ public class TokenConfig {
     @Bean
     public KeyPair keyPair() {
         KeyStoreKeyFactory factory = new KeyStoreKeyFactory(
-                new ClassPathResource("ninja.jks"), "ninja980903".toCharArray());
+                new PathResource(jksPath), "ninja980903".toCharArray());
         return factory.getKeyPair(
                 "ninja-key", "ninja980903".toCharArray());
     }

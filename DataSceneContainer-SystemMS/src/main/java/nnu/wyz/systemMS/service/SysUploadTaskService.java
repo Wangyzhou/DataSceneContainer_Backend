@@ -1,6 +1,7 @@
 package nnu.wyz.systemMS.service;
 
 
+import nnu.wyz.systemMS.model.dto.Result;
 import nnu.wyz.systemMS.model.dto.TaskInfoDTO;
 import nnu.wyz.systemMS.model.entity.SysUploadTask;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
@@ -63,6 +64,6 @@ public interface SysUploadTaskService {
      *
      * @param identifier
      */
-    void merge(String userId, String identifier);
+    Result merge(String userId, String identifier);
 
 }

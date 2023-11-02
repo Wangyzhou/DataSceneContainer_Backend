@@ -70,9 +70,14 @@ public class DscFileServiceIml implements DscFileService {
     @Value("${fileSavePath}")
     private String fileRootPath;
 
+    @Value("${fileSavePathWin}")
+    private String fileRootPathWin;
+
     @Value("${unzipTempPath}")
     private String unzipTempPath;
 
+    @Value("${unzipTempPathWin}")
+    private String unzipTempPathWin;
 
     /**
      * 文件上传，文件可以重复上传，但同一目录下不能有同名文件
@@ -225,11 +230,10 @@ public class DscFileServiceIml implements DscFileService {
         dscFileDAO.save(dscFileInfo);
         String bucketName = dscFileInfo.getBucketName();
         String objectKey = dscFileInfo.getObjectKey();
-        String fullPath = fileRootPath + bucketName + "/" + objectKey;
-//        GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, objectKey);
-//        S3Object s3Object = amazonS3.getObject(getObjectRequest);
-//        InputStream delegateStream = s3Object.getObjectContent().getDelegateStream();
-        BufferedInputStream bufferedInputStream = null;
+        String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;
+        String separator = File.separator;
+        String fullPath = fileRoot + bucketName + separator + objectKey;
+        BufferedInputStream bufferedInputStream;
         OutputStream out;
         try {
             bufferedInputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fullPath)));
@@ -361,8 +365,10 @@ public class DscFileServiceIml implements DscFileService {
         if (!contentType.equals("application/zip")) {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED, "文件类型不支持解压！");
         }
-        String fullPath = fileRootPath + bucket + "/" + objectKey; //拿到文件存储位置
-        String unzipDirPath = MessageFormat.format(unzipTempPath, UUID.randomUUID());
+        String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;
+        String separator = File.separator;
+        String fullPath = fileRoot + bucket + separator + objectKey;
+        String unzipDirPath = System.getProperty("os.name").startsWith("Windows") ? MessageFormat.format(unzipTempPathWin, UUID.randomUUID()) : MessageFormat.format(unzipTempPath, UUID.randomUUID());
         File unzipDir = new File(unzipDirPath);
         unzipDir.mkdirs();  //创建临时解压文件夹
         int successCount = 0;

@@ -2,8 +2,6 @@ package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
@@ -53,8 +51,14 @@ public class DscVectorSServiceIml implements DscVectorSService {
     @Value("${fileSavePath}")
     private String fileRootPath;
 
+    @Value("${fileSavePathWin}")
+    private String fileRootPathWin;
+
     @Value("${shp2pgsql}")
     private String pgCmd;
+
+    @Value("${shp2pgsqlWin}")
+    private String pgCmdWin;
 
     @Value("${pg_password}")
     private String pgPassword;
@@ -102,22 +106,26 @@ public class DscVectorSServiceIml implements DscVectorSService {
                 || !shapefiles.contains(fileNameWithoutSuffix + ".dbf")) {
             return CommonResult.failed("发布失败，组成Shapefile的.shp、.shx、.dbf必要文件不完整！");
         }
-        String fullPath = fileRootPath + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
+        String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;
+        String separator = File.separator;
+        String fullPath = fileRoot + dscFileInfo.getBucketName() + separator + dscFileInfo.getObjectKey();
         Optional<DscFileInfo> byId1 = dscFileDAO.findById(code);
+        //指定cpg文件
         if (byId1.isPresent()) {
             DscFileInfo cpgFile = byId1.get();
-            String cpgFilePath = fileRootPath + cpgFile.getBucketName() + "/" + cpgFile.getObjectKey();
+            String cpgFilePath = fileRoot + cpgFile.getBucketName() + separator + cpgFile.getObjectKey();
             try {
                 FileInputStream fileInputStream = new FileInputStream(cpgFilePath);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
                 code = bufferedReader.readLine();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                return CommonResult.failed("读取cpg文件失败");
             }
         }
         String ptNamePrefix = fileName.substring(0, fileName.lastIndexOf("."));
         String ptName = ptNamePrefix + "_" + IdUtil.objectId();
-        String shp2pgsqlCmd = MessageFormat.format(pgCmd, srid, code, fullPath, ptName);
+        String pgCmdStr = System.getProperty("os.name").startsWith("Windows") ? MessageFormat.format(pgCmdWin, srid, code, fullPath, ptName) : MessageFormat.format(pgCmd, srid, code, fullPath, ptName);
         Process pro;
         ProcessBuilder processBuilder = new ProcessBuilder();
         BufferedReader bf;
@@ -126,9 +134,9 @@ public class DscVectorSServiceIml implements DscVectorSService {
             environment.remove("PGPASSWORD");
             environment.put("PGPASSWORD", pgPassword);
             if (System.getProperty("os.name").startsWith("Windows")) {
-                processBuilder.command("cmd", "/c", shp2pgsqlCmd);
+                processBuilder.command("cmd", "/c", pgCmdStr);
             } else {
-                processBuilder.command("/bin/sh", "-c", shp2pgsqlCmd);
+                processBuilder.command("/bin/sh", "-c", pgCmdStr);
             }
             pro = processBuilder.start();
             bf = new BufferedReader(new InputStreamReader(pro.getInputStream()));
@@ -258,14 +266,26 @@ public class DscVectorSServiceIml implements DscVectorSService {
         }
         DscFileInfo dscFileInfo = byId.get();
         //解析GeoJSON，判断是否可以发布
-        String fullPath = fileRootPath + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
+        String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;
+        String separator = File.separator;
+        String fullPath = fileRoot + dscFileInfo.getBucketName() + separator + dscFileInfo.getObjectKey();
         final CommonResult<String> initialResult = GeoJSONUtil.initUtil(fullPath);
         if (initialResult.getCode() != 200) {
             return initialResult;
         }
         String geoJSONType = GeoJSONUtil.getGeoJSONType();
-        List<Double> geoJSONBBOX = GeoJSONUtil.getGeoJSONBBOX(geoJSONType);
-        List<Double> center = GeoJSONUtil.getCenterFromBBOX(geoJSONBBOX);
+        if ("Unknown".equals(geoJSONType)) {
+            return CommonResult.failed("暂不支持跨类型要素集合，请确保该GeoJSON只是点、线、面其中一种！");
+        }
+        List<Double> geoJSONBBOX;
+        List<Double> center;
+        try {
+            geoJSONBBOX = GeoJSONUtil.getGeoJSONBBOX();
+            center = GeoJSONUtil.getCenterFromBBOX(geoJSONBBOX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed("解析GeoJSON失败");
+        }
         String endpoint = minioConfig.getEndpoint();
         String bucketName = dscFileInfo.getBucketName();
         String objectKey = dscFileInfo.getObjectKey();

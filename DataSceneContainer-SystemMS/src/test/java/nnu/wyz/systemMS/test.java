@@ -1,25 +1,25 @@
 package nnu.wyz.systemMS;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.minio.MinioClient;
-import io.minio.RemoveObjectsArgs;
-import io.minio.Result;
+import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
+import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
-import nnu.wyz.systemMS.dao.DscCatalogDAO;
-import nnu.wyz.systemMS.dao.DscFileDAO;
-import nnu.wyz.systemMS.dao.DscMessageDAO;
-import nnu.wyz.systemMS.dao.SysUploadTaskDAO;
+import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
+import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
 import nnu.wyz.systemMS.service.DscGeoJSONService;
@@ -33,6 +33,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -329,9 +330,10 @@ public class test {
 
     @Test
     void testGeoJSONUtil() {
-        GeoJSONUtil.initUtil("D:\\polygon.geojson");
+        GeoJSONUtil.initUtil("C:\\Users\\Administrator\\Downloads\\js_city_region_u.geojson");
         String geoJSONType = GeoJSONUtil.getGeoJSONType();
-        List<Double> geoJSONBBOX = GeoJSONUtil.getGeoJSONBBOX(geoJSONType);
+        System.out.println("geoJSONType = " + geoJSONType);
+        List<Double> geoJSONBBOX = GeoJSONUtil.getGeoJSONBBOX();
         System.out.println("bbox = " + geoJSONBBOX);
     }
 
@@ -340,8 +342,12 @@ public class test {
 
     @Test
     void testGetGeoJSON() {
-        GeoJSONUtil.initUtil("D:\\global_earthquake.geojson");
-        List uniqueValues = GeoJSONUtil.getUniqueValues("date", "asc");
+        GeoJSONUtil.initUtil("C:\\Users\\Administrator\\Desktop\\gdata\\ChinaProvince.geojson");
+        String geoJSONType = GeoJSONUtil.getGeoJSONType();
+        System.out.println("geoJSONType = " + geoJSONType);
+        List<Double> geoJSONBBOX = GeoJSONUtil.getGeoJSONBBOX();
+        System.out.println("bbox = " + geoJSONBBOX);
+        List uniqueValues = GeoJSONUtil.getUniqueValues("Code", "asc");
         uniqueValues.forEach(System.out::println);
         List<String> fields = GeoJSONUtil.getFields();
         fields.forEach(System.out::println);
@@ -352,8 +358,49 @@ public class test {
     }
 
     @Test
-    void testInitMinio() {
-        boolean existV2 = amazonS3.doesBucketExistV2("dsc-file");
-        System.out.println("existV2 = " + existV2);
+    void testInitMinio() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, BucketPolicyTooLargeException {
+        String policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::test\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:PutObject\",\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListMultipartUploadParts\"],\"Resource\":[\"arn:aws:s3:::test/*\"]}]}";
+        MinioClient minioClient = MinioClient.builder()
+                .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
+                .endpoint(minioConfig.getEndpoint())
+                .build();
+        String bucketPolicy = minioClient.getBucketPolicy(GetBucketPolicyArgs.builder().bucket("dsc-file").build());
+        System.out.println("bucketPolicy = " + bucketPolicy);
+        minioClient.makeBucket(MakeBucketArgs.builder().bucket("test").build());
+        minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket("test").config(policy).build());
+    }
+    @Test
+    void testTransfer() {
+        GetObjectRequest getObjectRequest = new GetObjectRequest(minioConfig.getBucketName(), "652a5e61e4b012905c858bea/45b011a5-f04f-4c42-8fc3-12ae405e2d9d.shp");
+        S3Object object = amazonS3.getObject(getObjectRequest);
+        S3ObjectInputStream objectContent = object.getObjectContent();
+        ObjectMetadata objectMetadata = object.getObjectMetadata();
+        System.out.println("object = " + object);
+    }
+    @Autowired
+    private PasswordEncoder bcryptPasswordEncoder;
+    @Autowired
+    private DscCatalogService dscCatalogService;
+    @Autowired
+    private DscUserDAO dscUserDAO;
+    @Test
+    void testRegister() {
+        DscUser dscUser = new DscUser();
+        dscUser.setId(IdUtil.objectId());
+        dscUser.setEmail("admin4");
+        dscUser.setPassword(bcryptPasswordEncoder.encode("123"));
+        dscUser.setUserName("admin");
+        dscUser.setInstitution("nnu");
+        dscUser.setRegisterDate(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        dscUser.setEnabled(1);
+        String activeCode = RandomUtil.randomString(5);
+        dscUser.setActiveCode(activeCode);
+        dscUserDAO.insert(dscUser);
+        dscCatalogService.createRootCatalog(dscUser.getId());
+    }
+    @Test
+    void test2122() {
+        CommonResult<List<JSONObject>> catalogChildrenTree = dscCatalogService.getCatalogChildrenTree("ce344b9e-0b68-46b1-9765-e50922855b6f");
+        System.out.println("catalogChildrenTree = " + catalogChildrenTree.getData());
     }
 }

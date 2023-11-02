@@ -85,7 +85,6 @@ public class DscFileMinIOUploaderController {
     @ApiOperation(value = "合并分片")
     @PostMapping("/merge/{userId}/{identifier}")
     public Result merge(@PathVariable("userId") String userId, @PathVariable("identifier") String identifier) {
-        sysUploadTaskService.merge(userId, identifier);
-        return Result.ok();
+        return sysUploadTaskService.merge(userId, identifier);
     }
 }

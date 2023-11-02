@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS.service.iml;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
@@ -184,6 +185,48 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 jsonObject.put("label", childrenDTO.getName());
                 List<JSONObject> result = recursion(childrenDTO.getId());
                 jsonObject.put("children", result);
+                catalogItems.add(jsonObject);
+            }
+        }
+        return catalogItems;
+    }
+
+
+
+    @Override
+    public CommonResult<List<JSONObject>> getCatalogChildrenTree(String rootCatalog) {
+        List<JSONObject> catalogList = this.recursionV2(rootCatalog);
+        JSONObject rootList = new JSONObject();
+        rootList.put("id", rootCatalog);
+        rootList.put("label", "MyData");
+        rootList.put("children", catalogList);
+        rootList.put("type", "folder");
+        ArrayList<JSONObject> root = new ArrayList<>();
+        root.add(rootList);
+        return CommonResult.success(root, "获取成功！");
+    }
+
+    private List<JSONObject> recursionV2(String catalogId) {
+        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+        DscCatalog dscCatalog = byId.get();
+        if (dscCatalog.getChildren().size() == 0) {
+            return null;
+        }
+        ArrayList<JSONObject> catalogItems = new ArrayList<>();
+        for (CatalogChildrenDTO childrenDTO :
+                dscCatalog.getChildren()) {
+            JSONObject jsonObject = new JSONObject();
+            if (childrenDTO.getType().equals("folder")) {
+                jsonObject.put("id", childrenDTO.getId());
+                jsonObject.put("label", childrenDTO.getName());
+                List<JSONObject> result = recursionV2(childrenDTO.getId());
+                jsonObject.put("children", result);
+                jsonObject.put("type", childrenDTO.getType());
+                catalogItems.add(jsonObject);
+            } else {
+                jsonObject.put("id", childrenDTO.getId());
+                jsonObject.put("label", childrenDTO.getName());
+                jsonObject.put("type", childrenDTO.getType());
                 catalogItems.add(jsonObject);
             }
         }

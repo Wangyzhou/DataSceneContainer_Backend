@@ -1,11 +1,15 @@
+deploy_ip: 172.21.212.245
 spring:
   data:
     mongodb:
 #      host: 119.45.181.127   # 腾讯云
 #      host: 172.21.213.86   # opengms组内服务器
-      host: 172.21.212.79
+      host: ${deploy_ip}    # windows
+#      host: 172.21.212.79   # 测试服务器
       port: 27017
       authentication-database: admin
       database: dsc
       username: yzwang
       password: wyz980903
+
+jks_path: ${JKS_PATH:F:\ninja.jks}

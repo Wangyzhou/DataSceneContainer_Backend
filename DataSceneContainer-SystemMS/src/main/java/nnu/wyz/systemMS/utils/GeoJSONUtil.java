@@ -38,53 +38,95 @@ public class GeoJSONUtil {
 
     public static String getGeoJSONType() {
         ArrayList<Map<String, Object>> features = (ArrayList<Map<String, Object>>) root.get("features");
-        Map<String, Object> geometry = (Map<String, Object>) features.get(0).get("geometry");
-        return (String) geometry.get("type");
+        List<String> types = features.stream().map(feature -> (Map<String, Object>) feature.get("geometry")).map(geometry -> (String) geometry.get("type")).distinct().collect(Collectors.toList());
+        if (types.size() == 1) {
+            return types.get(0);
+        } else if (types.size() == 2) {
+            if (types.contains("Point") && types.contains("MultiPoint")) {
+                return "MultiPoint";
+            } else if (types.contains("LineString") && types.contains("MultiLineString")) {
+                return "MultiLineString";
+            } else if (types.contains("Polygon") && types.contains("MultiPolygon")) {
+                return "MultiPolygon";
+            } else {
+                return "Unknown";
+            }
+        } else {
+            return "Unknown";
+        }
     }
 
-    public static List<Double> getGeoJSONBBOX(String type) {
+    public static List<Double> getGeoJSONBBOX() {
         ArrayList<Map<String, Object>> features = (ArrayList<Map<String, Object>>) root.get("features");
-        List<List<Object>> coordinatesList = features.stream().map(feature -> (List<Object>) (((Map<String, Object>) feature.get("geometry")).get("coordinates"))).collect(Collectors.toList());
         ArrayList<Double> bbox = new ArrayList<>();
-        switch (type) {
-            case "Point":
-                bbox = (ArrayList<Double>) getBBOXFromTypeEqualsPoint(coordinatesList);
-                break;
-            case "MultiPoint":
-                bbox = (ArrayList<Double>) getBBOXFromTypeEqualsMultiPoint(coordinatesList);
-                break;
-            case "LineString":
-                bbox = (ArrayList<Double>) getBBOXFromTypeEqualsLineString(coordinatesList);
-                break;
-            case "MultiLineString":
-                bbox = (ArrayList<Double>) getBBOXFromTypeEqualsMultiLineString(coordinatesList);
-                break;
-            case "Polygon":
-                bbox = (ArrayList<Double>) getBBOXFromTypeEqualsPolygon(coordinatesList);
-                break;
-            case "MultiPolygon":
-                bbox = (ArrayList<Double>) getBBOXFromTypeEqualsMultiPolygon(coordinatesList);
-                break;
+        double minLng = 180.0, maxLng = -180.0, minLat = 90.0, maxLat = -90.0;
+        int flag = 0;
+        for (Map<String, Object> feature : features) {
+            Map<String, Object> geometry = (Map<String, Object>) feature.get("geometry");
+            String geoType = (String) geometry.get("type");
+            List<Object> coordinate = (List<Object>) geometry.get("coordinates");
+            double featureMinLng = 0.0, featureMaxLng = 0.0, featureMinLat = 0.0, featureMaxLat = 0.0;
+            ArrayList<Double> featureBbox = new ArrayList<>();
+            switch (geoType) {
+                case "Point":
+                    featureBbox = (ArrayList<Double>) getBBOXFromTypeEqualsPoint(coordinate);
+                    break;
+                case "MultiPoint":
+                    featureBbox = (ArrayList<Double>) getBBOXFromTypeEqualsMultiPoint(coordinate);
+                    break;
+                case "LineString":
+                    featureBbox = (ArrayList<Double>) getBBOXFromTypeEqualsLineString(coordinate);
+                    break;
+                case "MultiLineString":
+                    featureBbox = (ArrayList<Double>) getBBOXFromTypeEqualsMultiLineString(coordinate);
+                    break;
+                case "Polygon":
+                    featureBbox = (ArrayList<Double>) getBBOXFromTypeEqualsPolygon(coordinate);
+                    break;
+                case "MultiPolygon":
+                    featureBbox = (ArrayList<Double>) getBBOXFromTypeEqualsMultiPolygon(coordinate);
+                    break;
+                default:
+                    featureBbox = new ArrayList<>(Arrays.asList(-180.0, -90.0, 180.0, 90.0));
+                    break;
+            }
+            minLng = Math.min(minLng, featureBbox.get(0));
+            maxLng = Math.max(maxLng, featureBbox.get(2));
+            minLat = Math.min(minLat, featureBbox.get(1));
+            maxLat = Math.max(maxLat, featureBbox.get(3));
         }
+        bbox.add(minLng);
+        bbox.add(minLat);
+        bbox.add(maxLng);
+        bbox.add(maxLat);
         return bbox;
     }
 
-    private static List<Double> getBBOXFromTypeEqualsPoint(List<List<Object>> coordinates) {
-        double minLng = 0.0, maxLng = 0.0, minLat = 0.0, maxLat = 0.0;
-        int flag = 0;
-        for (List<Object> lngLat : coordinates) {
-            double lng = Double.parseDouble(lngLat.get(0).toString());
-            double lat = Double.parseDouble(lngLat.get(1).toString());
-            if (flag == 0) {
-                minLng = maxLng = lng;
-                minLat = maxLat = lat;
-                flag = 1;
-                continue;
-            }
-            minLng = Math.min(minLng, lng);
-            maxLng = Math.max(maxLng, lng);
-            minLat = Math.min(minLat, lat);
-            maxLat = Math.max(maxLat, lat);
+    private static List<Double> getBBOXFromTypeEqualsPoint(List<Object> coordinates) {
+        double minLng = 180.0, maxLng = -180.0, minLat = 90.0, maxLat = -90.0;
+        double lng = Double.parseDouble(coordinates.get(0).toString());
+        double lat = Double.parseDouble(coordinates.get(1).toString());
+        minLng = Math.min(minLng, lng);
+        maxLng = Math.max(maxLng, lng);
+        minLat = Math.min(minLat, lat);
+        maxLat = Math.max(maxLat, lat);
+        ArrayList<Double> bbox = new ArrayList<>();
+        bbox.add(minLng);
+        bbox.add(minLat);
+        bbox.add(maxLng);
+        bbox.add(maxLat);
+        return bbox;
+    }
+
+    private static List<Double> getBBOXFromTypeEqualsMultiPoint(List<Object> coordinates) {
+        double minLng = 180.0, maxLng = -180.0, minLat = 90.0, maxLat = -90.0;
+        for (Object lngLat : coordinates) {
+            List<Object> lngLatDouble = (List<Object>) lngLat;
+            List<Double> featureBbox = getBBOXFromTypeEqualsPoint(lngLatDouble);
+            minLng = Math.min(minLng, featureBbox.get(0));
+            maxLng = Math.max(maxLng, featureBbox.get(2));
+            minLat = Math.min(minLat, featureBbox.get(1));
+            maxLat = Math.max(maxLat, featureBbox.get(3));
         }
         ArrayList<Double> bbox = new ArrayList<>();
         bbox.add(minLng);
@@ -94,60 +136,19 @@ public class GeoJSONUtil {
         return bbox;
     }
 
-    private static List<Double> getBBOXFromTypeEqualsMultiPoint(List<List<Object>> coordinates) {
-        double minLng = 0.0, maxLng = 0.0, minLat = 0.0, maxLat = 0.0;
-        int flag = 0;
-        for (List<Object> lngLats : coordinates) {
-            for (Object lngLat : lngLats) {
-                List<Double> lngLatDouble = (List<Double>) lngLat;
-                double lng = Double.parseDouble(lngLatDouble.get(0).toString());
-                double lat = Double.parseDouble(lngLatDouble.get(1).toString());
-                if (flag == 0) {
-                    minLng = maxLng = lng;
-                    minLat = maxLat = lat;
-                    flag = 1;
-                    continue;
-                }
-                minLng = Math.min(minLng, lng);
-                maxLng = Math.max(maxLng, lng);
-                minLat = Math.min(minLat, lat);
-                maxLat = Math.max(maxLat, lat);
-            }
-        }
-        ArrayList<Double> bbox = new ArrayList<>();
-        bbox.add(minLng);
-        bbox.add(minLat);
-        bbox.add(maxLng);
-        bbox.add(maxLat);
-        return bbox;
-    }
-
-    private static List<Double> getBBOXFromTypeEqualsLineString(List<List<Object>> coordinates) {
+    private static List<Double> getBBOXFromTypeEqualsLineString(List<Object> coordinates) {
         return getBBOXFromTypeEqualsMultiPoint(coordinates);
     }
 
-    private static List<Double> getBBOXFromTypeEqualsMultiLineString(List<List<Object>> coordinates) {
-        double minLng = 0.0, maxLng = 0.0, minLat = 0.0, maxLat = 0.0;
-        int flag = 0;
-        for (List<Object> entities : coordinates) {
-            for (Object multiLineString : entities) {
-                List<Object> lineStringList = (List<Object>) multiLineString;
-                for (Object lineString : lineStringList) {
-                    List<Double> lngLatDouble = (List<Double>) lineString;
-                    double lng = Double.parseDouble(lngLatDouble.get(0).toString());
-                    double lat = Double.parseDouble(lngLatDouble.get(1).toString());
-                    if (flag == 0) {
-                        minLng = maxLng = lng;
-                        minLat = maxLat = lat;
-                        flag = 1;
-                        continue;
-                    }
-                    minLng = Math.min(minLng, lng);
-                    maxLng = Math.max(maxLng, lng);
-                    minLat = Math.min(minLat, lat);
-                    maxLat = Math.max(maxLat, lat);
-                }
-            }
+    private static List<Double> getBBOXFromTypeEqualsMultiLineString(List<Object> coordinates) {
+        double minLng = 180.0, maxLng = -180.0, minLat = 90.0, maxLat = -90.0;
+        for (Object lineString : coordinates) {
+            List<Object> lineStringObj = (List<Object>) lineString;
+            List<Double> featureBbox = getBBOXFromTypeEqualsLineString(lineStringObj);
+            minLng = Math.min(minLng, featureBbox.get(0));
+            maxLng = Math.max(maxLng, featureBbox.get(2));
+            minLat = Math.min(minLat, featureBbox.get(1));
+            maxLat = Math.max(maxLat, featureBbox.get(3));
         }
         ArrayList<Double> bbox = new ArrayList<>();
         bbox.add(minLng);
@@ -157,28 +158,19 @@ public class GeoJSONUtil {
         return bbox;
     }
 
-    private static List<Double> getBBOXFromTypeEqualsPolygon(List<List<Object>> coordinates) {
+    private static List<Double> getBBOXFromTypeEqualsPolygon(List<Object> coordinates) {
         return getBBOXFromTypeEqualsMultiLineString(coordinates);
     }
 
-    private static List<Double> getBBOXFromTypeEqualsMultiPolygon(List<List<Object>> coordinates) {
-        double minLng = 0.0, maxLng = 0.0, minLat = 0.0, maxLat = 0.0;
-        int flag = 0;
-        for (List<Object> multiPolygon : coordinates) {
-            final List<List<Object>> polygonOrRing = multiPolygon.stream().map(polygon -> (List<Object>) polygon).collect(Collectors.toList());
-            List<Double> bboxFromTypeEqualsPolygon = getBBOXFromTypeEqualsPolygon(polygonOrRing);
-            if (flag == 0) {
-                minLng = bboxFromTypeEqualsPolygon.get(0);
-                minLat = bboxFromTypeEqualsPolygon.get(1);
-                maxLng = bboxFromTypeEqualsPolygon.get(2);
-                maxLat = bboxFromTypeEqualsPolygon.get(3);
-                flag = 1;
-                continue;
-            }
-            minLng = Math.min(minLng, bboxFromTypeEqualsPolygon.get(0));
-            maxLng = Math.max(maxLng, bboxFromTypeEqualsPolygon.get(2));
-            minLat = Math.min(minLat, bboxFromTypeEqualsPolygon.get(1));
-            maxLat = Math.max(maxLat, bboxFromTypeEqualsPolygon.get(3));
+    private static List<Double> getBBOXFromTypeEqualsMultiPolygon(List<Object> coordinates) {
+        double minLng = 180.0, maxLng = -180.0, minLat = 90.0, maxLat = -90.0;
+        for (Object polygonObj : coordinates) {
+            List<Object> polygon = (List<Object>) polygonObj;
+            List<Double> featureBbox = getBBOXFromTypeEqualsPolygon(polygon);
+            minLng = Math.min(minLng, featureBbox.get(0));
+            maxLng = Math.max(maxLng, featureBbox.get(2));
+            minLat = Math.min(minLat, featureBbox.get(1));
+            maxLat = Math.max(maxLat, featureBbox.get(3));
         }
         ArrayList<Double> bbox = new ArrayList<>();
         bbox.add(minLng);
@@ -202,7 +194,7 @@ public class GeoJSONUtil {
         Map<String, Object> feature = features.get(0);
         Map<String, Object> properties = (Map<String, Object>) feature.get("properties");
         ArrayList<String> fields = new ArrayList<>();
-        if(properties == null) {
+        if (properties == null) {
             return fields;
         }
         for (Map.Entry<String, Object> property : properties.entrySet()) {
@@ -295,7 +287,7 @@ public class GeoJSONUtil {
             case "java.lang.String":
                 List<String> stringValues = properties.stream().map(property -> property.toString()).collect(Collectors.toList());
                 Collections.sort(stringValues);
-                if(!method.equals("asc")) {
+                if (!method.equals("asc")) {
                     Collections.reverse(stringValues);
                 }
                 return stringValues;

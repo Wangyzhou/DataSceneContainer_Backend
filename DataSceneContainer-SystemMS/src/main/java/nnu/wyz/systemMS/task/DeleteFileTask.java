@@ -52,7 +52,7 @@ public class DeleteFileTask {
         dscFileDAO.deleteAll(allByOwnerCount);
         List<SysUploadTask> collect = allByOwnerCount.stream().map(dscFileInfo -> sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId())).filter(Objects::nonNull).collect(Collectors.toList());
         sysUploadTaskDAO.deleteAll(collect);
-        List<DeleteObject> objects = allByOwnerCount.stream().map(dscFileInfo -> new DeleteObject(dscFileInfo.getObjectKey())).collect(Collectors.toList());
+        List<DeleteObject> objects = collect.stream().map(sysUploadTask -> new DeleteObject(sysUploadTask.getObjectKey())).collect(Collectors.toList());
         Iterable<Result<DeleteError>> results =
                 minioClient.removeObjects(
                         RemoveObjectsArgs.builder().bucket(minioConfig.getBucketName()).objects(objects).build());
@@ -60,24 +60,10 @@ public class DeleteFileTask {
             DeleteError error = null;
             try {
                 error = result.get();
-            } catch (ErrorResponseException e) {
-                throw new RuntimeException(e);
-            } catch (InsufficientDataException e) {
-                throw new RuntimeException(e);
-            } catch (InternalException e) {
-                throw new RuntimeException(e);
-            } catch (InvalidKeyException e) {
-                throw new RuntimeException(e);
-            } catch (InvalidResponseException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            } catch (ServerException e) {
-                throw new RuntimeException(e);
-            } catch (XmlParserException e) {
-                throw new RuntimeException(e);
+            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
+                     InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
+                     XmlParserException e) {
+                e.printStackTrace();
             }
             System.out.println(
                     "Error in deleting object " + error.objectName() + "; " + error.message());

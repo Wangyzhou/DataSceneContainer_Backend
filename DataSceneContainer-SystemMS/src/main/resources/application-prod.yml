@@ -51,7 +51,10 @@ frontend_url: http://${frontendIp}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
 fileSavePath: /home/minio-data/
 unzipTempPath: /home/temp/{0}
+fileSavePathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\data\
+unzipTempPathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\temp\{0}
 shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
+shp2pgsqlWin: ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\psql.exe -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
 pg_password: wyz980903
 
 minio:

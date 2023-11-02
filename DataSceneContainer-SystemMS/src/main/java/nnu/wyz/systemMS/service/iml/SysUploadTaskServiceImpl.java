@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.model.*;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.constant.MinioConstant;
 import nnu.wyz.systemMS.dao.SysUploadTaskDAO;
+import nnu.wyz.systemMS.model.dto.Result;
 import nnu.wyz.systemMS.model.dto.TaskInfoDTO;
 import nnu.wyz.systemMS.model.dto.TaskRecordDTO;
 import nnu.wyz.systemMS.model.entity.SysUploadTask;
@@ -124,7 +125,7 @@ public class SysUploadTaskServiceImpl implements SysUploadTaskService {
     }
 
     @Override
-    public void merge(String userId, String identifier) {
+    public Result merge(String userId, String identifier) {
         SysUploadTask task = this.getByUploaderAndMd5(userId, identifier);
         if (task == null) {
             throw new RuntimeException("分片任务不存在");
@@ -142,7 +143,13 @@ public class SysUploadTaskServiceImpl implements SysUploadTaskService {
                 .withKey(task.getObjectKey())
                 .withBucketName(task.getBucketName())
                 .withPartETags(parts.stream().map(partSummary -> new PartETag(partSummary.getPartNumber(), partSummary.getETag())).collect(Collectors.toList()));
-        amazonS3.completeMultipartUpload(completeMultipartUploadRequest);
+        try {
+            amazonS3.completeMultipartUpload(completeMultipartUploadRequest);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("文件损坏，上传失败！");
+        }
+        return Result.ok();
     }
 
 }

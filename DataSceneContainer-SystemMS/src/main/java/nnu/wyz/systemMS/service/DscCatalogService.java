@@ -22,4 +22,7 @@ public interface DscCatalogService {
      * @return
      */
     CommonResult<List<JSONObject>> getOnlyCatalogTree(String rootCatalog);
+
+    CommonResult<List<JSONObject>> getCatalogChildrenTree(String rootCatalog);
+
 }
