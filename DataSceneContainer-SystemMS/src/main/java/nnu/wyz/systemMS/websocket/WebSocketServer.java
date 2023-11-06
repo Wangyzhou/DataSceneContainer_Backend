@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.systemMS.dao.DscMessageDAO;
 import nnu.wyz.systemMS.dao.DscUserDAO;
 import nnu.wyz.systemMS.model.entity.DscUser;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 @ServerEndpoint("/webSocket/{username}")
 @Component
+@Slf4j
 public class WebSocketServer {
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static AtomicInteger onlineNum = new AtomicInteger();
@@ -35,7 +37,7 @@ public class WebSocketServer {
     public void sendMessage(Session session, String message) throws IOException {
         if (session != null) {
             synchronized (session) {
-                System.out.println("发送数据：" + message);
+                log.info("发送数据:" + message);
                 session.getBasicRemote().sendText(message);
                 Message msg = JSON.parseObject(message, Message.class);
                 if (!msg.getType().equals("connected") && !msg.getType().equals("disconnected")) { //除了连接消息，都入库
@@ -108,11 +110,11 @@ public class WebSocketServer {
         }
         sessionPools.put(userName, session);
         addOnlineCount();
-        System.out.println(userName + "加入webSocket！当前人数为" + onlineNum);
+        log.info(userName + "加入webSocket！当前人数为" + onlineNum);
         RedisCache redisCache = SpringUtil.getBean(RedisCache.class);
         List<Object> noRecieveMsgs = redisCache.getCacheList(userName + "-noSentMessages");
         if (noRecieveMsgs.size() != 0) {
-            System.out.println("noRecieveMsgs.size = " + noRecieveMsgs.size());
+            log.info("noRecieveMsgs.size = " + noRecieveMsgs.size());
             noRecieveMsgs.forEach(msg -> {
                 Message sendMsg = JSON.parseObject((String) msg, Message.class);
                 sendInfo(sendMsg.getTo(), JSON.toJSONString(sendMsg, true));
@@ -127,14 +129,14 @@ public class WebSocketServer {
     public void onClose(@PathParam(value = "username") String userName) {
         sessionPools.remove(userName);
         subOnlineCount();
-        System.out.println(userName + "断开webSocket连接！当前人数为" + onlineNum);
+        log.info(userName + "断开webSocket连接！当前人数为" + onlineNum);
     }
 
     //收到客户端信息后，根据接收人的username把消息推下去或者群发
     // to=-1群发消息
     @OnMessage
     public void onMessage(String message) throws IOException {
-        System.out.println("server get" + message);
+        log.info("server get" + message);
         Message msg = JSON.parseObject(message, Message.class);
         if (msg.getTo().equals("-1")) {     //广播消息，代表系统消息，入库
             broadcast(JSON.toJSONString(msg, true));
@@ -157,7 +159,6 @@ public class WebSocketServer {
     //错误时调用
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println("发生错误");
         throwable.printStackTrace();
     }
 

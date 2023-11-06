@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS.model.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.util.List;
@@ -31,4 +32,7 @@ public class GDVSceneSource {
     private Boolean isRenaming;
 
     private List<Double> bbox;
+
+    private JSONObject clusterOptions;
+
 }

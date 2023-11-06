@@ -55,7 +55,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
     private DscGDVSceneConfigDAO dscGDVSceneConfigDAO;
     private final static String SCENE_TYPE = "GDV";
     @Override
-    public CommonResult<String> saveGDVScene(SaveGDVSceneDTO saveGDVSceneDTO) {
+    public CommonResult<DscScene> saveGDVScene(SaveGDVSceneDTO saveGDVSceneDTO) {
         String userId = saveGDVSceneDTO.getUserId();
         String sceneId = Objects.equals(saveGDVSceneDTO.getSceneId(), "") ? IdUtil.randomUUID() : saveGDVSceneDTO.getSceneId();
         MultipartFile thumbnail = saveGDVSceneDTO.getThumbnail();
@@ -106,7 +106,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
                     .setPos(saveGDVSceneDTO.getPos())
                     .setMapParams(saveGDVSceneDTO.getMapParams());
             dscGDVSceneConfigDAO.save(dscGDVSceneConfig);
-            return CommonResult.success("场景保存成功！");
+            return CommonResult.success(dscScene,"场景保存成功！");
         } catch (IOException e) {
             log.error("场景保存失败！");
             e.printStackTrace();

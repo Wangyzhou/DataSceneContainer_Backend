@@ -11,6 +11,7 @@ import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
 import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.service.DscVectorSService;
+import nnu.wyz.systemMS.utils.CompareUtil;
 import nnu.wyz.systemMS.utils.GeoJSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -196,20 +198,18 @@ public class DscVectorSServiceIml implements DscVectorSService {
     }
 
     @Override
-    public CommonResult<List<DscVectorServiceInfo>> getVectorServiceList(String userId) {
+    public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(String userId, Integer pageIndex) {
         List<DscUserVectorS> allByUserId = dscUserVectorSDAO.findAllByUserId(userId);
-        Iterator<DscUserVectorS> iterator = allByUserId.iterator();
-        List<DscVectorServiceInfo> dscVectorServiceInfos = new ArrayList<>();
-        while (iterator.hasNext()) {
-            DscUserVectorS dscUserVectorS = iterator.next();
-            Optional<DscVectorServiceInfo> byId = dscVectorSDAO.findById(dscUserVectorS.getVectorSId());
-            if (!byId.isPresent()) {
-                continue;
-            }
-            DscVectorServiceInfo dscVectorServiceInfo = byId.get();
-            dscVectorServiceInfos.add(dscVectorServiceInfo);
-        }
-        return CommonResult.success(dscVectorServiceInfos, "获取成功！");
+        List<DscVectorServiceInfo> dscVectorServiceInfos = allByUserId
+                .stream()
+                .map(DscUserVectorS::getVectorSId)
+                .map(vectorId -> dscVectorSDAO.findById(vectorId).get())
+                .sorted(((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())))
+                .skip((pageIndex - 1) * 12L)
+                .limit(12)
+                .collect(Collectors.toList());
+        PageInfo<DscVectorServiceInfo> pageInfo = new PageInfo<>(dscVectorServiceInfos, dscVectorServiceInfos.size(), dscVectorServiceInfos.size() / 12 + 1);
+        return CommonResult.success(pageInfo, "获取成功！");
     }
 
     @Override

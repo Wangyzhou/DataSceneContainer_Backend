@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 
 import java.util.List;
 
@@ -25,4 +27,5 @@ public interface DscCatalogService {
 
     CommonResult<List<JSONObject>> getCatalogChildrenTree(String rootCatalog);
 
+    CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(PageableDTO pageableDTO);
 }

@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.MapParamsDTO;
 import nnu.wyz.systemMS.model.dto.SaveGDVSceneDTO;
+import nnu.wyz.systemMS.model.entity.DscScene;
 import nnu.wyz.systemMS.model.entity.GDVSceneSource;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class DscGDVSceneController {
     private DscGDVSceneService dscGDVSceneService;
 
     @PutMapping
-    public CommonResult<String> save(@RequestParam("userId") String userId,
+    public CommonResult<DscScene> save(@RequestParam("userId") String userId,
                                        @RequestParam("sceneId") String sceneId,
                                        @RequestParam("name") String name,
                                        @RequestParam("thumbnail") MultipartFile thumbnail,

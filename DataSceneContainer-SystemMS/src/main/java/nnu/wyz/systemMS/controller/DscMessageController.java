@@ -1,9 +1,9 @@
 package nnu.wyz.systemMS.controller;
 
 import nnu.wyz.domain.CommonResult;
-import nnu.wyz.systemMS.model.dto.MessagePageDTO;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.entity.Message;
-import nnu.wyz.systemMS.model.entity.MsgPageInfo;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +29,13 @@ public class DscMessageController {
     }
 
     @GetMapping("/getAllMsg/{email}/{pageIndex}")
-    public CommonResult<MsgPageInfo> getAllMsg(@PathVariable("email") String email,
-                                               @PathVariable("pageIndex") Integer pageIndex) {
-        MessagePageDTO messagePageDTO = new MessagePageDTO();
-        messagePageDTO.setEmail(email);
-        messagePageDTO.setPageIndex(pageIndex);
-        messagePageDTO.setPageSize(10);
-        return dscMessageService.getAllMsg(messagePageDTO);
+    public CommonResult<PageInfo<Message>> getAllMsg(@PathVariable("email") String email,
+                                            @PathVariable("pageIndex") Integer pageIndex) {
+        PageableDTO pageableDTO = new PageableDTO();
+        pageableDTO.setCriteria(email);
+        pageableDTO.setPageIndex(pageIndex);
+        pageableDTO.setPageSize(10);
+        return dscMessageService.getAllMsg(pageableDTO);
     }
 
     @PutMapping("/readAllMsgs")

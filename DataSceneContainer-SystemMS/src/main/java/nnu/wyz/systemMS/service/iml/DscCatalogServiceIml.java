@@ -1,6 +1,5 @@
 package nnu.wyz.systemMS.service.iml;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
@@ -9,13 +8,21 @@ import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.dto.DeleteFileDTO;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscFileService;
+import nnu.wyz.systemMS.utils.CompareUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -25,11 +32,16 @@ import java.util.*;
 @Service
 public class DscCatalogServiceIml implements DscCatalogService {
 
+    private final static String COLLECTION_NAME = "dscCatalog";
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
     @Autowired
     private DscCatalogDAO dscCatalogDAO;
 
     @Autowired
     private DscFileService dscFileService;
+
 
     @Override
     public CommonResult<String> create(CreateCatalogDTO createCatalogDTO) {
@@ -109,14 +121,15 @@ public class DscCatalogServiceIml implements DscCatalogService {
         Boolean isDelete = this.deleteByRecursion(catalogId);
         return isDelete ? CommonResult.success("删除成功！") : CommonResult.failed("删除失败！");
     }
-//    @MongoTransactional
+
+    //    @MongoTransactional
 //    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
     public Boolean deleteByRecursion(String catalogId) {
         //递归出口：当前目录为空目录
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
         DscCatalog dscCatalog = byId.get();
         if (dscCatalog.getTotal() == 0) {
-             this.deleteEmptyCatalog(catalogId, dscCatalog.getParent());
+            this.deleteEmptyCatalog(catalogId, dscCatalog.getParent());
             return true;
         }
         //遍历孩子节点，循环删除
@@ -124,8 +137,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
         for (CatalogChildrenDTO catalogChildrenDTO : children) {
             if (catalogChildrenDTO.getType().equals("folder")) {
                 Boolean isFolderDelete = deleteByRecursion(catalogChildrenDTO.getId());
-                if(!isFolderDelete) {
-                   throw new RuntimeException("删除失败，未知的错误！");
+                if (!isFolderDelete) {
+                    throw new RuntimeException("删除失败，未知的错误！");
                 }
             } else {
                 DeleteFileDTO deleteFileDTO = new DeleteFileDTO();
@@ -139,7 +152,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
         this.deleteEmptyCatalog(catalogId, dscCatalog.getParent());
         return true;
     }
-//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
+
+    //    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
 //    @MongoTransactional
     public void deleteEmptyCatalog(String catalogId, String parentCatalogId) {
         Optional<DscCatalog> byId = dscCatalogDAO.findById(parentCatalogId);
@@ -192,7 +206,6 @@ public class DscCatalogServiceIml implements DscCatalogService {
     }
 
 
-
     @Override
     public CommonResult<List<JSONObject>> getCatalogChildrenTree(String rootCatalog) {
         List<JSONObject> catalogList = this.recursionV2(rootCatalog);
@@ -231,5 +244,27 @@ public class DscCatalogServiceIml implements DscCatalogService {
             }
         }
         return catalogItems;
+    }
+
+    @Override
+    public CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(PageableDTO pageableDTO) {
+        String catalogId = pageableDTO.getCriteria();
+        Integer pageIndex = pageableDTO.getPageIndex();
+        Integer pageSize = pageableDTO.getPageSize();
+        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed("不存在此目录");
+        }
+        DscCatalog dscCatalog = byId.get();
+        List<CatalogChildrenDTO> children = dscCatalog.getChildren();
+        List<CatalogChildrenDTO> childrenDTOS = children.stream().filter(item -> item.getType().equals("folder")).sorted((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())).collect(Collectors.toList());
+        List<CatalogChildrenDTO> noFolders = children.stream().filter(item -> !item.getType().equals("folder")).sorted((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())).collect(Collectors.toList());
+        childrenDTOS.addAll(noFolders);
+        List<CatalogChildrenDTO> results = childrenDTOS.stream().skip((long) (pageIndex - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
+        PageInfo<CatalogChildrenDTO> pageInfo = new PageInfo<>();
+        pageInfo.setBody(results);
+        pageInfo.setCount(children.size());
+        pageInfo.setPageNum((children.size() / pageSize) + 1);
+        return CommonResult.success(pageInfo, "获取第" + pageIndex + "页目录列表成功！");
     }
 }

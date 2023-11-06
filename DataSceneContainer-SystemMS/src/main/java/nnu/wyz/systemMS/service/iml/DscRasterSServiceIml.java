@@ -8,11 +8,14 @@ import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscFileDAO;
 import nnu.wyz.systemMS.dao.DscRasterSDAO;
 import nnu.wyz.systemMS.dao.DscUserRasterSDAO;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishImageDTO;
 import nnu.wyz.systemMS.model.entity.DscFileInfo;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
 import nnu.wyz.systemMS.model.entity.DscUserRasterS;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscRasterSService;
+import nnu.wyz.systemMS.utils.CompareUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Service;
@@ -86,10 +89,18 @@ public class DscRasterSServiceIml implements DscRasterSService {
     }
 
     @Override
-    public CommonResult<List<DscRasterService>> getRasterServiceList(String userId) {
+    public CommonResult<PageInfo<DscRasterService>> getRasterServiceList(String userId,  Integer pageIndex) {
         List<DscUserRasterS> dscUserRasterSList = dscUserRasterSDAO.findAllByUserId(userId);
-        List<DscRasterService> dscRasterServices = dscUserRasterSList.stream().map(DscUserRasterS::getRasterSId).map(rasterSId -> dscRasterSDAO.findDscRasterServiceById(rasterSId)).collect(Collectors.toList());
-        return CommonResult.success(dscRasterServices, "获取成功！");
+        List<DscRasterService> dscRasterServices = dscUserRasterSList
+                .stream()
+                .map(DscUserRasterS::getRasterSId)
+                .map(rasterSId -> dscRasterSDAO.findDscRasterServiceById(rasterSId))
+                .sorted(((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())))
+                .skip((pageIndex - 1) * 12L)
+                .limit(12)
+                .collect(Collectors.toList());
+        PageInfo<DscRasterService> dscRasterServicePageInfo = new PageInfo<>(dscRasterServices, dscRasterServices.size(), (dscRasterServices.size() / 12) + 1);
+        return CommonResult.success(dscRasterServicePageInfo, "获取成功！");
     }
 
     @Override

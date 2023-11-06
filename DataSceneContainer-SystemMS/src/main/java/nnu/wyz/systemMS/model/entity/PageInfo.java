@@ -1,6 +1,8 @@
 package nnu.wyz.systemMS.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -10,9 +12,11 @@ import java.util.List;
  * @time: 2023/9/21 14:35
  */
 @Data
-public class MsgPageInfo {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PageInfo<T> {
 
-    private List<Message> msgs;
+    private List<T> body;
 
     private Integer count;
 

@@ -4,6 +4,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PublishImageDTO;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
 import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscRasterSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,21 +21,22 @@ import java.util.List;
 @RequestMapping(value = "/dsc-raster-service")
 public class DscRasterServiceController {
 
-   @Resource
-   private DscRasterSService dscRasterService;
+    @Resource
+    private DscRasterSService dscRasterService;
 
-   @PostMapping(value = "/publishImage2RasterS")
+    @PostMapping(value = "/publishImage2RasterS")
     public CommonResult<String> publishImage2RasterS(@RequestBody PublishImageDTO publishImageDTO) {
         return dscRasterService.publishImage2RasterS(publishImageDTO);
     }
 
-    @GetMapping(value = "/getRasterSList/{userId}")
-    public CommonResult<List<DscRasterService>> getRasterSList(@PathVariable(value = "userId") String userId) {
-        return dscRasterService.getRasterServiceList(userId);
+    @GetMapping(value = "/getRasterSList/{userId}/{pageIndex}")
+    public CommonResult<PageInfo<DscRasterService>> getRasterSList(@PathVariable(value = "userId") String userId,
+                                                                   @PathVariable(value = "pageIndex") Integer pageIndex) {
+        return dscRasterService.getRasterServiceList(userId, pageIndex);
     }
 
     @DeleteMapping(value = "/delete/{userId}/{rasterSId}")
-    public CommonResult<String> deleteRasterS(@PathVariable(value = "userId" ) String userId,
+    public CommonResult<String> deleteRasterS(@PathVariable(value = "userId") String userId,
                                               @PathVariable(value = "rasterSId") String rasterSId) {
         return dscRasterService.deleteRasterService(userId, rasterSId);
     }

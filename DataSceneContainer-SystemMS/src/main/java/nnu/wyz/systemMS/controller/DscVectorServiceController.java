@@ -4,6 +4,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
 import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
 import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscVectorSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +37,10 @@ public class DscVectorServiceController {
     public void getMvt(@PathVariable int zoom, @PathVariable int x, @PathVariable int y, @PathVariable String tableName, HttpServletResponse response) {
         dscVectorSService.getMvt(zoom, x, y, tableName, response);
     }
-    @GetMapping(value = "/getVectorSList/{userId}")
-    public CommonResult<List<DscVectorServiceInfo>> getVectorSList(@PathVariable String userId) {
-        return dscVectorSService.getVectorServiceList(userId);
+    @GetMapping(value = "/getVectorSList/{userId}/{pageIndex}")
+    public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorSList(@PathVariable String userId,
+                                                                       @PathVariable Integer pageIndex) {
+        return dscVectorSService.getVectorServiceList(userId, pageIndex);
     }
 
     @DeleteMapping(value = "/delete/{userId}/{vectorSId}")

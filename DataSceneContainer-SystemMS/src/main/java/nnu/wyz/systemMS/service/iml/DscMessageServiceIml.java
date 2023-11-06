@@ -3,9 +3,9 @@ package nnu.wyz.systemMS.service.iml;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.dao.DscMessageDAO;
-import nnu.wyz.systemMS.model.dto.MessagePageDTO;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.entity.Message;
-import nnu.wyz.systemMS.model.entity.MsgPageInfo;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -42,21 +42,21 @@ public class DscMessageServiceIml implements DscMessageService {
     }
 
     @Override
-    public CommonResult<MsgPageInfo> getAllMsg(MessagePageDTO messagePageDTO) {
-        String email = messagePageDTO.getEmail();
-        Integer pageIndex = messagePageDTO.getPageIndex();
-        Integer pageSize = messagePageDTO.getPageSize();
+    public CommonResult<PageInfo<Message>> getAllMsg(PageableDTO pageableDTO) {
+        String email = pageableDTO.getCriteria();
+        Integer pageIndex = pageableDTO.getPageIndex();
+        Integer pageSize = pageableDTO.getPageSize();
         Query query = new Query(Criteria.where("to").is(email));
         int count = (int) mongoTemplate.count(query, Message.class);
         query.with(Sort.by(Sort.Order.desc("date")));
         query.skip((long) (pageIndex - 1) * pageSize);
         query.limit(pageSize);
         List<Message> allMsg = mongoTemplate.find(query, Message.class, COLLECTION_NAME);
-        MsgPageInfo msgPageInfo = new MsgPageInfo();
-        msgPageInfo.setMsgs(allMsg);
-        msgPageInfo.setCount(count);
-        msgPageInfo.setPageNum((count / pageSize) + 1);
-        return CommonResult.success(msgPageInfo, "获取消息列表成功！");
+        PageInfo<Message> pageInfo = new PageInfo<>();
+        pageInfo.setBody(allMsg);
+        pageInfo.setCount(count);
+        pageInfo.setPageNum((count / pageSize) + 1);
+        return CommonResult.success(pageInfo, "获取消息列表成功！");
     }
 
     @Override
