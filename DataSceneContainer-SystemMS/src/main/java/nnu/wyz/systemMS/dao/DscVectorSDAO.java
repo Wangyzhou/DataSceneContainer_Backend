@@ -9,4 +9,6 @@ public interface DscVectorSDAO extends MongoRepository<DscVectorServiceInfo, Str
     List<DscVectorServiceInfo> findAllByPublisher(String publisher);
 
     List<DscVectorServiceInfo> findAllByFileId(String fileId);
+
+
 }

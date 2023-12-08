@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -89,17 +86,24 @@ public class DscRasterSServiceIml implements DscRasterSService {
     }
 
     @Override
-    public CommonResult<PageInfo<DscRasterService>> getRasterServiceList(String userId,  Integer pageIndex) {
-        List<DscUserRasterS> dscUserRasterSList = dscUserRasterSDAO.findAllByUserId(userId);
-        List<DscRasterService> dscRasterServices = dscUserRasterSList
+    public CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO) {
+        String userId = pageableDTO.getCriteria();
+        Integer pageIndex = pageableDTO.getPageIndex();
+        Integer pageSize = pageableDTO.getPageSize();
+        List<DscRasterService> rsListNoLimit = dscUserRasterSDAO.findAllByUserId(userId)
                 .stream()
                 .map(DscUserRasterS::getRasterSId)
-                .map(rasterSId -> dscRasterSDAO.findDscRasterServiceById(rasterSId))
-                .sorted(((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())))
-                .skip((pageIndex - 1) * 12L)
-                .limit(12)
+                .map(dscRasterSDAO::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted(Comparator.comparing(DscRasterService::getName))
                 .collect(Collectors.toList());
-        PageInfo<DscRasterService> dscRasterServicePageInfo = new PageInfo<>(dscRasterServices, dscRasterServices.size(), (dscRasterServices.size() / 12) + 1);
+        List<DscRasterService> dscRasterServices = rsListNoLimit
+                .stream()
+                .skip((long) (pageIndex - 1) * pageSize)
+                .limit(pageSize)
+                .collect(Collectors.toList());
+        PageInfo<DscRasterService> dscRasterServicePageInfo = new PageInfo<>(dscRasterServices, rsListNoLimit.size(), (rsListNoLimit.size() / pageSize) + 1);
         return CommonResult.success(dscRasterServicePageInfo, "获取成功！");
     }
 
@@ -121,5 +125,11 @@ public class DscRasterSServiceIml implements DscRasterSService {
         dscUserRasterSDAO.delete(dscUserRasterS);
         dscRasterSDAO.deleteById(rasterSId);
         return CommonResult.success("删除成功!");
+    }
+
+    @Override
+    public CommonResult<List<DscRasterService>> getRasterServiceListByFileId(String fileId) {
+        List<DscRasterService> allByFileId = dscRasterSDAO.findAllByFileId(fileId);
+        return CommonResult.success(allByFileId, "获取成功!");
     }
 }

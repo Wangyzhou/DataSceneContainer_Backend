@@ -13,6 +13,7 @@ import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
+import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.*;
@@ -21,6 +22,7 @@ import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.service.DscCatalogService;
+import nnu.wyz.systemMS.service.DscSceneService;
 import nnu.wyz.systemMS.utils.CompareUtil;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
@@ -51,6 +53,7 @@ import java.util.stream.Collectors;
  * @time: 2023/8/29 17:00
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Slf4j
 public class test {
 
     @Autowired
@@ -371,6 +374,7 @@ public class test {
         minioClient.makeBucket(MakeBucketArgs.builder().bucket("test").build());
         minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket("test").config(policy).build());
     }
+
     @Test
     void testTransfer() {
         GetObjectRequest getObjectRequest = new GetObjectRequest(minioConfig.getBucketName(), "652a5e61e4b012905c858bea/45b011a5-f04f-4c42-8fc3-12ae405e2d9d.shp");
@@ -379,12 +383,14 @@ public class test {
         ObjectMetadata objectMetadata = object.getObjectMetadata();
         System.out.println("object = " + object);
     }
+
     @Autowired
     private PasswordEncoder bcryptPasswordEncoder;
     @Autowired
     private DscCatalogService dscCatalogService;
     @Autowired
     private DscUserDAO dscUserDAO;
+
     @Test
     void testRegister() {
         DscUser dscUser = new DscUser();
@@ -400,6 +406,7 @@ public class test {
         dscUserDAO.insert(dscUser);
         dscCatalogService.createRootCatalog(dscUser.getId());
     }
+
     @Test
     void test2122() {
         CommonResult<List<JSONObject>> catalogChildrenTree = dscCatalogService.getCatalogChildrenTree("ce344b9e-0b68-46b1-9765-e50922855b6f");
@@ -470,6 +477,7 @@ public class test {
         int index = CompareUtil.binarySearch(dataNoFolder, "一寸照2.png", 0, dataNoFolder.size() - 1);
 //        System.out.println("index = " + index);
     }
+
     int binarySearch(List<String> arr, String target, int left, int right) {
         int mid = (left + right) / 2;
         if (left >= right) {
@@ -585,4 +593,185 @@ public class test {
         PageInfo<CatalogChildrenDTO> data = childrenByPageable.getData();
         System.out.println("data = " + data);
     }
+
+    @Autowired
+    private DscUserSceneDAO dscUserSceneDAO;
+    @Autowired
+    private DscSceneDAO dscSceneDAO;
+
+    @Autowired
+    private DscSceneService dscSceneService;
+
+    @Test
+    void testGetSceneListByTime() {
+        int pageIndex = 1;
+        int pageSize = 6;
+        PageableDTO pageableDTO = new PageableDTO("652a5e61e4b012905c858bea", pageIndex, pageSize);
+        CommonResult<PageInfo<DscScene>> sceneList = dscSceneService.getSceneList(pageableDTO);
+        System.out.println("sceneList = " + sceneList);
+        System.out.println(sceneList.getData());
+//        List<DscScene> collect = dscUserSceneDAO.findAllByUserId("652a5e61e4b012905c858bea")
+//                .stream()
+//                .map(DscUserScene::getSceneId)
+//                .map(dscSceneDAO::findById)
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+//                .sorted(Comparator.comparing(DscScene::getUpdatedTime).reversed())
+//                .skip((long) (pageIndex - 1) * pageSize)
+//                .limit(pageSize)
+//                .collect(Collectors.toList());
+//        System.out.println("collect = " + collect);
+    }
+
+    @Test
+    void testGetSceneList() {
+        List<DscUserScene> allByUserId = dscUserSceneDAO.findAllByUserId("652a48fde4b01213a180bb5a");
+
+        allByUserId.stream()
+                .map(DscUserScene::getSceneId)
+                .map(dscSceneDAO::findById)
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+                .forEach(System.out::println);
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+//                .sorted(Comparator.comparing(DscScene::getUpdatedTime).reversed())
+//                .collect(Collectors.toList());
+//        System.out.println("collect = " + collect);
+    }
+    @Test
+
+    void deleteFile() {
+        MinioClient minioClient = MinioClient.builder()
+                .endpoint(minioConfig.getEndpoint())
+                .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
+                .build();
+        List<DscFileInfo> allByOwnerCount = dscFileDAO.findAllByOwnerCount(0L);
+        dscFileDAO.deleteAll(allByOwnerCount);
+        List<SysUploadTask> collect = allByOwnerCount.stream().map(dscFileInfo -> sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId())).filter(Objects::nonNull).collect(Collectors.toList());
+        sysUploadTaskDAO.deleteAll(collect);
+        List<DeleteObject> objects = collect.stream().map(sysUploadTask -> new DeleteObject(sysUploadTask.getObjectKey())).collect(Collectors.toList());
+        Iterable<Result<DeleteError>> results =
+                minioClient.removeObjects(
+                        RemoveObjectsArgs.builder().bucket(minioConfig.getBucketName()).objects(objects).build());
+        for (Result<DeleteError> result : results) {
+            DeleteError error = null;
+            try {
+                error = result.get();
+            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
+                     InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
+                     XmlParserException e) {
+                e.printStackTrace();
+            }
+            System.out.println(
+                    "Error in deleting object " + error.objectName() + "; " + error.message());
+        }
+        System.out.println("objects = " + objects);
+        log.info("删除" + objects.size() + "个文件!");
+        log.info("************定时任务执行结束************");
+    }
+
+    @Autowired
+    private DscGeoToolsDAO dscGeoToolsDAO;
+    @Test
+    void testGeoTools() {
+        List<DscGeoTools> all = dscGeoToolsDAO.findAll();
+        System.out.println("all = " + all.get(0));
+        ArrayList<JSONObject> Data_Tools = new ArrayList<>();
+        ArrayList<JSONObject> GeomorphometricAnalysis = new ArrayList<>();
+        ArrayList<JSONObject> GISAnalysis = new ArrayList<>();
+        ArrayList<JSONObject> HydrologicalAnalysis = new ArrayList<>();
+        ArrayList<JSONObject> ImageAnalysis = new ArrayList<>();
+        ArrayList<JSONObject> LiDARAnalysis = new ArrayList<>();
+        ArrayList<JSONObject> MathematicalandStatisticalAnalysis = new ArrayList<>();
+        ArrayList<JSONObject> StreamNetworkAnalysis = new ArrayList<>();
+        for(DscGeoTools dscGeoTools : all){
+            JSONObject tool = new JSONObject();
+            tool.put("id", dscGeoTools.getId());
+            tool.put("label", dscGeoTools.getName());
+            tool.put("isLeaf", true);
+            switch (dscGeoTools.getType()){
+                case "Data Tools":
+                    Data_Tools.add(tool);
+                    break;
+                case "Geomorphometric Analysis":
+                    GeomorphometricAnalysis.add(tool);
+                    break;
+                case "GIS Analysis":
+                    GISAnalysis.add(tool);
+                    break;
+                case "Hydrological Analysis":
+                    HydrologicalAnalysis.add(tool);
+                    break;
+                case "Image Analysis":
+                    ImageAnalysis.add(tool);
+                    break;
+                case "LiDAR Analysis":
+                    LiDARAnalysis.add(tool);
+                    break;
+                case "Mathematical and Statistical Analysis":
+                    MathematicalandStatisticalAnalysis.add(tool);
+                    break;
+                case "Stream Network Analysis":
+                    StreamNetworkAnalysis.add(tool);
+                    break;
+            }
+        }
+        JSONObject data_tools = new JSONObject();
+        data_tools.put("id", IdUtil.objectId());
+        data_tools.put("label", "Data Tools");
+        data_tools.put("isLeaf", false);
+        data_tools.put("children", Data_Tools);
+        JSONObject geomorphometric_analysis = new JSONObject();
+        geomorphometric_analysis.put("id", IdUtil.objectId());
+        geomorphometric_analysis.put("label", "Geomorphometric Analysis");
+        geomorphometric_analysis.put("isLeaf", false);
+        geomorphometric_analysis.put("children", GeomorphometricAnalysis);
+        JSONObject gis_analysis = new JSONObject();
+        gis_analysis.put("id", IdUtil.objectId());
+        gis_analysis.put("label", "GIS Analysis");
+        gis_analysis.put("isLeaf", false);
+        gis_analysis.put("children", GISAnalysis);
+        JSONObject hydrological_analysis = new JSONObject();
+        hydrological_analysis.put("id", IdUtil.objectId());
+        hydrological_analysis.put("label", "Hydrological Analysis");
+        hydrological_analysis.put("isLeaf", false);
+        hydrological_analysis.put("children", HydrologicalAnalysis);
+        JSONObject image_analysis = new JSONObject();
+        image_analysis.put("id", IdUtil.objectId());
+        image_analysis.put("label", "Image Analysis");
+        image_analysis.put("isLeaf", false);
+        image_analysis.put("children", ImageAnalysis);
+        JSONObject lidar_analysis = new JSONObject();
+        lidar_analysis.put("id", IdUtil.objectId());
+        lidar_analysis.put("label", "LiDAR Analysis");
+        lidar_analysis.put("isLeaf", false);
+        lidar_analysis.put("children", LiDARAnalysis);
+        JSONObject mathematical_and_statistical_analysis = new JSONObject();
+        mathematical_and_statistical_analysis.put("id", IdUtil.objectId());
+        mathematical_and_statistical_analysis.put("label", "Mathematical and Statistical Analysis");
+        mathematical_and_statistical_analysis.put("isLeaf", false);
+        mathematical_and_statistical_analysis.put("children", MathematicalandStatisticalAnalysis);
+        JSONObject stream_network_analysis = new JSONObject();
+        stream_network_analysis.put("id", IdUtil.objectId());
+        stream_network_analysis.put("label", "Stream Network Analysis");
+        stream_network_analysis.put("isLeaf", false);
+        stream_network_analysis.put("children", StreamNetworkAnalysis);
+        ArrayList<JSONObject> all_tools = new ArrayList<>();
+        all_tools.add(data_tools);
+        all_tools.add(geomorphometric_analysis);
+        all_tools.add(gis_analysis);
+        all_tools.add(hydrological_analysis);
+        all_tools.add(image_analysis);
+        all_tools.add(lidar_analysis);
+        all_tools.add(mathematical_and_statistical_analysis);
+        all_tools.add(stream_network_analysis);
+        System.out.println(all_tools);
+    }
+    @Test
+    void  testPWD() {
+        CommonResult<String> pwd = dscCatalogService.pwd("8174f833-2a40-4cde-8fb5-20ac26f3174f");
+        System.out.println("pwd.getData() = " + pwd.getData());
+    }
+
 }

@@ -60,6 +60,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
         String sceneId = Objects.equals(saveGDVSceneDTO.getSceneId(), "") ? IdUtil.randomUUID() : saveGDVSceneDTO.getSceneId();
         MultipartFile thumbnail = saveGDVSceneDTO.getThumbnail();
         String contentType = thumbnail.getContentType();
+        System.out.println("contentType = " + contentType);
         String ext = MimeTypesUtil.getDefaultExt(contentType);
         DscUserScene isExist = dscUserSceneDAO.findByUserIdAndSceneName(userId, saveGDVSceneDTO.getName());
         if(!Objects.isNull(isExist) && !isExist.getSceneId().equals(sceneId)) {

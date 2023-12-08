@@ -1,6 +1,8 @@
 package nnu.wyz.systemMS.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @description:
@@ -8,6 +10,8 @@ import lombok.Data;
  * @time: 2023/9/20 19:57
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageableDTO {
     private String criteria;
     private Integer pageIndex;

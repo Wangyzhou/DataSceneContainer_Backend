@@ -137,6 +137,7 @@ public class MimeTypesUtil {
             {
                 put1("xul", MIME_APPLICATION_VND_MOZZILLA_XUL_XML);
                 put1("json", MIME_APPLICATION_JSON);
+                put1("geojson", MIME_APPLICATION_JSON);
                 put1("ice", MIME_X_CONFERENCE_X_COOLTALK);
                 put1("movie", MIME_VIDEO_X_SGI_MOVIE);
                 put1("avi", MIME_VIDEO_X_MSVIDEO);

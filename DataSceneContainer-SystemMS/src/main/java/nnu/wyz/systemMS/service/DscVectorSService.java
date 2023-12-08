@@ -1,6 +1,7 @@
 package nnu.wyz.systemMS.service;
 
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
 import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
 import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
@@ -15,11 +16,13 @@ public interface DscVectorSService {
 
     void getMvt(int zoom, int x, int y, String tableName, HttpServletResponse response);
 
-    CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(String userId, Integer pageIndex);
+    CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(PageableDTO pageableDTO);
 
     CommonResult<String> deleteVectorService(String userId, String vectorSId);
 
     CommonResult<List<DscVectorServiceInfo>> getVectorServicesByFileId(String fileId);
 
     CommonResult<String> publishGeoJSON2VectorS(PublishGeoJSONDTO publishGeoJSONDTO);
+
+    CommonResult<List<DscVectorServiceInfo>> getVectorServiceListByFileId(String fileId);
 }

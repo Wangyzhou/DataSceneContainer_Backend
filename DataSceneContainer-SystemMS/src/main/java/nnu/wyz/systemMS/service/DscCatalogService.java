@@ -28,4 +28,6 @@ public interface DscCatalogService {
     CommonResult<List<JSONObject>> getCatalogChildrenTree(String rootCatalog);
 
     CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(PageableDTO pageableDTO);
+
+    CommonResult<String> pwd(String catalogId);
 }

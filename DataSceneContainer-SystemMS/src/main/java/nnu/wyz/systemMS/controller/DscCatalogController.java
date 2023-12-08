@@ -41,13 +41,14 @@ public class DscCatalogController {
     }
 
     @ApiOperation(value = "分页获取目录节点列表")
-    @GetMapping("/getChildrenByPageable/{catalogId}/{pageIndex}")
+    @GetMapping("/getChildrenByPageable/{catalogId}/{pageSize}/{pageIndex}")
     public CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(@PathVariable("catalogId") String catalogId,
+                                                                            @PathVariable("pageSize") Integer pageSize,
                                                                             @PathVariable("pageIndex") Integer pageIndex) {
         PageableDTO pageableDTO = new PageableDTO();
         pageableDTO.setCriteria(catalogId);
         pageableDTO.setPageIndex(pageIndex);
-        pageableDTO.setPageSize(12);
+        pageableDTO.setPageSize(pageSize);
         return catalogService.getChildrenByPageable(pageableDTO);
     }
 
@@ -67,5 +68,11 @@ public class DscCatalogController {
     @GetMapping(value = "/getCatalogChildrenTree/{rootCatalog}")
     public CommonResult<List<JSONObject>> getCatalogChildrenTree(@PathVariable("rootCatalog") String rootCatalog) {
         return catalogService.getCatalogChildrenTree(rootCatalog);
+    }
+
+    @ApiOperation(value = "获取当前文件夹路径（前端）")
+    @GetMapping(value = "/pwd/{catalogId}")
+    public CommonResult<String> pwd(@PathVariable("catalogId") String catalogId) {
+        return catalogService.pwd(catalogId);
     }
 }

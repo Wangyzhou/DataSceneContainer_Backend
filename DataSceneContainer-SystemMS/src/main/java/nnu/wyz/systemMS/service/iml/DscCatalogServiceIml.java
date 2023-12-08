@@ -257,8 +257,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
         }
         DscCatalog dscCatalog = byId.get();
         List<CatalogChildrenDTO> children = dscCatalog.getChildren();
-        List<CatalogChildrenDTO> childrenDTOS = children.stream().filter(item -> item.getType().equals("folder")).sorted((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())).collect(Collectors.toList());
-        List<CatalogChildrenDTO> noFolders = children.stream().filter(item -> !item.getType().equals("folder")).sorted((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())).collect(Collectors.toList());
+        List<CatalogChildrenDTO> childrenDTOS = children.stream().filter(item -> item.getType().equals("folder")).sorted(Comparator.comparing(CatalogChildrenDTO::getName)).collect(Collectors.toList());
+        List<CatalogChildrenDTO> noFolders = children.stream().filter(item -> !item.getType().equals("folder")).sorted(Comparator.comparing(CatalogChildrenDTO::getName)).collect(Collectors.toList());
         childrenDTOS.addAll(noFolders);
         List<CatalogChildrenDTO> results = childrenDTOS.stream().skip((long) (pageIndex - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
         PageInfo<CatalogChildrenDTO> pageInfo = new PageInfo<>();
@@ -266,5 +266,24 @@ public class DscCatalogServiceIml implements DscCatalogService {
         pageInfo.setCount(children.size());
         pageInfo.setPageNum((children.size() / pageSize) + 1);
         return CommonResult.success(pageInfo, "获取第" + pageIndex + "页目录列表成功！");
+    }
+
+    @Override
+    public CommonResult<String> pwd(String catalogId) {
+        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed("不存在此目录");
+        }
+        DscCatalog dscCatalog = byId.get();
+        StringBuilder path = new StringBuilder();
+        while(true) {
+            path.insert(0, " / " + dscCatalog.getName());
+            Optional<DscCatalog> byId1 = dscCatalogDAO.findById(dscCatalog.getParent());
+            if (!byId1.isPresent()) {
+                break;
+            }
+            dscCatalog = byId1.get();
+        }
+        return CommonResult.success(path.toString(), "获取成功");
     }
 }

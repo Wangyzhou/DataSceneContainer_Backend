@@ -7,6 +7,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
 import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
 import nnu.wyz.systemMS.model.entity.*;
@@ -198,17 +199,24 @@ public class DscVectorSServiceIml implements DscVectorSService {
     }
 
     @Override
-    public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(String userId, Integer pageIndex) {
-        List<DscUserVectorS> allByUserId = dscUserVectorSDAO.findAllByUserId(userId);
-        List<DscVectorServiceInfo> dscVectorServiceInfos = allByUserId
+    public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(PageableDTO pageableDTO) {
+        String userId = pageableDTO.getCriteria();
+        Integer pageIndex = pageableDTO.getPageIndex();
+        Integer pageSize = pageableDTO.getPageSize();
+        List<DscVectorServiceInfo> vsListNoLimit = dscUserVectorSDAO.findAllByUserId(userId)
                 .stream()
                 .map(DscUserVectorS::getVectorSId)
-                .map(vectorId -> dscVectorSDAO.findById(vectorId).get())
-                .sorted(((o1, o2) -> CompareUtil.compare(o1.getName(), o2.getName())))
-                .skip((pageIndex - 1) * 12L)
-                .limit(12)
+                .map(dscVectorSDAO::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted(Comparator.comparing(DscVectorServiceInfo::getName))
                 .collect(Collectors.toList());
-        PageInfo<DscVectorServiceInfo> pageInfo = new PageInfo<>(dscVectorServiceInfos, dscVectorServiceInfos.size(), dscVectorServiceInfos.size() / 12 + 1);
+        List<DscVectorServiceInfo> dscVectorServiceInfos = vsListNoLimit
+                .stream()
+                .skip((long) (pageIndex - 1) * pageSize)
+                .limit(pageSize)
+                .collect(Collectors.toList());
+        PageInfo<DscVectorServiceInfo> pageInfo = new PageInfo<>(dscVectorServiceInfos, vsListNoLimit.size(), vsListNoLimit.size() / pageSize + 1);
         return CommonResult.success(pageInfo, "获取成功！");
     }
 
@@ -315,5 +323,11 @@ public class DscVectorSServiceIml implements DscVectorSService {
         dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() + 1);
         dscFileDAO.save(dscFileInfo);
         return CommonResult.success("发布成功！");
+    }
+
+    @Override
+    public CommonResult<List<DscVectorServiceInfo>> getVectorServiceListByFileId(String fileId) {
+        List<DscVectorServiceInfo> allByFileId = dscVectorSDAO.findAllByFileId(fileId);
+        return CommonResult.success(allByFileId, "获取成功!");
     }
 }

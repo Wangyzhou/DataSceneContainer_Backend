@@ -1,6 +1,7 @@
 package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.db.Page;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -10,15 +11,18 @@ import nnu.wyz.systemMS.config.MongoTransactional;
 import nnu.wyz.systemMS.dao.DscGDVSceneConfigDAO;
 import nnu.wyz.systemMS.dao.DscSceneDAO;
 import nnu.wyz.systemMS.dao.DscUserSceneDAO;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.entity.DscGDVSceneConfig;
 import nnu.wyz.systemMS.model.entity.DscScene;
 import nnu.wyz.systemMS.model.entity.DscUserScene;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
 import nnu.wyz.systemMS.service.DscSceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -47,20 +51,24 @@ public class DscSceneServiceIml implements DscSceneService {
     private AmazonS3 amazonS3;
 
     @Override
-    public CommonResult<List<DscScene>> getSceneList(String userId) {
-        List<DscUserScene> allByUserId = dscUserSceneDAO.findAllByUserId(userId);
-        Iterator<DscUserScene> iterator = allByUserId.iterator();
-        ArrayList<DscScene> sceneList = new ArrayList<>();
-        while (iterator.hasNext()) {
-            DscUserScene dscUserScene = iterator.next();
-            String sceneId = dscUserScene.getSceneId();
-            Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
-            if (byId.isPresent()) {
-                DscScene dscScene = byId.get();
-                sceneList.add(dscScene);
-            }
-        }
-        return CommonResult.success(sceneList, "获取场景列表成功！");
+    public CommonResult<PageInfo<DscScene>> getSceneList(PageableDTO pageableDTO) {
+        String userId = pageableDTO.getCriteria();
+        Integer pageIndex = pageableDTO.getPageIndex();
+        Integer pageSize = pageableDTO.getPageSize();
+        List<DscScene> sceneListNoLimit = dscUserSceneDAO.findAllByUserId(userId)
+                .stream()
+                .map(DscUserScene::getSceneId)
+                .map(dscSceneDAO::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted(Comparator.comparing(DscScene::getUpdatedTime).reversed()).collect(Collectors.toList());
+        List<DscScene> sceneList = sceneListNoLimit
+                .stream()
+                .skip((long) (pageIndex - 1) * pageSize)
+                .limit(pageSize)
+                .collect(Collectors.toList());
+        PageInfo<DscScene> dscScenePageInfo = new PageInfo<>(sceneList, sceneListNoLimit.size(), sceneListNoLimit.size() / pageSize + 1);
+        return CommonResult.success(dscScenePageInfo, "获取场景列表成功！");
     }
 
     @Override

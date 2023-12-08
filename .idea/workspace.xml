@@ -10,28 +10,34 @@
     <option name="showLibraryBeans" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="增加图片的发布、目录树等接口Z">
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/CompareUtil.java" afterDir="false" />
+    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="增加资源管理界面的分页功能">
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscDASceneController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGeoToolsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscGeoToolsDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscGeoTools.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGeoToolsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/testUUID.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscCatalogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscCatalogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGDVSceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGDVSceneController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscMessageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscMessageController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscRasterServiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscRasterServiceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscSceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscSceneController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscVectorServiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscVectorServiceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/MessagePageDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/PageableDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/GDVSceneSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/GDVSceneSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/MsgPageInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/PageInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscRasterSDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscRasterSDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscVectorSDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscVectorSDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/PageableDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/PageableDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscCatalogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscCatalogService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGDVSceneService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGDVSceneService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscMessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscMessageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscRasterSService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscRasterSService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscSceneService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscSceneService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscVectorSService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscVectorSService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscMessageServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscMessageServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscRasterSServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscRasterSServiceIml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscSceneServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscSceneServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscVectorSServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscVectorSServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/websocket/WebSocketServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/websocket/WebSocketServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/SysUploadTaskServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/SysUploadTaskServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/MimeTypesUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/MimeTypesUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/test.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -173,7 +179,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.test.testGetCatalogChildren">
+  <component name="RunManager" selected="JUnit.test.testPWD">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.Main" />
       <module name="DataSceneContainer-SystemMS" />
@@ -215,6 +221,19 @@
     </configuration>
     <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.test" />
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testUUID" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.testUUID" />
       <module name="DataSceneContainer-SystemMS" />
       <extension name="coverage">
         <pattern>
@@ -370,6 +389,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test.deleteFile" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="deleteFile" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test.test1 (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-UserMS" />
       <extension name="coverage">
@@ -380,38 +415,6 @@
       </extension>
       <option name="PACKAGE_NAME" value="nnu.wyz.userMS" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.userMS.test" />
-      <option name="METHOD_NAME" value="test1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test1 (2)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="test1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test1 (3)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
       <option name="METHOD_NAME" value="test1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
@@ -546,22 +549,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test.testCMD" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
-      <option name="METHOD_NAME" value="testCMD" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="test.testCopyFile" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-SystemMS" />
       <extension name="coverage">
@@ -605,6 +592,22 @@
       <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
       <option name="METHOD_NAME" value="testGeoJSONUtil" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testGeoTools" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testGeoTools" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -674,6 +677,38 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test.testGetSceneList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testGetSceneList" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testGetSceneListByTime" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testGetSceneListByTime" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test.testGetShpAttrInfoFromPG" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-FileMS" />
       <extension name="coverage">
@@ -722,6 +757,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test.testPWD" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testPWD" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test.testParseGeoJSON" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-SystemMS" />
       <extension name="coverage">
@@ -749,22 +800,6 @@
       <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
       <option name="METHOD_NAME" value="testRegister" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testRemote" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
-      <option name="METHOD_NAME" value="testRemote" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -813,38 +848,6 @@
       <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
       <option name="METHOD_NAME" value="testTransfer" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testUnzip" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
-      <option name="METHOD_NAME" value="testUnzip" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testUpload" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testUpload" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -1041,6 +1044,7 @@
     </configuration>
     <list>
       <item itemvalue="Application.nnu.wyz.systemMS.model.param.test" />
+      <item itemvalue="Application.testUUID" />
       <item itemvalue="Application.TESTMAIN" />
       <item itemvalue="Application.test" />
       <item itemvalue="Application.Main" />
@@ -1054,7 +1058,12 @@
       <item itemvalue="Docker.dsc-services-opengmsS" />
       <item itemvalue="Docker.services-docker-compose.yml.gateway: Compose Deployment" />
       <item itemvalue="Docker.services-docker-compose.yml.system-core: Compose Deployment" />
+      <item itemvalue="JUnit.test.testGeoTools" />
+      <item itemvalue="JUnit.test.testPWD" />
+      <item itemvalue="JUnit.test.deleteFile" />
       <item itemvalue="JUnit.test.testGetCatalogChildren" />
+      <item itemvalue="JUnit.test.testGetSceneList" />
+      <item itemvalue="JUnit.test.testGetSceneListByTime" />
       <item itemvalue="JUnit.test.testSortCatalog" />
       <item itemvalue="JUnit.test.test2122" />
       <item itemvalue="JUnit.test.testRegister" />
@@ -1069,12 +1078,6 @@
       <item itemvalue="JUnit.test.testGetFields" />
       <item itemvalue="JUnit.test.testGetShpAttrInfoFromPG" />
       <item itemvalue="JUnit.test.testGetUniqueValue" />
-      <item itemvalue="JUnit.test.test1 (3)" />
-      <item itemvalue="JUnit.test.testCMD" />
-      <item itemvalue="JUnit.test.testRemote" />
-      <item itemvalue="JUnit.test.testUnzip" />
-      <item itemvalue="JUnit.test.testUpload" />
-      <item itemvalue="JUnit.test.test1 (2)" />
       <item itemvalue="JUnit.test.testCopyFile" />
       <item itemvalue="JUnit.test.testGetFile" />
       <item itemvalue="JUnit.testMapper.Test111" />
@@ -1101,6 +1104,12 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.test.testPWD" />
+        <item itemvalue="JUnit.test.testGeoTools" />
+        <item itemvalue="JUnit.test.deleteFile" />
+        <item itemvalue="Application.testUUID" />
+        <item itemvalue="JUnit.test.testGetSceneList" />
+        <item itemvalue="JUnit.test.testGetSceneListByTime" />
         <item itemvalue="JUnit.test.testGetCatalogChildren" />
         <item itemvalue="JUnit.test.testSortCatalog" />
         <item itemvalue="Application.nnu.wyz.systemMS.model.param.test" />
@@ -1145,12 +1154,6 @@
         <item itemvalue="JUnit.testMapper.testFind" />
         <item itemvalue="JUnit.testMapper.testCatalog" />
         <item itemvalue="JUnit.testMapper.Test111" />
-        <item itemvalue="JUnit.test.testGetFile" />
-        <item itemvalue="JUnit.test.testCopyFile" />
-        <item itemvalue="JUnit.test.test1 (2)" />
-        <item itemvalue="JUnit.test.testUpload" />
-        <item itemvalue="JUnit.test.testUnzip" />
-        <item itemvalue="JUnit.test.testRemote" />
       </list>
     </recent_temporary>
   </component>
@@ -1216,7 +1219,10 @@
       <workItem from="1698040937694" duration="20789000" />
       <workItem from="1698303244504" duration="9277000" />
       <workItem from="1698654410193" duration="47748000" />
-      <workItem from="1698907526173" duration="27003000" />
+      <workItem from="1698907526173" duration="49211000" />
+      <workItem from="1700036594713" duration="4306000" />
+      <workItem from="1700207762535" duration="759000" />
+      <workItem from="1700547665398" duration="27938000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -1327,7 +1333,14 @@
       <option name="project" value="LOCAL" />
       <updated>1698914766622</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="增加资源管理界面的分页功能">
+      <created>1699279326628</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1699279326628</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1367,7 +1380,8 @@
     <MESSAGE value="little modify" />
     <MESSAGE value="增加图片的发布、目录树等接口" />
     <MESSAGE value="增加图片的发布、目录树等接口Z" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加图片的发布、目录树等接口Z" />
+    <MESSAGE value="增加资源管理界面的分页功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加资源管理界面的分页功能" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1424,17 +1438,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>238</line>
+          <line>241</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>256</line>
+          <line>259</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>263</line>
+          <line>266</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1454,27 +1468,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscVectorSServiceIml.java</url>
-          <line>142</line>
+          <line>143</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscVectorServiceController.java</url>
-          <line>32</line>
+          <line>33</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscVectorServiceController.java</url>
-          <line>47</line>
+          <line>50</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>270</line>
+          <line>273</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>334</line>
+          <line>337</line>
           <option name="timeStamp" value="59" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1484,7 +1498,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>346</line>
+          <line>349</line>
           <option name="timeStamp" value="72" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1504,22 +1518,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>234</line>
+          <line>237</line>
           <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>376</line>
+          <line>380</line>
           <option name="timeStamp" value="78" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>368</line>
+          <line>371</line>
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>404</line>
+          <line>411</line>
           <option name="timeStamp" value="88" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1529,13 +1543,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>405</line>
+          <line>412</line>
           <option name="timeStamp" value="91" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
-          <line>411</line>
+          <line>418</line>
           <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
+          <line>627</line>
+          <option name="timeStamp" value="96" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="97" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/GeoJSONUtil.java</url>

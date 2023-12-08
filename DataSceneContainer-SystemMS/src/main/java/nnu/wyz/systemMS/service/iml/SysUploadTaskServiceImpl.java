@@ -15,6 +15,7 @@ import nnu.wyz.systemMS.model.dto.TaskRecordDTO;
 import nnu.wyz.systemMS.model.entity.SysUploadTask;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
 import nnu.wyz.systemMS.service.SysUploadTaskService;
+import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

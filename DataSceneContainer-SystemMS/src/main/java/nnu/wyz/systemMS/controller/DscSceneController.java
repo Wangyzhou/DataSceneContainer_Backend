@@ -3,7 +3,9 @@ package nnu.wyz.systemMS.controller;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.entity.DscScene;
+import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscSceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +25,12 @@ public class DscSceneController {
     @Autowired
     private DscSceneService dscSceneService;
 
-    @GetMapping("/getList/{userId}")
-    public CommonResult<List<DscScene>> getSceneList(@PathVariable("userId") String userId) {
-        return dscSceneService.getSceneList(userId);
+    @GetMapping("/getList/{userId}/{pageSize}/{pageIndex}")
+    public CommonResult<PageInfo<DscScene>> getSceneList(@PathVariable("userId") String userId,
+                                                         @PathVariable("pageSize") Integer pageSize,
+                                                         @PathVariable("pageIndex") Integer pageIndex) {
+        PageableDTO pageableDTO = new PageableDTO(userId, pageIndex, pageSize);
+        return dscSceneService.getSceneList(pageableDTO);
     }
 
     @DeleteMapping("/delete/{userId}/{sceneId}")

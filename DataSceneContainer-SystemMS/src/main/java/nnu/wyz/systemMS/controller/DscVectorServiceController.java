@@ -1,6 +1,7 @@
 package nnu.wyz.systemMS.controller;
 
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
 import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
 import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
@@ -37,14 +38,21 @@ public class DscVectorServiceController {
     public void getMvt(@PathVariable int zoom, @PathVariable int x, @PathVariable int y, @PathVariable String tableName, HttpServletResponse response) {
         dscVectorSService.getMvt(zoom, x, y, tableName, response);
     }
-    @GetMapping(value = "/getVectorSList/{userId}/{pageIndex}")
+    @GetMapping(value = "/getVectorSList/{userId}/{pageSize}/{pageIndex}")
     public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorSList(@PathVariable String userId,
+                                                                       @PathVariable Integer pageSize,
                                                                        @PathVariable Integer pageIndex) {
-        return dscVectorSService.getVectorServiceList(userId, pageIndex);
+        PageableDTO pageableDTO = new PageableDTO(userId, pageIndex, pageSize);
+        return dscVectorSService.getVectorServiceList(pageableDTO);
     }
 
     @DeleteMapping(value = "/delete/{userId}/{vectorSId}")
     public CommonResult<String> deleteVectorS(@PathVariable String userId, @PathVariable String vectorSId) {
         return dscVectorSService.deleteVectorService(userId, vectorSId);
+    }
+
+    @GetMapping(value = "/getVectorSListByFileId/{fileId}")
+    public CommonResult<List<DscVectorServiceInfo>> getVectorSListByFileId(@PathVariable String fileId) {
+        return dscVectorSService.getVectorServiceListByFileId(fileId);
     }
 }
