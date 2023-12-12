@@ -12,5 +12,7 @@ public interface DscUserDAO extends MongoRepository<DscUser, String> {
 
     DscUser findDscUserByActiveCode(String activeCode);
 
+    DscUser findDscUserById(String Id);
+
     List<DscUser> findAllByEnabled(int enabled);
 }

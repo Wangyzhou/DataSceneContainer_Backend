@@ -10,34 +10,17 @@
     <option name="showLibraryBeans" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="增加资源管理界面的分页功能">
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscDASceneController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGeoToolsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscGeoToolsDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscGeoTools.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGeoToolsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/testUUID.java" afterDir="false" />
+    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="修改目录接口">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscCatalogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscCatalogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscRasterServiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscRasterServiceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscSceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscSceneController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscVectorServiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscVectorServiceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscRasterSDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscRasterSDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscVectorSDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscVectorSDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/PageableDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/dto/PageableDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscCatalogDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscCatalogDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscUserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscUserDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscCatalogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscCatalogService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscRasterSService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscRasterSService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscSceneService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscSceneService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscVectorSService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscVectorSService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscUserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGDVSceneServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscRasterSServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscRasterSServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscSceneServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscSceneServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscVectorSServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscVectorSServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/SysUploadTaskServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/SysUploadTaskServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/MimeTypesUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/MimeTypesUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +52,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="mfz" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -79,6 +62,9 @@
     &quot;state&quot;: &quot;OPEN&quot;
   }
 }</component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="a763e630-c3ac-454f-a301-08ea739b4aaa" />
+  </component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -89,7 +75,6 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="jar://E:/mavenRepository/repository/org/springframework/spring-aop/5.3.23/spring-aop-5.3.23.jar!/org/springframework/aop/framework/CglibAopProxy.class" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -97,9 +82,9 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHome" value="$PROJECT_DIR$/../../majorSoftware/apache-maven-3.8.6" />
+        <option name="localRepository" value="D:\Environment\Maven\mvn-repository" />
         <option name="useMavenConfig" value="true" />
-        <option name="userSettingsFile" value="D:\majorSoftware\apache-maven-3.8.6\conf\settings.xml" />
+        <option name="userSettingsFile" value="D:\Environment\Maven\settings.xml" />
       </MavenGeneralSettings>
     </option>
   </component>
@@ -111,41 +96,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-1.8&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/project/DataSceneContainer_Backend/middleware-docker-compose.yml&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;a5ee9cb53076f0ba4fb277a9f547abc7&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "master",
+    "jdk.selected.JAVA_MODULE": "corretto-1.8",
+    "last_opened_file_path": "D:/project/DataSceneContainer_Backend/middleware-docker-compose.yml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "spring.configuration.checksum": "7d2706c0f2e5203e0ba4e994de706b24",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;,
-      &quot;mongo&quot;,
-      &quot;redis&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql",
+      "mongo",
+      "redis"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -179,328 +164,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.test.testPWD">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.Main" />
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TESTMAIN" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.TESTMAIN" />
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="nnu.wyz.systemMS.model.param.test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.model.param.test" />
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.model.param.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.test" />
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testUUID" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.utils.testUUID" />
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.Test111" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="Test111" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.base64" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="base64" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.createJWT" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="createJWT" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.parseJWT" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="parseJWT" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.test1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="test1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="test2" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.testCatalog" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="testCatalog" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.testClient" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="testClient" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testMapper.testFind" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Auth-Central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.testMapper" />
-      <option name="METHOD_NAME" value="testFind" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.deleteFile" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="deleteFile" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test1 (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-UserMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.userMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.userMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.userMS.test" />
-      <option name="METHOD_NAME" value="test1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-Gateway" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.test" />
-      <option name="METHOD_NAME" value="test1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test1431" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="test1431" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test14312" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="test14312" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-UserMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.userMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.userMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.userMS.test" />
-      <option name="METHOD_NAME" value="test2" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test2122" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="test2122" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="test.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-Gateway" />
       <extension name="coverage">
@@ -512,342 +176,6 @@
       <option name="PACKAGE_NAME" value="nnu.wyz" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.test" />
       <option name="METHOD_NAME" value="test2" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-UserMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.userMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.userMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.userMS.test" />
-      <option name="METHOD_NAME" value="test3" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.test4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-UserMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.userMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.userMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.userMS.test" />
-      <option name="METHOD_NAME" value="test4" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testCopyFile" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testCopyFile" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testDeleteObjects" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testDeleteObjects" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGeoJSONUtil" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testGeoJSONUtil" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGeoTools" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testGeoTools" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetCatalogChildren" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testGetCatalogChildren" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetFields" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
-      <option name="METHOD_NAME" value="testGetFields" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetFile" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testGetFile" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetGeoJSON" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testGetGeoJSON" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetSceneList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testGetSceneList" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetSceneListByTime" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testGetSceneListByTime" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetShpAttrInfoFromPG" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
-      <option name="METHOD_NAME" value="testGetShpAttrInfoFromPG" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testGetUniqueValue" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.fileMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.fileMS.test" />
-      <option name="METHOD_NAME" value="testGetUniqueValue" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testInitMinio" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testInitMinio" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testPWD" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testPWD" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testParseGeoJSON" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testParseGeoJSON" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testRegister" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testRegister" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testSelectUserByEmail" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-UserMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.userMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.userMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.userMS.test" />
-      <option name="METHOD_NAME" value="testSelectUserByEmail" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testSortCatalog" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testSortCatalog" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test.testTransfer" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-SystemMS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
-      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
-      <option name="METHOD_NAME" value="testTransfer" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -860,19 +188,6 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="nnu.wyz.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DscFileMain" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="DataSceneContainer-FileMS" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="nnu.wyz.fileMS.DscFileMain" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="nnu.wyz.fileMS.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -1016,38 +331,7 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="services-docker-compose.yml.gateway: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="172,.21.213.86部署服务器">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="services">
-            <list>
-              <option value="gateway" />
-            </list>
-          </option>
-          <option name="sourceFilePath" value="services-docker-compose.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <configuration name="services-docker-compose.yml.system-core: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="172,.21.213.86部署服务器">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="services">
-            <list>
-              <option value="system-core" />
-            </list>
-          </option>
-          <option name="sourceFilePath" value="services-docker-compose.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Application.nnu.wyz.systemMS.model.param.test" />
-      <item itemvalue="Application.testUUID" />
-      <item itemvalue="Application.TESTMAIN" />
-      <item itemvalue="Application.test" />
-      <item itemvalue="Application.Main" />
       <item itemvalue="Docker.dsc-db-测试服务器" />
       <item itemvalue="Docker.dsc-middlewares-测试服务器" />
       <item itemvalue="Docker.dsc-db" />
@@ -1056,46 +340,6 @@
       <item itemvalue="Docker.dsc-db-opengmsS" />
       <item itemvalue="Docker.dsc-middleware-opengmsS" />
       <item itemvalue="Docker.dsc-services-opengmsS" />
-      <item itemvalue="Docker.services-docker-compose.yml.gateway: Compose Deployment" />
-      <item itemvalue="Docker.services-docker-compose.yml.system-core: Compose Deployment" />
-      <item itemvalue="JUnit.test.testGeoTools" />
-      <item itemvalue="JUnit.test.testPWD" />
-      <item itemvalue="JUnit.test.deleteFile" />
-      <item itemvalue="JUnit.test.testGetCatalogChildren" />
-      <item itemvalue="JUnit.test.testGetSceneList" />
-      <item itemvalue="JUnit.test.testGetSceneListByTime" />
-      <item itemvalue="JUnit.test.testSortCatalog" />
-      <item itemvalue="JUnit.test.test2122" />
-      <item itemvalue="JUnit.test.testRegister" />
-      <item itemvalue="JUnit.test.testTransfer" />
-      <item itemvalue="JUnit.test.testInitMinio" />
-      <item itemvalue="JUnit.test.testGeoJSONUtil" />
-      <item itemvalue="JUnit.test.testGetGeoJSON" />
-      <item itemvalue="JUnit.test.testParseGeoJSON" />
-      <item itemvalue="JUnit.test.test1431" />
-      <item itemvalue="JUnit.test.test14312" />
-      <item itemvalue="JUnit.test.testDeleteObjects" />
-      <item itemvalue="JUnit.test.testGetFields" />
-      <item itemvalue="JUnit.test.testGetShpAttrInfoFromPG" />
-      <item itemvalue="JUnit.test.testGetUniqueValue" />
-      <item itemvalue="JUnit.test.testCopyFile" />
-      <item itemvalue="JUnit.test.testGetFile" />
-      <item itemvalue="JUnit.testMapper.Test111" />
-      <item itemvalue="JUnit.testMapper.testCatalog" />
-      <item itemvalue="JUnit.testMapper.testClient" />
-      <item itemvalue="JUnit.testMapper.testFind" />
-      <item itemvalue="JUnit.test.test2" />
-      <item itemvalue="JUnit.test.test3" />
-      <item itemvalue="JUnit.test.test4" />
-      <item itemvalue="JUnit.test.testSelectUserByEmail" />
-      <item itemvalue="JUnit.test.test1 (1)" />
-      <item itemvalue="JUnit.testMapper.base64" />
-      <item itemvalue="JUnit.test.test1" />
-      <item itemvalue="JUnit.testMapper.createJWT" />
-      <item itemvalue="JUnit.testMapper.parseJWT" />
-      <item itemvalue="JUnit.testMapper.test1" />
-      <item itemvalue="JUnit.testMapper.test2" />
-      <item itemvalue="Spring Boot.DscFileMain" />
       <item itemvalue="Spring Boot.DscAuthMain" />
       <item itemvalue="Spring Boot.DscGatewayMain" />
       <item itemvalue="Spring Boot.DscSystemMain" />
@@ -1104,56 +348,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.test.testPWD" />
-        <item itemvalue="JUnit.test.testGeoTools" />
-        <item itemvalue="JUnit.test.deleteFile" />
-        <item itemvalue="Application.testUUID" />
-        <item itemvalue="JUnit.test.testGetSceneList" />
-        <item itemvalue="JUnit.test.testGetSceneListByTime" />
-        <item itemvalue="JUnit.test.testGetCatalogChildren" />
-        <item itemvalue="JUnit.test.testSortCatalog" />
-        <item itemvalue="Application.nnu.wyz.systemMS.model.param.test" />
-        <item itemvalue="Spring Boot.DscSystemMain" />
-        <item itemvalue="Docker.services-docker-compose.yml.system-core: Compose Deployment" />
-        <item itemvalue="Docker.services-docker-compose.yml.gateway: Compose Deployment" />
-        <item itemvalue="JUnit.test.testGetGeoJSON" />
-        <item itemvalue="JUnit.test.testGeoJSONUtil" />
-        <item itemvalue="JUnit.test.test2122" />
-        <item itemvalue="JUnit.test.testRegister" />
-        <item itemvalue="Spring Boot.DscAuthMain" />
-        <item itemvalue="Application.test" />
-        <item itemvalue="JUnit.test.testInitMinio" />
-        <item itemvalue="JUnit.test.testTransfer" />
-        <item itemvalue="Spring Boot.DscGatewayMain" />
-        <item itemvalue="JUnit.testMapper.testClient" />
-        <item itemvalue="JUnit.test.testDeleteObjects" />
-        <item itemvalue="Application.TESTMAIN" />
-        <item itemvalue="JUnit.test.testParseGeoJSON" />
-        <item itemvalue="Docker.services-docker-compose.yml.system-core: Compose Deployment" />
-        <item itemvalue="Docker.services-docker-compose.yml.gateway: Compose Deployment" />
-        <item itemvalue="JUnit.test.test14312" />
-        <item itemvalue="JUnit.test.test1431" />
-        <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.test.testGetShpAttrInfoFromPG" />
-        <item itemvalue="JUnit.test.testGetUniqueValue" />
-        <item itemvalue="JUnit.test.testGetFields" />
         <item itemvalue="Spring Boot.UserMSMain" />
         <item itemvalue="Spring Boot.ResourceMSMain" />
-        <item itemvalue="Spring Boot.DscFileMain" />
-        <item itemvalue="JUnit.testMapper.test2" />
-        <item itemvalue="JUnit.testMapper.test1" />
-        <item itemvalue="JUnit.testMapper.parseJWT" />
-        <item itemvalue="JUnit.testMapper.createJWT" />
-        <item itemvalue="JUnit.test.test1" />
-        <item itemvalue="JUnit.testMapper.base64" />
-        <item itemvalue="JUnit.test.test1 (1)" />
-        <item itemvalue="JUnit.test.testSelectUserByEmail" />
-        <item itemvalue="JUnit.test.test4" />
-        <item itemvalue="JUnit.test.test3" />
-        <item itemvalue="JUnit.test.test2" />
-        <item itemvalue="JUnit.testMapper.testFind" />
-        <item itemvalue="JUnit.testMapper.testCatalog" />
-        <item itemvalue="JUnit.testMapper.Test111" />
+        <item itemvalue="Spring Boot.DscSystemMain" />
+        <item itemvalue="Spring Boot.DscGatewayMain" />
+        <item itemvalue="Spring Boot.DscAuthMain" />
       </list>
     </recent_temporary>
   </component>
@@ -1223,6 +422,10 @@
       <workItem from="1700036594713" duration="4306000" />
       <workItem from="1700207762535" duration="759000" />
       <workItem from="1700547665398" duration="27938000" />
+      <workItem from="1702283567549" duration="7468000" />
+      <workItem from="1702347979575" duration="3229000" />
+      <workItem from="1702364402417" duration="4338000" />
+      <workItem from="1702370031574" duration="1248000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -1381,7 +584,8 @@
     <MESSAGE value="增加图片的发布、目录树等接口" />
     <MESSAGE value="增加图片的发布、目录树等接口Z" />
     <MESSAGE value="增加资源管理界面的分页功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加资源管理界面的分页功能" />
+    <MESSAGE value="修改目录接口" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改目录接口" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
