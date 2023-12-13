@@ -8,6 +8,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.dto.UserLoginDTO;
 import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
+import nnu.wyz.systemMS.model.entity.DscUser;
 import nnu.wyz.systemMS.service.DscUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
@@ -82,5 +83,11 @@ public class DscUserController {
     @GetMapping(value = "/getUserByEmailLike/{keyWord}")
     public CommonResult<List<ReturnUsersByEmailLikeDTO>> getUserByEmailLike(@PathVariable("keyWord") String keyWord) {
         return dscUserService.getUserByEmailLike(keyWord);
+    }
+
+    @ApiOperation(value = "查询个人信息")
+    @GetMapping(value = "/getUserInfo/{userId}")
+    public CommonResult<DscUser> getUserInfo(@PathVariable("userId") String userId){
+        return dscUserService.getUserInfo(userId);
     }
 }

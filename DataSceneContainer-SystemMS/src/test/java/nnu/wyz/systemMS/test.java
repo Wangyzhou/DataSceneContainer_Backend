@@ -415,7 +415,7 @@ public class test {
 
     @Test
     void testSortCatalog() {
-        CommonResult<List<CatalogChildrenDTO>> children = dscCatalogService.getChildren("ce344b9e-0b68-46b1-9765-e50922855b6f", "652a48fde4b01213a180bb5a");
+        CommonResult<List<CatalogChildrenDTO>> children = dscCatalogService.getChildren("ce344b9e-0b68-46b1-9765-e50922855b6f");
         List<CatalogChildrenDTO> data = children.getData();
         List<String> dataNoFolder = data.stream().filter(d -> !d.getType().equals("folder")).map(CatalogChildrenDTO::getName).collect(Collectors.toList());
         Collections.sort(dataNoFolder, (str1, str2) -> {

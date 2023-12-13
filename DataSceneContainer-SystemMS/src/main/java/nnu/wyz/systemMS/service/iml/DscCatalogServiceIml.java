@@ -102,8 +102,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
     }
 
     @Override
-    public CommonResult<List<CatalogChildrenDTO>> getChildren(String catalogId, String userId) {
-        DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogByIdAndUserId(catalogId, userId);
+    public CommonResult<List<CatalogChildrenDTO>> getChildren(String catalogId) {
+        DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogById(catalogId);
         if (Objects.isNull(dscCatalog)) {
             return CommonResult.failed();
         }

@@ -397,4 +397,10 @@ public class DscUserServiceIml implements DscUserService {
         return CommonResult.success(returnUsers, "获取成功！");
     }
 
+    @Override
+    public CommonResult<DscUser> getUserInfo(String userId) {
+        DscUser user = dscUserDAO.findDscUserById(userId);
+        System.out.println(user);
+        return CommonResult.success(user, "获取个人信息配置成功！");
+    }
 }

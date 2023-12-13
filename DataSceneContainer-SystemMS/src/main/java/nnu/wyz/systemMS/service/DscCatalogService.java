@@ -14,7 +14,7 @@ public interface DscCatalogService {
 
     void createRootCatalog(String userId);
 
-    CommonResult<List<CatalogChildrenDTO>> getChildren(String catalogId, String userId);
+    CommonResult<List<CatalogChildrenDTO>> getChildren(String catalogId);
 
     CommonResult<String> delete(String catalogId);
 
@@ -25,6 +25,11 @@ public interface DscCatalogService {
      */
     CommonResult<List<JSONObject>> getOnlyCatalogTree(String rootCatalog);
 
+    /**
+     * 获取完整的目录树（既包含目录，也包含文件）
+     * @param rootCatalog
+     * @return
+     */
     CommonResult<List<JSONObject>> getCatalogChildrenTree(String rootCatalog);
 
     CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(PageableDTO pageableDTO);

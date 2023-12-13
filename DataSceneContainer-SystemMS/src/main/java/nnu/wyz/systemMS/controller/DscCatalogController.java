@@ -34,10 +34,9 @@ public class DscCatalogController {
     }
 
     @ApiOperation(value = "获取目录孩子列表")
-    @GetMapping("/getChildren")
-    public CommonResult<List<CatalogChildrenDTO>> getChildren(@RequestParam("catalogId") String catalogId,
-                                                              @RequestParam("userId") String userId) {
-        return catalogService.getChildren(catalogId, userId);
+    @GetMapping("/getChildren/{catalogId}")
+    public CommonResult<List<CatalogChildrenDTO>> getChildren(@PathVariable("catalogId") String catalogId) {
+        return catalogService.getChildren(catalogId);
     }
 
     @ApiOperation(value = "分页获取目录节点列表")

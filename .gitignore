@@ -9,6 +9,7 @@ target/
 .idea/compiler.xml
 .idea/libraries/
 .idea/workspace.xml
+.idea/dataSources.local.xml
 *.iws
 *.iml
 *.ipr
