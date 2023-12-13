@@ -10,9 +10,7 @@
     <option name="showLibraryBeans" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="增加资源管理界面的分页功能">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="修修改改2" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -1354,7 +1352,8 @@
     <MESSAGE value="增加图片的发布、目录树等接口" />
     <MESSAGE value="增加图片的发布、目录树等接口Z" />
     <MESSAGE value="增加资源管理界面的分页功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加资源管理界面的分页功能" />
+    <MESSAGE value="修修改改1" />
+    <option name="LAST_COMMIT_MESSAGE" value="修修改改1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1537,7 +1536,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/GeoJSONUtil.java</url>
           <line>138</line>
-          <properties class="nnu.wyz.systemMS.utils.GeoJSONUtil" method="getBBOXFromTypeEqualsLineString">
+          <properties class="nnu.wyz.systemMS.utils.GeoJSONUtil">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
