@@ -10,28 +10,7 @@
     <option name="showLibraryBeans" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="修修改改2">
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscGeoToolExecTaskDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscGeoToolExecTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscGeoToolExecParams.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscInvokeToolParams.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscToolRawParams.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscWhiteBoxToolRunParams.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolExecService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/DscUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/DscUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/impl/UserDetailsServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/impl/UserDetailsServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/resources/application-prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/DscSystemMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/DscSystemMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGeoToolsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGeoToolsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGeoToolsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGeoToolsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/resources/application-prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services-docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/services-docker-compose.yml" afterDir="false" />
-    </list>
+    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="修修改改3" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -469,7 +448,7 @@
       <workItem from="1702364402417" duration="4338000" />
       <workItem from="1702370031574" duration="1248000" />
       <workItem from="1702535832511" duration="9872000" />
-      <workItem from="1702560326113" duration="6112000" />
+      <workItem from="1702560326113" duration="6468000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -587,7 +566,14 @@
       <option name="project" value="LOCAL" />
       <updated>1699279326628</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="修修改改3">
+      <created>1702626178825</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1702626178825</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -629,7 +615,8 @@
     <MESSAGE value="增加图片的发布、目录树等接口Z" />
     <MESSAGE value="增加资源管理界面的分页功能" />
     <MESSAGE value="修改目录接口" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改目录接口" />
+    <MESSAGE value="修修改改3" />
+    <option name="LAST_COMMIT_MESSAGE" value="修修改改3" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
