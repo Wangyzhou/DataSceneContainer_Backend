@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="IU-221.5921.22">
+  <component name="dataSourceStorageLocal" created-in="IU-223.8836.41">
     <data-source name="scene_container_db@172.21.212.79" uuid="dfb86225-86dc-4c8b-b0b5-6472a2765184">
       <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" exact-version="0" />
       <secret-storage>forget</secret-storage>
       <schema-mapping />
     </data-source>
     <data-source name="redis0@172.21.213.86" uuid="85b7ff20-85a9-47fc-b77e-2835d0a58fa9">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="UNKNOWN" exact-version="0" />
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="REDIS" exact-version="0" />
       <secret-storage>forget</secret-storage>
       <schema-mapping />
     </data-source>
@@ -17,7 +17,7 @@
       <schema-mapping />
     </data-source>
     <data-source name="0@119.45.181.127" uuid="a7ab6516-54d0-418d-8426-1737a76ee17c">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="UNKNOWN" exact-version="0" />
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="REDIS" exact-version="0" />
       <secret-storage>forget</secret-storage>
       <schema-mapping />
     </data-source>

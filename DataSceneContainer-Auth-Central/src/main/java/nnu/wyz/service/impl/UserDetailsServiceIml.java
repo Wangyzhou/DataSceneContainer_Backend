@@ -44,7 +44,7 @@ public class UserDetailsServiceIml implements UserDetailsService {
             throw new UsernameNotFoundException("用户名不存在！");
         }
         DscCatalog catalog = dscCatalogDAO.findDscCatalogByUserIdAndParent(dscUser.getId(), "-1");
-        ReturnLoginUserDTO loginUser = new ReturnLoginUserDTO(dscUser.getId(), dscUser.getUserName(), dscUser.getEmail(), dscUser.getInstitution(), Base64.encodeBase64String(dscUser.getAvatar()), catalog.getId());
+        ReturnLoginUserDTO loginUser = new ReturnLoginUserDTO(dscUser.getId(), dscUser.getUserName(), dscUser.getEmail(), dscUser.getInstitution(), dscUser.getAvatar(), catalog.getId());
         return User.withUsername(JSON.toJSONString(loginUser)).password(dscUser.getPassword()).roles("user").build(); //必须配置role或者权限，不然会出错 java.lang.IllegalArgumentException: Cannot pass a null GrantedAuthority collection
     }
 }

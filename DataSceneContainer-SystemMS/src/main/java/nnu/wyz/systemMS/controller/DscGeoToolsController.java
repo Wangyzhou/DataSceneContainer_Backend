@@ -1,13 +1,12 @@
 package nnu.wyz.systemMS.controller;
 
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.entity.DscGeoToolExecTask;
 import nnu.wyz.systemMS.model.entity.DscGeoTools;
+import nnu.wyz.systemMS.model.param.DscInvokeToolParams;
 import nnu.wyz.systemMS.service.DscGeoToolsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @description:
@@ -24,5 +23,15 @@ public class DscGeoToolsController {
     @GetMapping(value = "/getGeoTool/{geoToolId}")
     public CommonResult<DscGeoTools> getGeoTool(@PathVariable("geoToolId") String geoToolId) {
         return dscGeoToolsService.getGeoToolInfoById(geoToolId);
+    }
+
+    @PostMapping(value = "/invokeTool")
+    public CommonResult<DscGeoToolExecTask> invokeTool(@RequestBody DscInvokeToolParams params) {
+        return dscGeoToolsService.initToolExec(params);
+    }
+
+    @GetMapping(value = "/getTask/{taskId}")
+    public CommonResult<DscGeoToolExecTask> getTask(@PathVariable("taskId") String taskId) {
+        return null;
     }
 }

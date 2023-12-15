@@ -10,18 +10,27 @@
     <option name="showLibraryBeans" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="修改目录接口">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="18086fbf-9728-4332-9329-8ad92396c01a" name="更改" comment="修修改改2">
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscGeoToolExecTaskDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/entity/DscGeoToolExecTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscGeoToolExecParams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscInvokeToolParams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscToolRawParams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/model/param/DscWhiteBoxToolRunParams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolExecService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscCatalogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscCatalogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscUserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscCatalogDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscCatalogDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscUserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/dao/DscUserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscCatalogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscCatalogService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscUserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscCatalogServiceIml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscUserServiceIml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/DscUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/entity/DscUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/impl/UserDetailsServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/java/nnu/wyz/service/impl/UserDetailsServiceIml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-Auth-Central/src/main/resources/application-prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/DscSystemMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/DscSystemMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGeoToolsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/controller/DscGeoToolsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGeoToolsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/DscGeoToolsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/resources/application-prod.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services-docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/services-docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,8 +40,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -62,9 +71,6 @@
     &quot;state&quot;: &quot;OPEN&quot;
   }
 }</component>
-  <component name="GithubDefaultAccount">
-    <option name="defaultAccountId" value="a763e630-c3ac-454f-a301-08ea739b4aaa" />
-  </component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -75,6 +81,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscFileServiceIml.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="jar://E:/mavenRepository/repository/org/springframework/spring-aop/5.3.23/spring-aop-5.3.23.jar!/org/springframework/aop/framework/CglibAopProxy.class" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -82,9 +89,10 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="localRepository" value="D:\Environment\Maven\mvn-repository" />
+        <option name="localRepository" value="E:\mavenRepository" />
+        <option name="mavenHome" value="$PROJECT_DIR$/../../majorSoftware/apache-maven-3.8.6" />
         <option name="useMavenConfig" value="true" />
-        <option name="userSettingsFile" value="D:\Environment\Maven\settings.xml" />
+        <option name="userSettingsFile" value="D:\majorSoftware\apache-maven-3.8.6\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
   </component>
@@ -119,8 +127,8 @@
     &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;7d2706c0f2e5203e0ba4e994de706b24&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;4429f6c20a50b92e8f4c1c7ff4b6f719&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -164,7 +172,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Docker.dsc-db-测试服务器">
+  <component name="RunManager" selected="Docker.services-docker-compose.yml.auth-central: Compose Deployment">
     <configuration name="test.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DataSceneContainer-Gateway" />
       <extension name="coverage">
@@ -176,6 +184,22 @@
       <option name="PACKAGE_NAME" value="nnu.wyz" />
       <option name="MAIN_CLASS_NAME" value="nnu.wyz.test" />
       <option name="METHOD_NAME" value="test2" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test.testAsync" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DataSceneContainer-SystemMS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="nnu.wyz.systemMS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="nnu.wyz.systemMS" />
+      <option name="MAIN_CLASS_NAME" value="nnu.wyz.systemMS.test" />
+      <option name="METHOD_NAME" value="testAsync" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -331,6 +355,19 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="services-docker-compose.yml.auth-central: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="172,.21.213.86部署服务器">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="auth-central" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="services-docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Docker.dsc-db-测试服务器" />
       <item itemvalue="Docker.dsc-middlewares-测试服务器" />
@@ -340,6 +377,8 @@
       <item itemvalue="Docker.dsc-db-opengmsS" />
       <item itemvalue="Docker.dsc-middleware-opengmsS" />
       <item itemvalue="Docker.dsc-services-opengmsS" />
+      <item itemvalue="Docker.services-docker-compose.yml.auth-central: Compose Deployment" />
+      <item itemvalue="JUnit.test.testAsync" />
       <item itemvalue="JUnit.test.test2" />
       <item itemvalue="Spring Boot.DscAuthMain" />
       <item itemvalue="Spring Boot.DscGatewayMain" />
@@ -349,6 +388,8 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.services-docker-compose.yml.auth-central: Compose Deployment" />
+        <item itemvalue="JUnit.test.testAsync" />
         <item itemvalue="Spring Boot.UserMSMain" />
         <item itemvalue="Spring Boot.ResourceMSMain" />
         <item itemvalue="Spring Boot.DscSystemMain" />
@@ -427,6 +468,8 @@
       <workItem from="1702347979575" duration="3229000" />
       <workItem from="1702364402417" duration="4338000" />
       <workItem from="1702370031574" duration="1248000" />
+      <workItem from="1702535832511" duration="9872000" />
+      <workItem from="1702560326113" duration="6112000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -763,8 +806,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/service/iml/DscGeoToolsServiceIml.java</url>
-          <line>29</line>
+          <line>45</line>
           <option name="timeStamp" value="97" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/test/java/nnu/wyz/systemMS/test.java</url>
+          <line>780</line>
+          <option name="timeStamp" value="99" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/DataSceneContainer-SystemMS/src/main/java/nnu/wyz/systemMS/utils/GeoJSONUtil.java</url>
