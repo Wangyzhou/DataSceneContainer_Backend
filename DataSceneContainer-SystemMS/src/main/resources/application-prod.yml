@@ -63,3 +63,4 @@ minio:
   secretKey: wyz980903
   bucketName: dsc-file
   sceneThumbnailsBucket: scene-thumbnails
+  avatarBucket: avatar

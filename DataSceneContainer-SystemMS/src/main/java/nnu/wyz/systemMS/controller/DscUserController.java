@@ -8,11 +8,13 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.dto.UserLoginDTO;
 import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
+import nnu.wyz.systemMS.model.dto.UserUpdateDTO;
 import nnu.wyz.systemMS.model.entity.DscUser;
 import nnu.wyz.systemMS.service.DscUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -87,7 +89,21 @@ public class DscUserController {
 
     @ApiOperation(value = "查询个人信息")
     @GetMapping(value = "/getUserInfo/{userId}")
-    public CommonResult<DscUser> getUserInfo(@PathVariable("userId") String userId){
+    public CommonResult<DscUser> getUserInfo(@PathVariable("userId") String userId) {
         return dscUserService.getUserInfo(userId);
+    }
+
+    @ApiOperation(value = "修改用户信息")
+    @PostMapping(value = "/updateUserInfo")
+    public CommonResult<String> updateUserInfo(@RequestBody UserUpdateDTO userUpdateDTO) {
+        return dscUserService.updateUserInfo(userUpdateDTO);
+    }
+
+    @ApiOperation(value = "修改用户头像")
+    @PostMapping(value = "/updateUserAvatar")
+    public CommonResult<String> updateUserAvatar(@RequestParam("userId") String userId,
+                                                 @RequestParam("avatar") MultipartFile avatar) {
+        System.out.println(userId);
+        return dscUserService.updateUserAvatar(userId, avatar);
     }
 }

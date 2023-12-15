@@ -7,20 +7,22 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.jwt.JWT;
 import com.alibaba.fastjson.JSONObject;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
+import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscUserDAO;
-import nnu.wyz.systemMS.model.dto.ReturnLoginUserDTO;
-import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
-import nnu.wyz.systemMS.model.dto.UserLoginDTO;
-import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.DscUser;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscUserService;
 import nnu.wyz.systemMS.service.MailService;
 //import nnu.wyz.systemMS.service.UserAuthService;
+import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import nnu.wyz.systemMS.utils.RedisCache;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
@@ -36,7 +38,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -67,6 +72,10 @@ public class DscUserServiceIml implements DscUserService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private AmazonS3 amazonS3;
+    @Autowired
+    private MinioConfig minioConfig;
     @Autowired
     private MailService iMailService;
     @Autowired
@@ -371,10 +380,10 @@ public class DscUserServiceIml implements DscUserService {
     @Override
     public CommonResult<String> resetPassword(String resetToken, String email, String password) {
         Object resetTokenRedis = redisCache.getCacheObject(email + "_reset_token");
-        if(Objects.isNull(resetTokenRedis)) {
+        if (Objects.isNull(resetTokenRedis)) {
             return CommonResult.failed("重置密码操作超时，请返回重新操作！");
         }
-        if(!resetTokenRedis.toString().equals(resetToken)) {
+        if (!resetTokenRedis.toString().equals(resetToken)) {
             return CommonResult.failed("访问不合法！");
         }
         DscUser user = dscUserDAO.findDscUserByEmail(email);
@@ -402,5 +411,51 @@ public class DscUserServiceIml implements DscUserService {
         DscUser user = dscUserDAO.findDscUserById(userId);
         System.out.println(user);
         return CommonResult.success(user, "获取个人信息配置成功！");
+    }
+
+    @Override
+    public CommonResult<String> updateUserInfo(UserUpdateDTO userUpdateDTO) {
+        DscUser user = dscUserDAO.findDscUserById(userUpdateDTO.getUserId());
+        if (Objects.isNull(user)) {
+            return CommonResult.failed("用户不存在！");
+        }
+        user.setUserName(userUpdateDTO.getUsername());
+        user.setInstitution(userUpdateDTO.getInstitution());
+        dscUserDAO.save(user);
+        return CommonResult.success("修改个人信息成功!");
+    }
+
+    @Override
+    public CommonResult<String> updateUserAvatar(String userId, MultipartFile avatar) {
+        DscUser user = dscUserDAO.findDscUserById(userId);
+        if (Objects.isNull(user)) {
+            CommonResult.failed("用户不存在！");
+        }
+        String contentType = avatar.getContentType();
+        String ext = MimeTypesUtil.getDefaultExt(contentType);
+        try {
+            InputStream avatarlInputStream = avatar.getInputStream();
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType("img/" + ext);
+            String objectKey = MessageFormat.format("{0}.{1}", userId, ext);
+            //头像格式为jpg/png，防止之前的头像格式与此次不同，也需要删除原头像
+            String extAnother = ext.equals("jpg") ? "png" : "jpg";
+            boolean isavatarExist = amazonS3.doesObjectExist(minioConfig.getAvatarBucket(), objectKey);
+            String objectKeyAnother = MessageFormat.format("{0}.{1}", userId, extAnother);
+            boolean isavatarExistAnother = amazonS3.doesObjectExist(minioConfig.getAvatarBucket(), objectKeyAnother);
+            if (isavatarExist) {
+                amazonS3.deleteObject(minioConfig.getAvatarBucket(), objectKey);
+            }
+            if (isavatarExistAnother) {
+                amazonS3.deleteObject(minioConfig.getAvatarBucket(), objectKeyAnother);
+            }
+            PutObjectRequest putObjectRequest = new PutObjectRequest(minioConfig.getAvatarBucket(), objectKey, avatarlInputStream, objectMetadata);
+            amazonS3.putObject(putObjectRequest);
+            user.setAvatar(MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getAvatarBucket(), objectKey));
+            dscUserDAO.save(user);
+            return CommonResult.success("头像修改成功！");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

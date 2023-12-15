@@ -6,7 +6,9 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.dto.UserLoginDTO;
 import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
+import nnu.wyz.systemMS.model.dto.UserUpdateDTO;
 import nnu.wyz.systemMS.model.entity.DscUser;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,5 +30,9 @@ public interface DscUserService {
     CommonResult<List<ReturnUsersByEmailLikeDTO>> getUserByEmailLike(String keyWord);
 
     CommonResult<DscUser> getUserInfo(String userId);
+
+    CommonResult<String> updateUserInfo(UserUpdateDTO userUpdateDTO);
+
+    CommonResult<String> updateUserAvatar(String userId, MultipartFile avatar);
 
 }

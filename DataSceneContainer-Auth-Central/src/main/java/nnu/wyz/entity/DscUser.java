@@ -38,7 +38,7 @@ public class DscUser implements Serializable {
 
     private String registerDate;
 
-    private byte[] avatar;
+    private String avatar;
 
     private int enabled;
 
