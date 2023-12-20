@@ -52,7 +52,7 @@ public class DeleteFileTask {
         dscFileDAO.deleteAll(allByOwnerCount);
         List<SysUploadTask> collect = allByOwnerCount.stream().map(dscFileInfo -> sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId())).filter(Objects::nonNull).collect(Collectors.toList());
         sysUploadTaskDAO.deleteAll(collect);
-        List<DeleteObject> objects = collect.stream().map(sysUploadTask -> new DeleteObject(sysUploadTask.getObjectKey())).collect(Collectors.toList());
+        List<DeleteObject> objects = allByOwnerCount.stream().map(dscFileInfo -> new DeleteObject(dscFileInfo.getObjectKey())).collect(Collectors.toList());
         Iterable<Result<DeleteError>> results =
                 minioClient.removeObjects(
                         RemoveObjectsArgs.builder().bucket(minioConfig.getBucketName()).objects(objects).build());

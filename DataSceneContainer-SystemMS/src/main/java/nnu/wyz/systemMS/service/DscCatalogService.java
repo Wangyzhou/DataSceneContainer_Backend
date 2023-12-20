@@ -35,4 +35,11 @@ public interface DscCatalogService {
     CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(PageableDTO pageableDTO);
 
     CommonResult<String> pwd(String catalogId);
+
+    /**
+     * 获取目录物理路径
+     * @param catalogId
+     * @return
+     */
+    String getPhysicalPath(String catalogId);
 }

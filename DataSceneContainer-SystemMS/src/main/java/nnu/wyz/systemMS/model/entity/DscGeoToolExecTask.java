@@ -34,4 +34,6 @@ public class DscGeoToolExecTask {
 
     private String endTime;
 
+    private String description;
+
 }

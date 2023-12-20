@@ -1,6 +1,7 @@
 deployIp: 172.21.213.86
 frontendIp: 172.21.213.86
 #deployIp: 119.45.181.127
+whiteboxDockerServer: 172.21.212.79
 
 spring:
   web:
@@ -46,6 +47,7 @@ spring:
       matching-strategy: ant_path_matcher
     static-path-pattern: /static/**
 
+
 gateway_addr: http://${deployIp}:9527
 frontend_url: http://${frontendIp}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
@@ -56,6 +58,21 @@ unzipTempPathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\temp
 shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
 shp2pgsqlWin: ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\psql.exe -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
 pg_password: wyz980903
+
+# docker相关
+DOCKER:
+  DOCKER_HOST: tcp://${deployIp}:2375
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: /home/user/.docker/certs
+  DOCKER_CONFIG: /home/user/.docker
+  api:
+    version: 1.23
+  registry:
+    url: https://index.docker.io/v1/
+    username: dockeruser
+    password: ilovedocker
+    email: dockeruser@github.com
+
 
 minio:
   endpoint: http://${deployIp}:9000

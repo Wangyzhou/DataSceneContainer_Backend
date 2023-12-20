@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
+import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
@@ -15,12 +16,14 @@ import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscFileService;
 import nnu.wyz.systemMS.utils.CompareUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,6 +44,12 @@ public class DscCatalogServiceIml implements DscCatalogService {
 
     @Autowired
     private DscFileService dscFileService;
+
+    @Autowired
+    private MinioConfig minioConfig;
+
+    @Value("${fileSavePath}")
+    private String root;
 
 
     @Override
@@ -276,7 +285,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
         }
         DscCatalog dscCatalog = byId.get();
         StringBuilder path = new StringBuilder();
-        while(true) {
+        while (true) {
             path.insert(0, " / " + dscCatalog.getName());
             Optional<DscCatalog> byId1 = dscCatalogDAO.findById(dscCatalog.getParent());
             if (!byId1.isPresent()) {
@@ -285,5 +294,27 @@ public class DscCatalogServiceIml implements DscCatalogService {
             dscCatalog = byId1.get();
         }
         return CommonResult.success(path.toString(), "获取成功");
+    }
+
+    @Override
+    public String getPhysicalPath(String catalogId) {
+        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+        if (!byId.isPresent()) {
+            return null;
+        }
+        DscCatalog dscCatalog = byId.get();
+        StringBuilder path = new StringBuilder();
+        while (true) {
+            path.insert(0, File.separator + dscCatalog.getId());
+            Optional<DscCatalog> byId1 = dscCatalogDAO.findById(dscCatalog.getParent());
+            if (!byId1.isPresent()) {
+                break;
+            }
+            dscCatalog = byId1.get();
+        }
+        path.insert(0, File.separator + dscCatalog.getUserId());
+        path.insert(0, minioConfig.getBucketName());
+        path.insert(0, root);
+        return path.toString();
     }
 }

@@ -9,6 +9,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.ExecCreateCmdResponse;
+import com.github.dockerjava.api.model.*;
+import com.github.dockerjava.core.command.AttachContainerResultCallback;
+import com.github.dockerjava.core.command.ExecStartResultCallback;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.DeleteError;
@@ -30,6 +37,7 @@ import nnu.wyz.systemMS.websocket.WebSocketServer;
 import nnu.wyz.systemMS.utils.GeoJSONUtil;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import nnu.wyz.systemMS.utils.RedisCache;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,11 +49,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 /**
  * @description:
@@ -639,8 +652,8 @@ public class test {
 //                .collect(Collectors.toList());
 //        System.out.println("collect = " + collect);
     }
-    @Test
 
+    @Test
     void deleteFile() {
         MinioClient minioClient = MinioClient.builder()
                 .endpoint(minioConfig.getEndpoint())
@@ -673,6 +686,7 @@ public class test {
 
     @Autowired
     private DscGeoToolsDAO dscGeoToolsDAO;
+
     @Test
     void testGeoTools() {
         List<DscGeoTools> all = dscGeoToolsDAO.findAll();
@@ -685,12 +699,12 @@ public class test {
         ArrayList<JSONObject> LiDARAnalysis = new ArrayList<>();
         ArrayList<JSONObject> MathematicalandStatisticalAnalysis = new ArrayList<>();
         ArrayList<JSONObject> StreamNetworkAnalysis = new ArrayList<>();
-        for(DscGeoTools dscGeoTools : all){
+        for (DscGeoTools dscGeoTools : all) {
             JSONObject tool = new JSONObject();
             tool.put("id", dscGeoTools.getId());
             tool.put("label", dscGeoTools.getName());
             tool.put("isLeaf", true);
-            switch (dscGeoTools.getType()){
+            switch (dscGeoTools.getType()) {
                 case "Data Tools":
                     Data_Tools.add(tool);
                     break;
@@ -768,14 +782,17 @@ public class test {
         all_tools.add(stream_network_analysis);
         System.out.println(all_tools);
     }
+
     @Test
-    void  testPWD() {
+    void testPWD() {
         CommonResult<String> pwd = dscCatalogService.pwd("8174f833-2a40-4cde-8fb5-20ac26f3174f");
         System.out.println("pwd.getData() = " + pwd.getData());
     }
+
     @Autowired
     DscGeoToolsService dscGeoToolsService;
     static Object lock = new Object();
+
     @Test
     void testAsync() throws InterruptedException {
         DscInvokeToolParams dscInvokeToolParams = new DscInvokeToolParams();
@@ -791,12 +808,75 @@ public class test {
         dscInvokeToolParams.setToolRawParams(dscToolRawParams);
         CommonResult<DscGeoToolExecTask> stringCommonResult = dscGeoToolsService.initToolExec(dscInvokeToolParams);
         System.out.println("stringCommonResult = " + stringCommonResult.getData());
-        while(true){
-            synchronized(lock){
+        while (true) {
+            synchronized (lock) {
                 // 除非有线程唤醒他 lock.notify();
                 lock.wait();
             }
         }
     }
+
+    @Autowired
+    private DockerClient dockerClient;
+
+    @Test
+    void testDocker() throws InterruptedException, IOException {
+//        List<Container> exec = dockerClient.listContainersCmd().exec();
+//        exec.forEach(System.out::println);
+
+        ExecCreateCmdResponse exec1 = dockerClient.execCreateCmd("7a136d9053289523e8cce3230de6b1ce45c33da7f74270be69df65b720be2cb2")
+                .withCmd("whitebox_tools", "--help")
+                .withTty(true)
+                .exec();
+        dockerClient.execStartCmd(exec1.getId())
+                .withDetach(false).withTty(true)
+                .exec(new ExecStartResultCallback(System.out, System.err)).awaitCompletion();
+    }
+
+    @Test
+    void testDocker2() throws IOException, InterruptedException {
+//        String snippet = "hello world";
+//        Volume volume = new Volume("/home/yzwang/whitebox_workdir/");
+//        LogConfig logConfig = new LogConfig(LogConfig.LoggingType.SYSLOG, null);
+//        CreateContainerResponse container = dockerClient.createContainerCmd("yzwang/whitebox_tools")
+//                .withCmd("bash")
+//                .withTty(false)
+//                .withUser("root")
+//                .withAttachStdin(true)
+//                .withAttachStdout(true)
+//                .withAttachStderr(true)
+//                .withStdinOpen(true)
+//                .withBinds(Bind.parse("/home/yzwang/whitebox_workdir:/whitebox_workdir"))
+//                .exec();
+//        dockerClient.startContainerCmd(container.getId()).exec();
+        String[] arr = new String[]{"whitebox_tools", "-r=Aspect", "--wd=/whitebox_workdir/", "--dem=nanjing_dem.tif", "--output=aspect2.tif"};
+
+        ExecCreateCmdResponse whiteboxTools = dockerClient.execCreateCmd("b26110172ae16e470be063fd5d06e42eaff52255fb134b8acdce1af1ed98dc34")
+                .withAttachStdout(true)
+                .withAttachStderr(true)
+                .withCmd(arr)
+                .exec();
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        dockerClient.execStartCmd(whiteboxTools.getId())
+                .exec(new ExecStartResultCallback(stdout, stderr) {
+                    @Override
+                    public void onNext(Frame frame) {
+                        System.out.println(frame.toString().replace("STDOUT: ", "").replace("STDERR: ", ""));
+                        super.onNext(frame);
+                    }
+                })
+                .awaitCompletion();
+//        System.out.println("stdout = " + stdout.toString());
+//        System.out.println("stderr = " + stderr.toString());
+//        dockerClient.stopContainerCmd(container.getId()).exec();
+//        dockerClient.removeContainerCmd(container.getId()).exec();
+    }
+    @Test
+    void testgetCatalogPhysicalPath() {
+        String physicalPath = dscCatalogService.getPhysicalPath("8174f833-2a40-4cde-8fb5-20ac26f3174f");
+        System.out.println("physicalPath = " + physicalPath);
+    }
+
 
 }
