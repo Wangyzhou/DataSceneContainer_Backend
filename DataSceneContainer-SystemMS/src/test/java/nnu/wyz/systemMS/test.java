@@ -21,12 +21,12 @@ import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
-import nnu.wyz.systemMS.service.DscCatalogService;
-import nnu.wyz.systemMS.service.DscSceneService;
+import nnu.wyz.systemMS.model.param.DscGeoToolExecParams;
+import nnu.wyz.systemMS.model.param.DscInvokeToolParams;
+import nnu.wyz.systemMS.model.param.DscToolRawParams;
+import nnu.wyz.systemMS.service.*;
 import nnu.wyz.systemMS.utils.CompareUtil;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
-import nnu.wyz.systemMS.service.DscGDVSceneService;
-import nnu.wyz.systemMS.service.DscGeoJSONService;
 import nnu.wyz.systemMS.utils.GeoJSONUtil;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import nnu.wyz.systemMS.utils.RedisCache;
@@ -772,6 +772,31 @@ public class test {
     void  testPWD() {
         CommonResult<String> pwd = dscCatalogService.pwd("8174f833-2a40-4cde-8fb5-20ac26f3174f");
         System.out.println("pwd.getData() = " + pwd.getData());
+    }
+    @Autowired
+    DscGeoToolsService dscGeoToolsService;
+    static Object lock = new Object();
+    @Test
+    void testAsync() throws InterruptedException {
+        DscInvokeToolParams dscInvokeToolParams = new DscInvokeToolParams();
+        dscInvokeToolParams.setToolId("656dcc54ccc545e844ef6071");
+        dscInvokeToolParams.setUserId("652a48fde4b01213a180bb5a");
+        DscToolRawParams p1 = new DscToolRawParams("Input DEM", "657ab0bae4b0f9826e8f799b", null);
+        DscToolRawParams p2 = new DscToolRawParams("Output File", "output.tif", "adb52290-36e4-487c-96eb-736d54351fc8");
+        DscToolRawParams p3 = new DscToolRawParams("Z Conversion Factor", null, null);
+        ArrayList<DscToolRawParams> dscToolRawParams = new ArrayList<>();
+        dscToolRawParams.add(p1);
+        dscToolRawParams.add(p2);
+        dscToolRawParams.add(p3);
+        dscInvokeToolParams.setToolRawParams(dscToolRawParams);
+        CommonResult<DscGeoToolExecTask> stringCommonResult = dscGeoToolsService.initToolExec(dscInvokeToolParams);
+        System.out.println("stringCommonResult = " + stringCommonResult.getData());
+        while(true){
+            synchronized(lock){
+                // 除非有线程唤醒他 lock.notify();
+                lock.wait();
+            }
+        }
     }
 
 }

@@ -1,5 +1,14 @@
 version: '1.0.0'
 services:
+  auth-central:
+    image: dsc-auth-central
+    build:
+      context: ./DataSceneContainer-Auth-Central
+      dockerfile: Dockerfile
+    container_name: dsc-auth-central
+    ports:
+      - 9400:9400
+    restart: always
   gateway:
     image: dsc-gateway
     build:
