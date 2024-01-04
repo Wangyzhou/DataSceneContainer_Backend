@@ -223,6 +223,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
         rootList.put("id", rootCatalog);
         rootList.put("label", "MyData");
         rootList.put("children", catalogList);
+        rootList.put("catalogId", "-1");
         rootList.put("type", "folder");
         ArrayList<JSONObject> root = new ArrayList<>();
         root.add(rootList);
@@ -244,11 +245,13 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 jsonObject.put("label", childrenDTO.getName());
                 List<JSONObject> result = recursionV2(childrenDTO.getId());
                 jsonObject.put("children", result);
+                jsonObject.put("catalogId",dscCatalog.getId());
                 jsonObject.put("type", childrenDTO.getType());
                 catalogItems.add(jsonObject);
             } else {
                 jsonObject.put("id", childrenDTO.getId());
                 jsonObject.put("label", childrenDTO.getName());
+                jsonObject.put("catalogId",dscCatalog.getId());
                 jsonObject.put("type", childrenDTO.getType());
                 catalogItems.add(jsonObject);
             }
