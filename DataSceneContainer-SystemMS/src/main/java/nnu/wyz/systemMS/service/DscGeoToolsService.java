@@ -13,6 +13,8 @@ public interface DscGeoToolsService {
 
     CommonResult<DscGeoToolExecTask> initToolExec(DscInvokeToolParams params);
 
+    CommonResult<DscGeoToolExecTask> getTask(String taskId);
+
 //    @Async
 //    void execute(DscInvokeToolParams params);
 }

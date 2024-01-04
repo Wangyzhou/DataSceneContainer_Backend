@@ -50,13 +50,11 @@ public class DscGeoToolsServiceIml implements DscGeoToolsService {
     @Override
     public CommonResult<DscGeoToolExecTask> initToolExec(DscInvokeToolParams params) {
         DscGeoToolExecTask dscGeoToolExecTask = new DscGeoToolExecTask();
-//        long start = System.currentTimeMillis();
         String toolId = params.getToolId();
         String taskId = IdUtil.randomUUID();
         String executor = params.getUserId();
         dscGeoToolExecTask.setId(taskId)
                 .setTargetTool(toolId)
-                .setStartTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
                 .setExecutor(executor)
                 .setParams(params.getToolRawParams())
                 .setStatus(-2);
@@ -65,4 +63,13 @@ public class DscGeoToolsServiceIml implements DscGeoToolsService {
         return CommonResult.success(dscGeoToolExecTask, "提交工具执行任务成功!");
     }
 
+    @Override
+    public CommonResult<DscGeoToolExecTask> getTask(String taskId) {
+        Optional<DscGeoToolExecTask> byId = dscGeoToolExecTaskDAO.findById(taskId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed("未找到该任务！");
+        }
+        DscGeoToolExecTask dscGeoToolExecTask = byId.get();
+        return CommonResult.success(dscGeoToolExecTask, "获取成功!");
+    }
 }

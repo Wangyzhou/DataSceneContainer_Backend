@@ -112,7 +112,7 @@ public class DscFileServiceIml implements DscFileService {
                 return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在相同文件，请更换文件夹进行上传！");
             }
         }
-        if (fileId != null) {  //说明用户空间存在该文件
+        if (fileId != null) {  //说明用户一天内上传过该文件
             String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
             Optional<DscFileInfo> dscFileDAOById = dscFileDAO.findById(fileId);
             DscFileInfo dscFileInfo = dscFileDAOById.get();

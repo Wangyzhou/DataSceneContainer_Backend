@@ -32,6 +32,7 @@ public class DscGeoToolsController {
 
     @GetMapping(value = "/getTask/{taskId}")
     public CommonResult<DscGeoToolExecTask> getTask(@PathVariable("taskId") String taskId) {
-        return null;
+        return dscGeoToolsService.getTask(taskId);
     }
+
 }

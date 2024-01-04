@@ -52,4 +52,6 @@ public class InitTaskParam {
     @ApiModelProperty(value = "上传用户")
     @NotBlank(message = "上传用户不能为空")
     private String userId;
+
+    private String fileId;
 }

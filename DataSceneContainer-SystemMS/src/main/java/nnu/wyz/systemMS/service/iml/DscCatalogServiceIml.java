@@ -286,7 +286,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
         DscCatalog dscCatalog = byId.get();
         StringBuilder path = new StringBuilder();
         while (true) {
-            path.insert(0, " / " + dscCatalog.getName());
+            path.insert(0, "/" + dscCatalog.getName());
             Optional<DscCatalog> byId1 = dscCatalogDAO.findById(dscCatalog.getParent());
             if (!byId1.isPresent()) {
                 break;

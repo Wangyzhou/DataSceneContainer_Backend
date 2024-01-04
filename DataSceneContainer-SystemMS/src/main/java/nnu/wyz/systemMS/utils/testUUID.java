@@ -11,11 +11,8 @@ import cn.hutool.core.util.IdUtil;
 public class testUUID {
 
     public static void main(String[] args) {
-        int i = 3;
-
-        while (i > 0) {
-            System.out.println("IdUtil.randomUUID() = " + IdUtil.randomUUID());
-            i--;
-        }
+        String s = "652a48fde4b01213a180bb5a/2d7d74ca-1cab-474c-bef3-4b15c3c68025.zip";
+        String[] split = s.split("/");
+        System.out.println(split[1].substring(0, split[1].lastIndexOf(".")));
     }
 }

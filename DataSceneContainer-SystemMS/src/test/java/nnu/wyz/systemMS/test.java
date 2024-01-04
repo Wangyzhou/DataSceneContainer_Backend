@@ -221,11 +221,11 @@ public class test {
     void testWebSocket() {
         Message message = new Message();
         message.setFrom("haha");
-        message.setTo("wyz");
+        message.setTo("1132691603@qq.com");
         message.setTopic("test");
-        message.setType("test");
+        message.setType("tool-execute");
         message.setText("hahaha");
-        webSocketServer.sendInfo("wyz", JSON.toJSONString(message));
+        webSocketServer.sendInfo("652a48fde4b01213a180bb5a", JSON.toJSONString(message));
     }
 
     @Test
@@ -878,5 +878,21 @@ public class test {
         System.out.println("physicalPath = " + physicalPath);
     }
 
+    @Test
+    void testExecute() {
+        DscInvokeToolParams dscInvokeToolParams = new DscInvokeToolParams();
+        dscInvokeToolParams.setToolId("656dcc54ccc545e844ef6071");
+        dscInvokeToolParams.setUserId("652a48fde4b01213a180bb5a");
+        DscToolRawParams p1 = new DscToolRawParams("Input DEM", "657ab0bae4b0f9826e8f799b", null);
+        DscToolRawParams p2 = new DscToolRawParams("Output File", "aspect.tif", "4f81318a-172e-44d2-ba12-74779f0422f3");
+        DscToolRawParams p3 = new DscToolRawParams("Z Conversion Factor", null, null);
+        ArrayList<DscToolRawParams> dscToolRawParams = new ArrayList<>();
+        dscToolRawParams.add(p1);
+        dscToolRawParams.add(p2);
+        dscToolRawParams.add(p3);
+        dscInvokeToolParams.setToolRawParams(dscToolRawParams);
+        DscGeoToolExecTask dscGeoToolExecTask = new DscGeoToolExecTask();
+
+    }
 
 }

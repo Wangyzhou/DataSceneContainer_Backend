@@ -17,4 +17,5 @@ public interface DscRasterSService {
     CommonResult<String> deleteRasterService(String userId, String rasterSId);
 
     CommonResult<List<DscRasterService>> getRasterServiceListByFileId(String fileId);
+
 }

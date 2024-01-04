@@ -84,7 +84,8 @@ public class SysUploadTaskServiceImpl implements SysUploadTaskService {
                 .setFileName(fileName)
                 .setObjectKey(key)
                 .setUploadId(uploadId)
-                .setUploader(param.getUserId());
+                .setUploader(param.getUserId())
+                .setFileId(param.getFileId());
         sysUploadTaskDAO.insert(task);
         return new TaskInfoDTO().setFinished(false).setTaskRecord(TaskRecordDTO.convertFromEntity(task)).setPath(getPath(bucketName, key));
     }

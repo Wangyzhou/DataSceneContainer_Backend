@@ -37,10 +37,10 @@ public class WebSocketServer {
     public void sendMessage(Session session, String message) throws IOException {
         if (session != null) {
             synchronized (session) {
-                log.info("发送数据:" + message);
+//                log.info("发送数据:" + message);
                 session.getBasicRemote().sendText(message);
                 Message msg = JSON.parseObject(message, Message.class);
-                if (!msg.getType().equals("connected") && !msg.getType().equals("disconnected")) { //除了连接消息，都入库
+                if (!msg.getType().equals("connected") && !msg.getType().equals("disconnected") && !msg.getType().equals("tool-execute")) { //除了连接消息，都入库
                     DscMessageDAO dscMessageDAO = SpringUtil.getBean(DscMessageDAO.class);
                     dscMessageDAO.insert(msg);
                 }
