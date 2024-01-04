@@ -23,4 +23,6 @@ public class MinioConfig {
     private String bucketName;
 
     private String sceneThumbnailsBucket;
+
+    private String avatarBucket;
 }

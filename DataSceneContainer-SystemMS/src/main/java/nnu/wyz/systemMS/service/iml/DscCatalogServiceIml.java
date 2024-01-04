@@ -208,6 +208,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 jsonObject.put("label", childrenDTO.getName());
                 List<JSONObject> result = recursion(childrenDTO.getId());
                 jsonObject.put("children", result);
+                jsonObject.put("catalogId",dscCatalog.getId());
                 catalogItems.add(jsonObject);
             }
         }
