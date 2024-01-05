@@ -24,7 +24,6 @@ import nnu.wyz.systemMS.service.MailService;
 //import nnu.wyz.systemMS.service.UserAuthService;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import nnu.wyz.systemMS.utils.RedisCache;
-import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -414,7 +412,7 @@ public class DscUserServiceIml implements DscUserService {
     }
 
     @Override
-    public CommonResult<String> updateUserInfo(UserUpdateDTO userUpdateDTO) {
+    public CommonResult<ReturnUserUpdateDTO> updateUserInfo(UserUpdateDTO userUpdateDTO) {
         DscUser user = dscUserDAO.findDscUserById(userUpdateDTO.getUserId());
         if (Objects.isNull(user)) {
             return CommonResult.failed("用户不存在！");
@@ -422,7 +420,10 @@ public class DscUserServiceIml implements DscUserService {
         user.setUserName(userUpdateDTO.getUsername());
         user.setInstitution(userUpdateDTO.getInstitution());
         dscUserDAO.save(user);
-        return CommonResult.success("修改个人信息成功!");
+        ReturnUserUpdateDTO newUserDTO = new ReturnUserUpdateDTO();
+        newUserDTO.setUsername(user.getUserName());
+        newUserDTO.setInstitution(user.getInstitution());
+        return CommonResult.success(newUserDTO,"修改个人信息成功!");
     }
 
     @Override
@@ -453,7 +454,7 @@ public class DscUserServiceIml implements DscUserService {
             amazonS3.putObject(putObjectRequest);
             user.setAvatar(MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getAvatarBucket(), objectKey));
             dscUserDAO.save(user);
-            return CommonResult.success("头像修改成功！");
+            return CommonResult.success(user.getAvatar(),"头像修改成功！");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

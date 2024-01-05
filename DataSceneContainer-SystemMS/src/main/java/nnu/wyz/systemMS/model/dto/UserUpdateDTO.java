@@ -12,14 +12,8 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "UserUpdateDTO",description = "更改用户信息传入参数")
-public class UserUpdateDTO {
+public class UserUpdateDTO extends ReturnUserUpdateDTO {
 
     @ApiModelProperty(value = "用户Id")
     private String userId;
-
-    @ApiModelProperty(value = "用户名")
-    private String username;
-
-    @ApiModelProperty(value = "机构")
-    private String institution;
 }
