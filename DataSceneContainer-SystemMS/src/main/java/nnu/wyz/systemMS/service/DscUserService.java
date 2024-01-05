@@ -3,10 +3,7 @@ package nnu.wyz.systemMS.service;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import nnu.wyz.domain.CommonResult;
-import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
-import nnu.wyz.systemMS.model.dto.UserLoginDTO;
-import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
-import nnu.wyz.systemMS.model.dto.UserUpdateDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.DscUser;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +28,7 @@ public interface DscUserService {
 
     CommonResult<DscUser> getUserInfo(String userId);
 
-    CommonResult<String> updateUserInfo(UserUpdateDTO userUpdateDTO);
+    CommonResult<ReturnUserUpdateDTO> updateUserInfo(UserUpdateDTO userUpdateDTO);
 
     CommonResult<String> updateUserAvatar(String userId, MultipartFile avatar);
 

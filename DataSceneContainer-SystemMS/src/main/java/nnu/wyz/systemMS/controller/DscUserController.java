@@ -5,10 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import nnu.wyz.domain.CommonResult;
-import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
-import nnu.wyz.systemMS.model.dto.UserLoginDTO;
-import nnu.wyz.systemMS.model.dto.UserRegisterDTO;
-import nnu.wyz.systemMS.model.dto.UserUpdateDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.DscUser;
 import nnu.wyz.systemMS.service.DscUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +84,10 @@ public class DscUserController {
         return dscUserService.getUserByEmailLike(keyWord);
     }
 
+    /**
+     * 测试用接口
+     * @param userId
+     */
     @ApiOperation(value = "查询个人信息")
     @GetMapping(value = "/getUserInfo/{userId}")
     public CommonResult<DscUser> getUserInfo(@PathVariable("userId") String userId) {
@@ -95,7 +96,7 @@ public class DscUserController {
 
     @ApiOperation(value = "修改用户信息")
     @PostMapping(value = "/updateUserInfo")
-    public CommonResult<String> updateUserInfo(@RequestBody UserUpdateDTO userUpdateDTO) {
+    public CommonResult<ReturnUserUpdateDTO> updateUserInfo(@RequestBody UserUpdateDTO userUpdateDTO) {
         return dscUserService.updateUserInfo(userUpdateDTO);
     }
 
