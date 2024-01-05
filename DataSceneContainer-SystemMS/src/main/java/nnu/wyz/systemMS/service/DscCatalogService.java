@@ -14,6 +14,12 @@ public interface DscCatalogService {
 
     void createRootCatalog(String userId);
 
+    /**
+     * 创建隐藏的场景数据根目录
+     * @param userId
+     */
+    void createSceneDataRootCatalog(String userId);
+
     CommonResult<List<CatalogChildrenDTO>> getChildren(String catalogId);
 
     CommonResult<String> delete(String catalogId);

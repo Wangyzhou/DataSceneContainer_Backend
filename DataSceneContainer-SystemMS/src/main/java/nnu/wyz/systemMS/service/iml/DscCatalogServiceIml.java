@@ -53,6 +53,16 @@ public class DscCatalogServiceIml implements DscCatalogService {
 
 
     @Override
+    public void createSceneDataRootCatalog(String userId) {
+        CreateCatalogDTO createCatalogDTO = new CreateCatalogDTO();
+        // 防止其他文件夹重名
+        createCatalogDTO.setCatalogName(UUID.randomUUID().toString());
+        createCatalogDTO.setParentCatalogId(dscCatalogDAO.findDscCatalogByUserIdAndParent(userId,"-1").getId());
+        createCatalogDTO.setUserId(userId);
+        this.create(createCatalogDTO);
+    }
+
+    @Override
     public CommonResult<String> create(CreateCatalogDTO createCatalogDTO) {
         String parentCatalogId = createCatalogDTO.getParentCatalogId();
         Optional<DscCatalog> parentCatalogOptional = dscCatalogDAO.findById(parentCatalogId);

@@ -408,16 +408,21 @@ public class test {
     void testRegister() {
         DscUser dscUser = new DscUser();
         dscUser.setId(IdUtil.objectId());
-        dscUser.setEmail("admin4");
+        dscUser.setEmail("adminmfz");
         dscUser.setPassword(bcryptPasswordEncoder.encode("123"));
         dscUser.setUserName("admin");
         dscUser.setInstitution("nnu");
         dscUser.setRegisterDate(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        dscUser.setEnabled(1);
+//        dscUser.setEnabled(1);
         String activeCode = RandomUtil.randomString(5);
         dscUser.setActiveCode(activeCode);
         dscUserDAO.insert(dscUser);
-        dscCatalogService.createRootCatalog(dscUser.getId());
+//        dscCatalogService.createRootCatalog(dscUser.getId());
+    }
+
+    @Test
+    void setSceneDataRootCatalog(){
+        dscCatalogService.createSceneDataRootCatalog("652a5e61e4b012905c858bea");
     }
 
     @Test
