@@ -31,4 +31,7 @@ public class CreateCatalogDTO {
     @ApiModelProperty(value = "父目录ID")
     private String parentCatalogId;
 
+    @ApiModelProperty(value = "任务ID")
+    private String taskId;
+
 }

@@ -43,4 +43,6 @@ public class DscCatalog implements Serializable {
 
     private String updatedTime;
 
+    private String taskId;
+
 }
