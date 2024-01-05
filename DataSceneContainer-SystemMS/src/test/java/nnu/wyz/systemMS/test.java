@@ -10,11 +10,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
-import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.ExecCreateCmdResponse;
 import com.github.dockerjava.api.model.*;
-import com.github.dockerjava.core.command.AttachContainerResultCallback;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
 import io.minio.*;
 import io.minio.errors.*;
@@ -24,20 +21,20 @@ import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.*;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeInnerParams;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
-import nnu.wyz.systemMS.model.param.DscGeoToolExecParams;
-import nnu.wyz.systemMS.model.param.DscInvokeToolParams;
-import nnu.wyz.systemMS.model.param.DscToolRawParams;
+import nnu.wyz.systemMS.model.param.*;
 import nnu.wyz.systemMS.service.*;
 import nnu.wyz.systemMS.utils.CompareUtil;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
 import nnu.wyz.systemMS.utils.GeoJSONUtil;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import nnu.wyz.systemMS.utils.RedisCache;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,16 +46,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 /**
  * @description:
@@ -894,5 +888,38 @@ public class test {
         DscGeoToolExecTask dscGeoToolExecTask = new DscGeoToolExecTask();
 
     }
+
+    @Autowired
+    private DscGeoAnalysisDAO dscGeoAnalysisDAO;
+
+    @Test
+    void getDscGATool() {
+        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById("ce344b9e-0b68-46b1-9765-e50922855b6f");
+        if (byId.isPresent()) {
+            System.out.println("byId = " + byId.get());
+        }
+    }
+
+    @Test
+    void testGA() {
+        DscGAInvokeParams dscGAInvokeParams = new DscGAInvokeParams();
+        dscGAInvokeParams.setToolId("ce344b9e-0b68-46b1-9765-e50922855b6f");
+        dscGAInvokeParams.setSceneCatalog("adb52290-36e4-487c-96eb-736d54351fc8");
+        dscGAInvokeParams.setExecutor("652a48fde4b01213a180bb5a");
+        List<DscGAInvokeInnerParams> input = new ArrayList<>();
+        input.add(new DscGAInvokeInnerParams("SHAPES", "652a5f07e4b012905c858bee"));
+        ArrayList<DscGAInvokeInnerParams> options = new ArrayList<>();
+        options.add(new DscGAInvokeInnerParams("DIST_FIELD_DEFAULT", 100));
+        options.add(new DscGAInvokeInnerParams("DIST_SCALE", 1));
+        options.add(new DscGAInvokeInnerParams("DISSOLVE", "1"));
+        options.add(new DscGAInvokeInnerParams("NZONES", 1));
+        options.add(new DscGAInvokeInnerParams("POLY_INNER", "0"));
+        options.add(new DscGAInvokeInnerParams("DARC", 5));
+        dscGAInvokeParams.setInput(input);
+        dscGAInvokeParams.setOptions(options);
+        System.out.println(dscGAInvokeParams);
+    }
+
+
 
 }

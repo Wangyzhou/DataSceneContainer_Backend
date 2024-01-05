@@ -81,3 +81,4 @@ minio:
   bucketName: dsc-file
   sceneThumbnailsBucket: scene-thumbnails
   avatarBucket: avatar
+  gaOutputBucket: dsc-ga-output

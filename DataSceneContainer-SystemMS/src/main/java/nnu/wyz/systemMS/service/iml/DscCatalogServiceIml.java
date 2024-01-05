@@ -79,7 +79,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 .setParent(parentCatalogId)
                 .setChildren(new ArrayList<>())
                 .setCreatedTime(dateTime)
-                .setUpdatedTime(dateTime);
+                .setUpdatedTime(dateTime)
+                .setTaskId(createCatalogDTO.getTaskId());
         dscCatalogDAO.insert(dscCatalog);
         //2、父目录增加孩子节点
         CatalogChildrenDTO catalogChildrenDTO = new CatalogChildrenDTO();
@@ -91,7 +92,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
         parentCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         parentCatalog.setTotal(parentCatalog.getTotal() + 1);
         dscCatalogDAO.save(parentCatalog);
-        return CommonResult.success("创建目录成功！");
+        return CommonResult.success(catalogId, "创建目录成功！");
     }
 
     @Override
