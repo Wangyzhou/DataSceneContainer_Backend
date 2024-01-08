@@ -9,17 +9,37 @@ public interface DscCatalogDAO extends MongoRepository<DscCatalog, String> {
 
     /**
      * 同一级的目录名不能重复，保险起见，加上userId作为查询条件
-     * @param catalogId
+     *
+     * @param catalogName
      * @param level
      * @return
      */
-    DscCatalog findDscCatalogByNameAndUserIdAndLevel(String catalogId, String userId, Integer level);
+    DscCatalog findDscCatalogByNameAndUserIdAndLevel(String catalogName, String userId, Integer level);
 
     /**
      * 根据目录Id和用户Id获取目录
+     *
      * @param catalogId
      * @return
      */
     DscCatalog findDscCatalogById(String catalogId);
+
+    /**
+     * 根据user和父目录ID获取目录
+     * 用于获取每个用户的场景数据根目录
+     * @param userId
+     * @param parentId
+     * @return
+     */
+    DscCatalog findDscCatalogByUserIdAndParent(String userId, String parentId);
+
+    /**
+     * 根据user和父目录ID和TaskId获取目录
+     *
+     * @param parentId
+     * @param taskId
+     * @return
+     */
+    DscCatalog findDscCatalogByUserIdAndParentAndTaskId(String userId, String parentId, String taskId);
 
 }

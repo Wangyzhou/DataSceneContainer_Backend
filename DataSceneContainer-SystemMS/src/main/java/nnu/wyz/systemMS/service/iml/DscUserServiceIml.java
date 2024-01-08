@@ -269,6 +269,8 @@ public class DscUserServiceIml implements DscUserService {
         logger.info("用户：" + dscUser.getUserName() + "激活账户成功！");
         dscCatalogService.createRootCatalog(dscUser.getId());
         logger.info("用户：" + dscUser.getUserName() + "创建根目录。");
+        dscCatalogService.createSceneDataRootCatalog(dscUser.getId());
+        logger.info("用户：" + dscUser.getUserName() + "创建场景数据根目录。");
         return CommonResult.success("用户激活成功！");
     }
 
