@@ -49,6 +49,9 @@ public class DscSceneServiceIml implements DscSceneService {
     private DscGDVSceneService dscGDVSceneService;
 
     @Autowired
+    private  DscDASceneService dscDASceneService;
+
+    @Autowired
     private DscCatalogService dscCatalogService;
 
     @Autowired
@@ -118,8 +121,9 @@ public class DscSceneServiceIml implements DscSceneService {
                 DscGDVSceneConfig gdvSceneConfig = dscGDVSceneService.getGDVSceneConfig(sceneId);
                 sceneConfig = BeanUtil.toBean(gdvSceneConfig, JSONObject.class);
                 break;
-            case "GDA":
-                sceneConfig = new JSONObject();
+            case "DAS":
+                DscDASceneConfig daSceneConfig = dscDASceneService.getDASceneConfig(sceneId);
+                sceneConfig = BeanUtil.toBean(daSceneConfig, JSONObject.class);
                 break;
             default:
                 sceneConfig = new JSONObject();

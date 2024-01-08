@@ -87,4 +87,8 @@ public class DscDASceneServiceIml implements DscDASceneService {
         return CommonResult.success(dscScene, "场景创建成功！");
     }
 
+    @Override
+    public DscDASceneConfig getDASceneConfig(String sceneId) {
+        return dscDASceneConfigDAO.findBySceneId(sceneId);
+    }
 }
