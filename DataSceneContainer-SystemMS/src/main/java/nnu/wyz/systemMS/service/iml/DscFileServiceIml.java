@@ -182,7 +182,6 @@ public class DscFileServiceIml implements DscFileService {
     @Override
     public CommonResult<String> delete(DeleteFileDTO deleteFileDTO) {
         String fileId = deleteFileDTO.getFileId();
-        String userId = deleteFileDTO.getUserId();
         String catalogId = deleteFileDTO.getCatalogId();
         Optional<DscFileInfo> byId = dscFileDAO.findById(fileId);
         if (!byId.isPresent()) {

@@ -3,6 +3,7 @@ package nnu.wyz.systemMS.model.DscGeoAnalysis;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -14,10 +15,10 @@ public class DscGARawParams {
 
     private String workingDir;
 
-    private List<DscGAInvokeInnerParams> input;
+    private Map<String, String> input;
 
 //    private List<DscGAInvokeInnerParams> output;
 
-    private List<DscGAInvokeInnerParams> options;
+    private Map<String, Object> options;
 
 }

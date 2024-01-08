@@ -3,6 +3,7 @@ package nnu.wyz.systemMS.model.DscGeoAnalysis;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -18,9 +19,9 @@ public class DscGAInvokeParams {
 
     private String sceneCatalog;
 
-    private List<DscGAInvokeInnerParams> input;
+    private Map<String, String> input;
 
-    private List<DscGAInvokeInnerParams> options;
+    private Map<String, Object> options;
 
 
 }

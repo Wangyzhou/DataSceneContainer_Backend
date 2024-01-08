@@ -41,5 +41,5 @@ public interface DscCatalogService {
      * @param catalogId
      * @return
      */
-    String getPhysicalPath(String catalogId);
+    String getCatalogPath(String catalogId);
 }
