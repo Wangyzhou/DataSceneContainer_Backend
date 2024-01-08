@@ -8,14 +8,14 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.MongoTransactional;
+import nnu.wyz.systemMS.dao.DscDASceneConfigDAO;
 import nnu.wyz.systemMS.dao.DscGDVSceneConfigDAO;
 import nnu.wyz.systemMS.dao.DscSceneDAO;
 import nnu.wyz.systemMS.dao.DscUserSceneDAO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
-import nnu.wyz.systemMS.model.entity.DscGDVSceneConfig;
-import nnu.wyz.systemMS.model.entity.DscScene;
-import nnu.wyz.systemMS.model.entity.DscUserScene;
-import nnu.wyz.systemMS.model.entity.PageInfo;
+import nnu.wyz.systemMS.model.entity.*;
+import nnu.wyz.systemMS.service.DscCatalogService;
+import nnu.wyz.systemMS.service.DscDASceneService;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
 import nnu.wyz.systemMS.service.DscSceneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,14 @@ public class DscSceneServiceIml implements DscSceneService {
     private DscGDVSceneConfigDAO dscGDVSceneConfigDAO;
 
     @Autowired
+    private DscDASceneConfigDAO dscDASceneConfigDAO;
+
+    @Autowired
     private DscGDVSceneService dscGDVSceneService;
+
+    @Autowired
+    private DscCatalogService dscCatalogService;
+
     @Autowired
     private MinioConfig minioConfig;
 
@@ -80,16 +87,26 @@ public class DscSceneServiceIml implements DscSceneService {
         Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
         DscScene dscScene = byId.get();
         String thumbnail = dscScene.getThumbnail();
-        int oKBegin = thumbnail.indexOf(userId);
-        String objectKey = thumbnail.substring(oKBegin);
-        DscGDVSceneConfig dscGDVSceneConfig = dscGDVSceneConfigDAO.findBySceneId(sceneId);
-        //删除缩略图
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(minioConfig.getSceneThumbnailsBucket(), objectKey);
-        amazonS3.deleteObject(deleteObjectRequest);
+        //如果缩略图存在
+        if (thumbnail != null && !thumbnail.isEmpty()){
+            int oKBegin = thumbnail.indexOf(userId);
+            String objectKey = thumbnail.substring(oKBegin);
+            //删除缩略图
+            DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(minioConfig.getSceneThumbnailsBucket(), objectKey);
+            amazonS3.deleteObject(deleteObjectRequest);
+        }
         //删除scene和config
         dscUserSceneDAO.delete(byUserIdAndSceneId);
         dscSceneDAO.delete(dscScene);
-        dscGDVSceneConfigDAO.delete(dscGDVSceneConfig);
+        String sceneType = dscScene.getType();
+        if (sceneType.equals("GDV")) {
+            dscGDVSceneConfigDAO.delete(dscGDVSceneConfigDAO.findBySceneId(sceneId));
+        } else if (sceneType.equals("DAS")) {
+            DscDASceneConfig dscDASceneConfig = dscDASceneConfigDAO.findBySceneId(sceneId);
+            dscDASceneConfigDAO.delete(dscDASceneConfig);
+            //  如果是分析场景，还需删除场景关联的文件记录及文件内的数据
+            dscCatalogService.delete(dscDASceneConfig.getSceneDataRootCatalogId());
+        }
         return CommonResult.success("删除场景成功！");
     }
 

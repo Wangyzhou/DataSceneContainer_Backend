@@ -59,6 +59,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
         createCatalogDTO.setCatalogName(UUID.randomUUID().toString());
         createCatalogDTO.setParentCatalogId(dscCatalogDAO.findDscCatalogByUserIdAndParent(userId,"-1").getId());
         createCatalogDTO.setUserId(userId);
+        // 以TaskId标识场景数据文件夹
+        createCatalogDTO.setTaskId("-1");
         this.create(createCatalogDTO);
     }
 
