@@ -1,13 +1,11 @@
 package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.util.IdUtil;
-import com.sun.org.apache.xml.internal.resolver.Catalog;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.dao.DscGeoAnalysisExecTaskDAO;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
-import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
 import nnu.wyz.systemMS.model.entity.DscGeoToolExecTask;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -67,7 +64,8 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
         createCatalogDTO.setTaskId(taskId);
         CommonResult<String> createCatalogRes = dscCatalogService.create(createCatalogDTO);
         String outputCatalog = createCatalogRes.getData();
-        String outputDir = rootPath + minioConfig.getGaOutputBucket() + File.separator + executor + File.separator + params.getSceneCatalog() + File.separator + outputCatalog;
+        String catalogPath = dscCatalogService.getCatalogPath(outputCatalog);
+        String outputDir = rootPath + minioConfig.getGaOutputBucket() + File.separator + executor + catalogPath;
         File file = new File(outputDir);
         boolean isMakeDir = file.mkdirs();
         if (!isMakeDir) {
@@ -86,7 +84,6 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
         dscGeoAnalysisExecTaskDAO.insert(dscGeoAnalysisExecTask);
         //异步执行任务
         dscGeoAnalysisExecService.invoke(dscGeoAnalysisExecTask);
-
         return CommonResult.success(dscGeoAnalysisExecTask, "任务已提交运行！");
     }
 

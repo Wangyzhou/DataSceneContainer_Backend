@@ -2,7 +2,6 @@ package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
-import com.sun.org.apache.xml.internal.resolver.Catalog;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.dao.DscDASceneConfigDAO;
@@ -19,7 +18,6 @@ import nnu.wyz.systemMS.service.DscDASceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Objects;
 
