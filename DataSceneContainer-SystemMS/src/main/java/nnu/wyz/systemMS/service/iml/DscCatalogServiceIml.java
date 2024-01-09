@@ -62,7 +62,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 .setUserId(userId)
                 .setTotal(0)
                 .setLevel(0)
-                .setParent("-1")
+                .setParent("-2")    //以区分普通数据的根文件夹
                 .setChildren(new ArrayList<>())
                 .setCreatedTime(dateTime)
                 .setUpdatedTime(dateTime)
@@ -241,7 +241,6 @@ public class DscCatalogServiceIml implements DscCatalogService {
         ArrayList<JSONObject> root = new ArrayList<>();
         //  如果是根目录
         DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogById(rootCatalog);
-        System.out.println(dscCatalog.getTaskId());
         if (dscCatalog.getParent().equals("-1") && dscCatalog.getTaskId() == null) {
             JSONObject rootList = new JSONObject();
             rootList.put("id", rootCatalog);
