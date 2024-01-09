@@ -121,7 +121,7 @@ public class DscGeoAnalysisExecService {
             if (!Objects.equals(errMsg, "")) {
                 log.error(errMsg);
                 stopTask(dscGeoAnalysisExecTask, errMsg);
-                return;
+//                return;
             }
             //遍历输出文件目录，进行入库
             String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
@@ -135,8 +135,9 @@ public class DscGeoAnalysisExecService {
                         FileInputStream fileInputStream = new FileInputStream(file);
                         String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
                         String suffix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                        String fileName = geoAnalysisOutputRecDTO.getFileNameWithoutSuffix() + file.getName().substring(file.getName().indexOf("."));
                         String fileId = IdUtil.objectId();
-                        DscFileInfo dscFileInfo = new DscFileInfo(fileId, md5, file.getName(), suffix, false, dscGeoAnalysisExecTask.getExecutor(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 1L, minioConfig.getGaOutputBucket(), dscGeoAnalysisExecTask.getExecutor() + catalogPath + File.separator + file.getName(), 32);
+                        DscFileInfo dscFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, dscGeoAnalysisExecTask.getExecutor(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), dscGeoAnalysisExecTask.getExecutor() + catalogPath + File.separator + file.getName(), 32);
                         dscFileDAO.insert(dscFileInfo);
                         InitTaskParam initTaskParam = new InitTaskParam();
                         initTaskParam.setIdentifier(md5);
