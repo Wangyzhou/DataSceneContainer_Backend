@@ -416,7 +416,7 @@ public class test {
 
     @Test
     void setSceneDataRootCatalog(){
-        dscCatalogService.createSceneDataRootCatalog("652a48fde4b01213a180bb5a");
+        dscCatalogService.createSceneDataRootCatalog("652a4b75e4b01213a180bb5b");
     }
 
     @Test
