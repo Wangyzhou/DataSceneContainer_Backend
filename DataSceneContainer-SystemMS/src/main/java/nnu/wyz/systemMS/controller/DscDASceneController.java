@@ -4,11 +4,12 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.CreateDASceneDTO;
 import nnu.wyz.systemMS.model.entity.DscScene;
 import nnu.wyz.systemMS.service.DscDASceneService;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -23,9 +24,15 @@ public class DscDASceneController {
 
     @Autowired
     private DscDASceneService dscDASceneService;
+
     @PostMapping
-    public CommonResult<DscScene> create(@RequestBody CreateDASceneDTO createDASceneDTO){
+    public CommonResult<DscScene> create(@RequestBody CreateDASceneDTO createDASceneDTO) {
         return dscDASceneService.createDAScene(createDASceneDTO);
+    }
+
+    @PostMapping(value = "/addData2Scene")
+    public CommonResult<List<JSONObject>> addData2Scene(@RequestBody Map<String, String> params) {
+        return dscDASceneService.addData2Scene(params.get("sceneId"), params.get("fileId"), params.get("type"));
     }
 
 }
