@@ -48,4 +48,5 @@ public interface DscCatalogService {
      * @return
      */
     String getPhysicalPath(String catalogId);
+
 }

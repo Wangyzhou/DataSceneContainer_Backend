@@ -203,7 +203,7 @@ public class DscFileServiceIml implements DscFileService {
             }
         }
         dscCatalog.setTotal(dscCatalog.getTotal() - 1);
-        dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MMMM-dddd HH:mm:ss"));
+        dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         dscCatalogDAO.save(dscCatalog);
         return CommonResult.success("删除成功!");
     }

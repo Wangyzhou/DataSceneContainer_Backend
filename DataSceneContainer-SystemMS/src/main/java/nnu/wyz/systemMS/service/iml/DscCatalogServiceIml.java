@@ -54,14 +54,20 @@ public class DscCatalogServiceIml implements DscCatalogService {
 
     @Override
     public void createSceneDataRootCatalog(String userId) {
-        CreateCatalogDTO createCatalogDTO = new CreateCatalogDTO();
-        // 防止其他文件夹重名
-        createCatalogDTO.setCatalogName(UUID.randomUUID().toString());
-        createCatalogDTO.setParentCatalogId(dscCatalogDAO.findDscCatalogByUserIdAndParent(userId,"-1").getId());
-        createCatalogDTO.setUserId(userId);
-        // 以TaskId标识场景数据文件夹
-        createCatalogDTO.setTaskId("-1");
-        this.create(createCatalogDTO);
+        //  创建独立的根目录
+        DscCatalog dscCatalog = new DscCatalog();
+        String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        dscCatalog.setId(UUID.randomUUID().toString())
+                .setName(UUID.randomUUID().toString())
+                .setUserId(userId)
+                .setTotal(0)
+                .setLevel(0)
+                .setParent("-1")
+                .setChildren(new ArrayList<>())
+                .setCreatedTime(dateTime)
+                .setUpdatedTime(dateTime)
+                .setTaskId("-1");
+        dscCatalogDAO.insert(dscCatalog);
     }
 
     @Override
@@ -232,15 +238,20 @@ public class DscCatalogServiceIml implements DscCatalogService {
     @Override
     public CommonResult<List<JSONObject>> getCatalogChildrenTree(String rootCatalog) {
         List<JSONObject> catalogList = this.recursionV2(rootCatalog);
-        JSONObject rootList = new JSONObject();
-        rootList.put("id", rootCatalog);
-        rootList.put("label", "MyData");
-        rootList.put("children", catalogList);
-        rootList.put("catalogId", "-1");
-        rootList.put("type", "folder");
         ArrayList<JSONObject> root = new ArrayList<>();
-        root.add(rootList);
-        return CommonResult.success(root, "获取成功！");
+        //  如果是根目录
+        if (dscCatalogDAO.findDscCatalogById(rootCatalog).getParent().equals("-1")){
+            JSONObject rootList = new JSONObject();
+            rootList.put("id", rootCatalog);
+            rootList.put("label", "MyData");
+            rootList.put("children", catalogList);
+            rootList.put("catalogId", "-1");
+            rootList.put("type", "folder");
+            root.add(rootList);
+            return CommonResult.success(root, "获取成功！");
+        }else{
+            return CommonResult.success(catalogList, "获取成功！");
+        }
     }
 
     private List<JSONObject> recursionV2(String catalogId) {

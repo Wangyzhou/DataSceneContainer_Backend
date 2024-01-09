@@ -63,7 +63,7 @@ public class DscCatalogController {
         return catalogService.getOnlyCatalogTree(rootCatalog);
     }
 
-    @ApiOperation(value = "获取目录项树")
+    @ApiOperation(value = "获取某个目录下所有的目录（包括文件）项树")
     @GetMapping(value = "/getCatalogChildrenTree/{rootCatalog}")
     public CommonResult<List<JSONObject>> getCatalogChildrenTree(@PathVariable("rootCatalog") String rootCatalog) {
         return catalogService.getCatalogChildrenTree(rootCatalog);
@@ -74,4 +74,5 @@ public class DscCatalogController {
     public CommonResult<String> pwd(@PathVariable("catalogId") String catalogId) {
         return catalogService.pwd(catalogId);
     }
+
 }
