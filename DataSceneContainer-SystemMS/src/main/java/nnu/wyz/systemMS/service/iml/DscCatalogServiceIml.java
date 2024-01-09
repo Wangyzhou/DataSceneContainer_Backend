@@ -227,7 +227,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 jsonObject.put("label", childrenDTO.getName());
                 List<JSONObject> result = recursion(childrenDTO.getId());
                 jsonObject.put("children", result);
-                jsonObject.put("catalogId",dscCatalog.getId());
+                jsonObject.put("catalogId", dscCatalog.getId());
                 catalogItems.add(jsonObject);
             }
         }
@@ -240,7 +240,9 @@ public class DscCatalogServiceIml implements DscCatalogService {
         List<JSONObject> catalogList = this.recursionV2(rootCatalog);
         ArrayList<JSONObject> root = new ArrayList<>();
         //  如果是根目录
-        if (dscCatalogDAO.findDscCatalogById(rootCatalog).getParent().equals("-1")){
+        DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogById(rootCatalog);
+        System.out.println(dscCatalog.getTaskId());
+        if (dscCatalog.getParent().equals("-1") && dscCatalog.getTaskId() == null) {
             JSONObject rootList = new JSONObject();
             rootList.put("id", rootCatalog);
             rootList.put("label", "MyData");
@@ -249,7 +251,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
             rootList.put("type", "folder");
             root.add(rootList);
             return CommonResult.success(root, "获取成功！");
-        }else{
+        } else {
             return CommonResult.success(catalogList, "获取成功！");
         }
     }
@@ -269,13 +271,13 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 jsonObject.put("label", childrenDTO.getName());
                 List<JSONObject> result = recursionV2(childrenDTO.getId());
                 jsonObject.put("children", result);
-                jsonObject.put("catalogId",dscCatalog.getId());
+                jsonObject.put("catalogId", dscCatalog.getId());
                 jsonObject.put("type", childrenDTO.getType());
                 catalogItems.add(jsonObject);
             } else {
                 jsonObject.put("id", childrenDTO.getId());
                 jsonObject.put("label", childrenDTO.getName());
-                jsonObject.put("catalogId",dscCatalog.getId());
+                jsonObject.put("catalogId", dscCatalog.getId());
                 jsonObject.put("type", childrenDTO.getType());
                 catalogItems.add(jsonObject);
             }
