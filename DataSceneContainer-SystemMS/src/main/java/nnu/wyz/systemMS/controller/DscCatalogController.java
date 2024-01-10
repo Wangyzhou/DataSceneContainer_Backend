@@ -57,7 +57,7 @@ public class DscCatalogController {
         return catalogService.delete(catalogId);
     }
 
-    @ApiOperation(value = "获取文件夹树")
+    @ApiOperation(value = "获取某个目录下的文件夹树")
     @GetMapping(value = "/getOnlyCatalogTree/{rootCatalog}")
     public CommonResult<List<JSONObject>> getOnlyCatalogTree(@PathVariable("rootCatalog") String rootCatalog) {
         return catalogService.getOnlyCatalogTree(rootCatalog);
