@@ -1,7 +1,7 @@
 deployIp: 172.21.213.86
 frontendIp: 172.21.213.86
 #deployIp: 119.45.181.127
-whiteboxDockerServer: 172.21.212.79
+whiteboxDockerServer: 172.21.213.212
 
 spring:
   web:

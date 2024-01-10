@@ -2,7 +2,6 @@ package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
-import com.sun.org.apache.xml.internal.resolver.Catalog;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
@@ -15,7 +14,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;

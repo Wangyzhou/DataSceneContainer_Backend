@@ -1,13 +1,11 @@
 package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.util.IdUtil;
-import com.sun.org.apache.xml.internal.resolver.Catalog;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.dao.DscGeoAnalysisExecTaskDAO;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
-import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
 import nnu.wyz.systemMS.model.entity.DscGeoToolExecTask;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,8 +29,8 @@ import java.util.Date;
 @Service
 public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
 
-//    @Autowired
-//    private DscGeoAnalysisExecService dscGeoAnalysisExecService;
+    @Autowired
+    private DscGeoAnalysisExecService dscGeoAnalysisExecService;
 
     @Value("${fileSavePath}")
     private String rootPath;
@@ -52,9 +49,11 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
 
     @Override
     public CommonResult<DscGeoAnalysisExecTask> submitGATask(DscGAInvokeParams params) {
+        //TODO:参数校验
         DscGeoAnalysisExecTask dscGeoAnalysisExecTask = new DscGeoAnalysisExecTask();
         String taskId = IdUtil.randomUUID();
         String executor = params.getExecutor();
+        //创建工具输出目录
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String formattedDateTime = dateFormat.format(new Date());
         DscCatalog sceneCatalog = dscCatalogDAO.findDscCatalogById(params.getSceneCatalog());
@@ -62,13 +61,16 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
         createCatalogDTO.setUserId(executor);
         createCatalogDTO.setParentCatalogId(sceneCatalog.getId());
         createCatalogDTO.setCatalogName(formattedDateTime);
-        createCatalogDTO.setTaskId("-1");
+        createCatalogDTO.setTaskId(taskId);
         CommonResult<String> createCatalogRes = dscCatalogService.create(createCatalogDTO);
         String outputCatalog = createCatalogRes.getData();
-        String outputDir = rootPath + minioConfig.getGaOutputBucket() + File.separator + executor + File.separator + params.getSceneCatalog() + File.separator + outputCatalog;
+        String catalogPath = dscCatalogService.getCatalogPath(outputCatalog);
+        String outputDir = rootPath + minioConfig.getGaOutputBucket() + File.separator + executor + catalogPath;
         File file = new File(outputDir);
-        if (!file.exists()) {
-            file.mkdirs();
+        boolean isMakeDir = file.mkdirs();
+        if (!isMakeDir) {
+            dscCatalogService.delete(outputCatalog);
+            return CommonResult.failed("创建任务失败!");
         }
         DscGARawParams dscGARawParams = new DscGARawParams();
         dscGARawParams.setWorkingDir(outputCatalog);
@@ -80,9 +82,8 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
                 .setExecutor(executor)
                 .setStatus(-2);
         dscGeoAnalysisExecTaskDAO.insert(dscGeoAnalysisExecTask);
-        //创建工具输出目录，
-
         //异步执行任务
+        dscGeoAnalysisExecService.invoke(dscGeoAnalysisExecTask);
         return CommonResult.success(dscGeoAnalysisExecTask, "任务已提交运行！");
     }
 

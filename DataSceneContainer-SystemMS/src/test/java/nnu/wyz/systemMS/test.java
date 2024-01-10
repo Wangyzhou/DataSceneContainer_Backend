@@ -23,6 +23,7 @@ import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeInnerParams;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
@@ -115,36 +116,36 @@ public class test {
         System.out.println("putObjectResult = " + putObjectResult);
     }
 
-    @Test
-    void testCatalogTree() {
-        String catalogId = "1bd88385-4252-42f2-ab19-751a6b294da8";
-        String userId = "64eda0524debf898422c7919";
-        List<JSONObject> precursion = precursion(catalogId);
-        System.out.println("precursion = " + precursion);
-    }
-
-    List<JSONObject> precursion(String catalogId) {
-        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
-        DscCatalog dscCatalog = byId.get();
-        if (dscCatalog.getChildren().size() == 0) {
-            return null;
-        }
-        ArrayList<JSONObject> catalogItems = new ArrayList<>();
-        for (CatalogChildrenDTO childrenDTO :
-                dscCatalog.getChildren()) {
-            if (childrenDTO.getType().equals("folder")) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", childrenDTO.getId());
-                jsonObject.put("label", childrenDTO.getName());
-                List<JSONObject> precursion = precursion(childrenDTO.getId());
-                if (precursion != null) {
-                    jsonObject.put("children", precursion);
-                }
-                catalogItems.add(jsonObject);
-            }
-        }
-        return catalogItems;
-    }
+//    @Test
+//    void testCatalogTree() {
+//        String catalogId = "1bd88385-4252-42f2-ab19-751a6b294da8";
+//        String userId = "64eda0524debf898422c7919";
+//        List<JSONObject> precursion = precursion(catalogId);
+//        System.out.println("precursion = " + precursion);
+//    }
+//
+//    List<JSONObject> precursion(String catalogId) {
+//        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+//        DscCatalog dscCatalog = byId.get();
+//        if (dscCatalog.getChildren().size() == 0) {
+//            return null;
+//        }
+//        ArrayList<JSONObject> catalogItems = new ArrayList<>();
+//        for (CatalogChildrenDTO childrenDTO :
+//                dscCatalog.getChildren()) {
+//            if (childrenDTO.getType().equals("folder")) {
+//                JSONObject jsonObject = new JSONObject();
+//                jsonObject.put("id", childrenDTO.getId());
+//                jsonObject.put("label", childrenDTO.getName());
+//                List<JSONObject> precursion = precursion(childrenDTO.getId());
+//                if (precursion != null) {
+//                    jsonObject.put("children", precursion);
+//                }
+//                catalogItems.add(jsonObject);
+//            }
+//        }
+//        return catalogItems;
+//    }
 
     @Test
     void testStaticFile() {
@@ -823,7 +824,7 @@ public class test {
 //        List<Container> exec = dockerClient.listContainersCmd().exec();
 //        exec.forEach(System.out::println);
 
-        ExecCreateCmdResponse exec1 = dockerClient.execCreateCmd("7a136d9053289523e8cce3230de6b1ce45c33da7f74270be69df65b720be2cb2")
+        ExecCreateCmdResponse exec1 = dockerClient.execCreateCmd("e904431d1b38ec6fba77361019321875536deaf0169ebd6872af66bbab67d879")
                 .withCmd("whitebox_tools", "--help")
                 .withTty(true)
                 .exec();
@@ -848,9 +849,9 @@ public class test {
 //                .withBinds(Bind.parse("/home/yzwang/whitebox_workdir:/whitebox_workdir"))
 //                .exec();
 //        dockerClient.startContainerCmd(container.getId()).exec();
-        String[] arr = new String[]{"whitebox_tools", "-r=Aspect", "--wd=/whitebox_workdir/", "--dem=nanjing_dem.tif", "--output=aspect2.tif"};
+        String[] arr = new String[]{"saga_cmd", "shapes_tools", "18", "-SHAPES=/home/minio-data/dsc-file/652a48fde4b01213a180bb5a/55a9453b-f5fe-4c16-848f-c83f1e50c99c.shp", "-BUFFER=/home/minio-data/dsc-file/test_buffer"};
 
-        ExecCreateCmdResponse whiteboxTools = dockerClient.execCreateCmd("b26110172ae16e470be063fd5d06e42eaff52255fb134b8acdce1af1ed98dc34")
+        ExecCreateCmdResponse whiteboxTools = dockerClient.execCreateCmd("e904431d1b38ec6fba77361019321875536deaf0169ebd6872af66bbab67d879")
                 .withAttachStdout(true)
                 .withAttachStderr(true)
                 .withCmd(arr)
@@ -861,6 +862,9 @@ public class test {
                 .exec(new ExecStartResultCallback(stdout, stderr) {
                     @Override
                     public void onNext(Frame frame) {
+//                        if(frame.toString().contains("Save")) {
+//                            return;
+//                        }
                         System.out.println(frame.toString().replace("STDOUT: ", "").replace("STDERR: ", ""));
                         super.onNext(frame);
                     }
@@ -873,8 +877,8 @@ public class test {
     }
     @Test
     void testgetCatalogPhysicalPath() {
-        String physicalPath = dscCatalogService.getPhysicalPath("8174f833-2a40-4cde-8fb5-20ac26f3174f");
-        System.out.println("physicalPath = " + physicalPath);
+//        String physicalPath = dscCatalogService.getPhysicalPath("8174f833-2a40-4cde-8fb5-20ac26f3174f");
+//        System.out.println("physicalPath = " + physicalPath);
     }
 
     @Test
@@ -904,25 +908,34 @@ public class test {
             System.out.println("byId = " + byId.get());
         }
     }
-
+    @Autowired
+    private DscGeoAnalysisService dscGeoAnalysisService;
     @Test
-    void testGA() {
+    void testGA() throws InterruptedException {
         DscGAInvokeParams dscGAInvokeParams = new DscGAInvokeParams();
         dscGAInvokeParams.setToolId("ce344b9e-0b68-46b1-9765-e50922855b6f");
         dscGAInvokeParams.setSceneCatalog("adb52290-36e4-487c-96eb-736d54351fc8");
         dscGAInvokeParams.setExecutor("652a48fde4b01213a180bb5a");
-        List<DscGAInvokeInnerParams> input = new ArrayList<>();
-        input.add(new DscGAInvokeInnerParams("SHAPES", "652a5f07e4b012905c858bee"));
-        ArrayList<DscGAInvokeInnerParams> options = new ArrayList<>();
-        options.add(new DscGAInvokeInnerParams("DIST_FIELD_DEFAULT", 100));
-        options.add(new DscGAInvokeInnerParams("DIST_SCALE", 1));
-        options.add(new DscGAInvokeInnerParams("DISSOLVE", "1"));
-        options.add(new DscGAInvokeInnerParams("NZONES", 1));
-        options.add(new DscGAInvokeInnerParams("POLY_INNER", "0"));
-        options.add(new DscGAInvokeInnerParams("DARC", 5));
+        HashMap<String, String> input = new HashMap<>();
+        input.put("Shapes", "652a5f07e4b012905c858bee");
+        HashMap<String, Object> options = new HashMap<>();
+        options.put("Default", 100);
+        options.put("Scaling Factor for Attribute Value", 1);
+        options.put("Dissolve Buffers", "1");
+        options.put("Number of Buffer Zones", 1);
+        options.put("Inner Buffer", "0");
+        options.put("Arc Vertex Distance [Degree]", 5);
         dscGAInvokeParams.setInput(input);
         dscGAInvokeParams.setOptions(options);
+        CommonResult<DscGeoAnalysisExecTask> dscGeoAnalysisExecTaskCommonResult = dscGeoAnalysisService.submitGATask(dscGAInvokeParams);
         System.out.println(dscGAInvokeParams);
+        while (true) {
+            synchronized (lock) {
+                // 除非有线程唤醒他 lock.notify();
+                lock.wait();
+            }
+        }
+
     }
 
 

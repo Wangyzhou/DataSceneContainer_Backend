@@ -326,7 +326,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
     }
 
     @Override
-    public String getPhysicalPath(String catalogId) {
+    public String getCatalogPath(String catalogId) {
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
         if (!byId.isPresent()) {
             return null;
@@ -341,9 +341,6 @@ public class DscCatalogServiceIml implements DscCatalogService {
             }
             dscCatalog = byId1.get();
         }
-        path.insert(0, File.separator + dscCatalog.getUserId());
-        path.insert(0, minioConfig.getBucketName());
-        path.insert(0, root);
         return path.toString();
     }
 }
