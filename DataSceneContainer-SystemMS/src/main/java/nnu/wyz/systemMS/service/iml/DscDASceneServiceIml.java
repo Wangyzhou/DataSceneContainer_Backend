@@ -61,7 +61,7 @@ public class DscDASceneServiceIml implements DscDASceneService {
         dscSceneDAO.save(dscScene);
 
         // 创建场景的数据文件夹
-        DscCatalog userSceneDataRootCatalog = dscCatalogDAO.findDscCatalogByUserIdAndParentAndTaskId(createDASceneDTO.getUserId(),"-1", "-1");
+        DscCatalog userSceneDataRootCatalog = dscCatalogDAO.findDscCatalogByUserIdAndParentAndTaskId(createDASceneDTO.getUserId(),"-2", "-1");
         CreateCatalogDTO createCatalogDTO = new CreateCatalogDTO();
         createCatalogDTO.setUserId(createDASceneDTO.getUserId());
         //场景名的唯一性，决定场景文件夹名称的唯一性

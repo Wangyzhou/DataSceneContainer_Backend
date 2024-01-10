@@ -121,7 +121,9 @@ public class DscGeoAnalysisExecService {
             if (!Objects.equals(errMsg, "")) {
                 log.error(errMsg);
                 stopTask(dscGeoAnalysisExecTask, errMsg);
-//                return;
+                if(outputRecords.size() == 0) {     //说明工具执行中出错，此时未输出文件，直接return
+                    return;
+                }
             }
             //遍历输出文件目录，进行入库
             String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
@@ -157,7 +159,6 @@ public class DscGeoAnalysisExecService {
         } catch (InterruptedException | IOException e) {
             stopTask(dscGeoAnalysisExecTask, e.getMessage());
         } finally {
-//            stdout.close();
             stderr.close();
             baos.close();
         }
