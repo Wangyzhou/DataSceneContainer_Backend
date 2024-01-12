@@ -204,18 +204,14 @@ public class DscCatalogServiceIml implements DscCatalogService {
     public CommonResult<List<JSONObject>> getOnlyCatalogTree(String rootCatalog) {
         List<JSONObject> catalogList = this.recursion(rootCatalog);
         ArrayList<JSONObject> root = new ArrayList<>();
-        //  如果是根目录
+        JSONObject rootList = new JSONObject();
         DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogById(rootCatalog);
-        if (dscCatalog.getParent().equals("-1") && dscCatalog.getTaskId() == null){
-            JSONObject rootList = new JSONObject();
-            rootList.put("id", rootCatalog);
-            rootList.put("label", "MyData");
-            rootList.put("children", catalogList);
-            root.add(rootList);
-            return CommonResult.success(root, "获取成功！");
-        }else{
-            return CommonResult.success(catalogList, "获取成功！");
-        }
+        rootList.put("id", rootCatalog);
+        rootList.put("catalogId", dscCatalog.getParent());
+        rootList.put("label", dscCatalog.getName());
+        rootList.put("children", catalogList);
+        root.add(rootList);
+        return CommonResult.success(root, "获取成功！");
     }
 
     private List<JSONObject> recursion(String catalogId) {
