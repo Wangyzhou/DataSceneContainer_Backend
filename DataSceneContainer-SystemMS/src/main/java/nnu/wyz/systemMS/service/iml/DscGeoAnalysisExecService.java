@@ -169,7 +169,7 @@ public class DscGeoAnalysisExecService {
         DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
         ArrayList<String> commands = new ArrayList<>();
         commands.add("saga_cmd");
-        commands.add(dscGeoAnalysisTool.getLibirary());
+        commands.add(dscGeoAnalysisTool.getLibrary());
         commands.add(dscGeoAnalysisTool.getIdentifier().toString());
         //格式化Input输入,目前只支持对场景文件的输入
         for (DscGeoAnalysisToolParams input : dscGeoAnalysisTool.getInput()) {
