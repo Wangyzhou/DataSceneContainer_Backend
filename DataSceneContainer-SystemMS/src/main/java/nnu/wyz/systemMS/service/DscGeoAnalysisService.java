@@ -10,5 +10,5 @@ public interface DscGeoAnalysisService {
 
     CommonResult<DscGeoAnalysisExecTask> submitGATask(DscGAInvokeParams params);
 
-    CommonResult<DscGeoToolExecTask> getGATask(String taskId);
+    CommonResult<DscGeoAnalysisExecTask> getGATask(String taskId);
 }

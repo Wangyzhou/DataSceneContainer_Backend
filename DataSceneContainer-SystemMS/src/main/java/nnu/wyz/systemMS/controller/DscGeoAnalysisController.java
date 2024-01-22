@@ -26,7 +26,7 @@ public class DscGeoAnalysisController {
     }
 
     @GetMapping(value = "/getGATask/{taskId}")
-    public CommonResult<DscGeoToolExecTask> getTask(@PathVariable("taskId") String taskId) {
+    public CommonResult<DscGeoAnalysisExecTask> getTask(@PathVariable("taskId") String taskId) {
         return dscGeoAnalysisService.getGATask(taskId);
     }
 

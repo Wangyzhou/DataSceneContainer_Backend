@@ -16,20 +16,20 @@ public class DscGeoAnalysisTool {
 
     private String name;
 
-    private String library;
-
-    private Integer identifier;
+    private String type;
 
     private String author;
 
+    private String identifier;
+
+    private String library;
+
+    private String version;
+
     private String description;
 
-    private String references;
+    private List<String> references;
 
-    private List<DscGeoAnalysisToolParams> input;
-
-    private List<DscGeoAnalysisToolParams> output;
-
-    private List<DscGeoAnalysisToolParams> options;
+    private DscGeoAnalysisToolDesParams parameters;
 
 }

@@ -938,6 +938,23 @@ public class test {
 
     }
 
+    @Test
+    void testSaga() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("cmd.exe","/c","D:\\majorSoftware\\saga-7.3.0_x64\\saga_cmd.exe","-h", "shapes_tools", "18");
+        try {
+            Process start = processBuilder.start();
+            BufferedReader br = new BufferedReader(new InputStreamReader(start.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while (((line = br.readLine()) != null)) {
+                System.out.println(line);
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }
