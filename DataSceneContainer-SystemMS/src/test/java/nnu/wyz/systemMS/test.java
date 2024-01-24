@@ -20,23 +20,23 @@ import io.minio.messages.DeleteObject;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
+import nnu.wyz.systemMS.config.PythonDockerConfig;
+import nnu.wyz.systemMS.config.SagaDockerConfig;
 import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeInnerParams;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
+import nnu.wyz.systemMS.model.dto.ConvertSgrd2GeoTIFFDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishTiffDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.model.param.*;
 import nnu.wyz.systemMS.service.*;
-import nnu.wyz.systemMS.utils.CompareUtil;
+import nnu.wyz.systemMS.utils.*;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
-import nnu.wyz.systemMS.utils.GeoJSONUtil;
-import nnu.wyz.systemMS.utils.MimeTypesUtil;
-import nnu.wyz.systemMS.utils.RedisCache;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -818,13 +818,13 @@ public class test {
     }
 
     @Autowired
-    private DockerClient dockerClient;
+    private SagaDockerConfig sagaDockerConfig;
 
     @Test
     void testDocker() throws InterruptedException, IOException {
 //        List<Container> exec = dockerClient.listContainersCmd().exec();
 //        exec.forEach(System.out::println);
-
+        DockerClient dockerClient = sagaDockerConfig.getDockerClient();
         ExecCreateCmdResponse exec1 = dockerClient.execCreateCmd("e904431d1b38ec6fba77361019321875536deaf0169ebd6872af66bbab67d879")
                 .withCmd("whitebox_tools", "--help")
                 .withTty(true)
@@ -851,6 +851,7 @@ public class test {
 //                .exec();
 //        dockerClient.startContainerCmd(container.getId()).exec();
         String[] arr = new String[]{"saga_cmd", "shapes_tools", "18", "-SHAPES=/home/minio-data/dsc-file/652a48fde4b01213a180bb5a/55a9453b-f5fe-4c16-848f-c83f1e50c99c.shp", "-BUFFER=/home/minio-data/dsc-file/test_buffer"};
+        DockerClient dockerClient = sagaDockerConfig.getDockerClient();
 
         ExecCreateCmdResponse whiteboxTools = dockerClient.execCreateCmd("e904431d1b38ec6fba77361019321875536deaf0169ebd6872af66bbab67d879")
                 .withAttachStdout(true)
@@ -951,6 +952,37 @@ public class test {
         dscRasterSService.publishTiff2RasterS(publishTiffDTO);
     }
 
+    @Test
+    void testSaga() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("cmd.exe","/c","D:\\majorSoftware\\saga-7.3.0_x64\\saga_cmd.exe","-h", "shapes_tools", "18");
+        try {
+            Process start = processBuilder.start();
+            BufferedReader br = new BufferedReader(new InputStreamReader(start.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while (((line = br.readLine()) != null)) {
+                System.out.println(line);
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    @Autowired
+    private PythonDockerConfig pythonDockerConfig;
+
+    private static final String PYTHON_CONTAINER_ID = "60d00132d32e49dc192d123f7c6fe1cc4790e938078e2df314d5570aed16404f";
+    @Autowired
+    private DscGeoAnalysisToolService dscGeoAnalysisToolService;
+    @Test
+    void testSagaDocker() {
+        ConvertSgrd2GeoTIFFDTO convertSgrd2GeoTIFFDTO = new ConvertSgrd2GeoTIFFDTO();
+        convertSgrd2GeoTIFFDTO.setSgrdFile("65b0bc59e4b066b41f7a45bb");
+        convertSgrd2GeoTIFFDTO.setOutputDir("bd204d16-c46b-4bed-994f-190bc91bd61a");
+        convertSgrd2GeoTIFFDTO.setUserId("652a48fde4b01213a180bb5a");
+        dscGeoAnalysisToolService.convertSgrd2Geotiff(convertSgrd2GeoTIFFDTO);
+    }
 
 }

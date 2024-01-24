@@ -1,7 +1,8 @@
 deployIp: 172.21.213.86
 frontendIp: 172.21.213.86
 #deployIp: 119.45.181.127
-whiteboxDockerServer: 172.21.213.212
+sagaDockerServer: 172.21.213.212
+pythonDockerServer: 172.21.213.86
 
 spring:
   web:

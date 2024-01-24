@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @description:
@@ -88,7 +89,11 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
     }
 
     @Override
-    public CommonResult<DscGeoToolExecTask> getGATask(String taskId) {
-        return null;
+    public CommonResult<DscGeoAnalysisExecTask> getGATask(String taskId) {
+        Optional<DscGeoAnalysisExecTask> byId = dscGeoAnalysisExecTaskDAO.findById(taskId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed("未找到该任务");
+        }
+        return CommonResult.success(byId.get(), "获取任务成功");
     }
 }

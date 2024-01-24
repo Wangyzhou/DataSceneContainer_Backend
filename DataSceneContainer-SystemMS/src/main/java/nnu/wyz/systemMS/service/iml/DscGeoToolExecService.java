@@ -9,6 +9,7 @@ import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.systemMS.config.MinioConfig;
+import nnu.wyz.systemMS.config.SagaDockerConfig;
 import nnu.wyz.systemMS.dao.DscFileDAO;
 import nnu.wyz.systemMS.dao.DscGeoToolExecTaskDAO;
 import nnu.wyz.systemMS.dao.DscGeoToolsDAO;
@@ -68,7 +69,7 @@ public class DscGeoToolExecService {
     private String rootPath;
 
     @Autowired
-    private DockerClient dockerClient;
+    private SagaDockerConfig sagaDockerConfig;
 
     @Autowired
     private SysUploadTaskService sysUploadTaskService;
@@ -87,6 +88,7 @@ public class DscGeoToolExecService {
         String toolId = dscGeoToolExecTask.getTargetTool();
         String executor = dscGeoToolExecTask.getExecutor();
         Optional<DscGeoTools> byId = dscGeoToolsDAO.findById(toolId);
+        DockerClient dockerClient = sagaDockerConfig.getDockerClient();
         if (!byId.isPresent()) {
             stopTask(dscGeoToolExecTask, "This tool does not exist!");
             return;

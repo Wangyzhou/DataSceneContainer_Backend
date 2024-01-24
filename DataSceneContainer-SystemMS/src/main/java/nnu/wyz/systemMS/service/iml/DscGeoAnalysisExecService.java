@@ -10,6 +10,7 @@ import com.github.dockerjava.core.command.ExecStartResultCallback;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.systemMS.config.MinioConfig;
+import nnu.wyz.systemMS.config.SagaDockerConfig;
 import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.*;
 import nnu.wyz.systemMS.model.dto.TaskInfoDTO;
@@ -53,7 +54,7 @@ public class DscGeoAnalysisExecService {
     private DscCatalogService dscCatalogService;
 
     @Autowired
-    private DockerClient dockerClient;
+    private SagaDockerConfig sagaDockerConfig;
 
     @Autowired
     private MinioConfig minioConfig;
@@ -88,7 +89,7 @@ public class DscGeoAnalysisExecService {
         ArrayList<GeoAnalysisOutputRecDTO> outputRecords = new ArrayList<>();
         String[] execCommand = getExecCommand(dscGeoAnalysisExecTask, outputRecords);
         log.info(Arrays.toString(execCommand));
-        ExecCreateCmdResponse containerResponse = dockerClient.execCreateCmd(CONTAINER_ID)
+        ExecCreateCmdResponse containerResponse = sagaDockerConfig.getDockerClient().execCreateCmd(CONTAINER_ID)
                 .withAttachStdout(true)
                 .withAttachStderr(true)
                 .withCmd(execCommand)
@@ -97,7 +98,7 @@ public class DscGeoAnalysisExecService {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream stderr = new PrintStream(baos);
         try {
-            dockerClient.execStartCmd(containerResponse.getId())
+            sagaDockerConfig.getDockerClient().execStartCmd(containerResponse.getId())
                     .exec(new ExecStartResultCallback(stdout, stderr) {
                         @Override
                         public void onNext(Frame frame) {
@@ -121,17 +122,17 @@ public class DscGeoAnalysisExecService {
             if (!Objects.equals(errMsg, "")) {
                 log.error(errMsg);
                 stopTask(dscGeoAnalysisExecTask, errMsg);
-                if(outputRecords.size() == 0) {     //说明工具执行中出错，此时未输出文件，直接return
+                if (outputRecords.size() == 0) {     //说明工具执行中出错，此时未输出文件，直接return
                     return;
                 }
             }
             //遍历输出文件目录，进行入库
             String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
             File outputDir = new File(root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor() + catalogPath);
-            for(GeoAnalysisOutputRecDTO geoAnalysisOutputRecDTO: outputRecords) {
+            for (GeoAnalysisOutputRecDTO geoAnalysisOutputRecDTO : outputRecords) {
                 //拿到所有前缀一样的文件集合
                 File[] files = outputDir.listFiles(pathname -> pathname.getName().startsWith(geoAnalysisOutputRecDTO.getPhysicalNameWithoutSuffix()));
-                if(files != null) {
+                if (files != null) {
                     for (File file : files) {
                         log.info("当前文件： " + file.getName());
                         FileInputStream fileInputStream = new FileInputStream(file);
@@ -169,35 +170,38 @@ public class DscGeoAnalysisExecService {
         DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
         ArrayList<String> commands = new ArrayList<>();
         commands.add("saga_cmd");
-        commands.add(dscGeoAnalysisTool.getLibirary());
-        commands.add(dscGeoAnalysisTool.getIdentifier().toString());
+        commands.add(dscGeoAnalysisTool.getLibrary());
+        commands.add(dscGeoAnalysisTool.getIdentifier());
         //格式化Input输入,目前只支持对场景文件的输入
-        for (DscGeoAnalysisToolParams input : dscGeoAnalysisTool.getInput()) {
+        for (DscGeoAnalysisToolInnerParams input : dscGeoAnalysisTool.getParameters().getInputs()) {
+            if(input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getName())){
+                continue;
+            }
             Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscGeoAnalysisExecTask.getParams().getInput().get(input.getName()));
             DscFileInfo dscFileInfo = byId1.get();
             String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
-            commands.add(MessageFormat.format("{0}={1}", input.getFlag(), filePath));
+            commands.add(MessageFormat.format("-{0}={1}", input.getIdentifier(), filePath));
         }
         //格式化Output输出，记录
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
         String outputDir = root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor() + catalogPath;
-        for (DscGeoAnalysisToolParams output : dscGeoAnalysisTool.getOutput()) {
+        for (DscGeoAnalysisToolInnerParams output : dscGeoAnalysisTool.getParameters().getOutputs()) {
             String filePhysicalName = IdUtil.randomUUID();
             String filePath = outputDir + File.separator + filePhysicalName;
-            if (output.getType().equals("Table (output)")) {
+            if (output.getType().equals("Table, output") || output.getType().equals("Table, output, optional")) {
                 filePath += ".csv";     //表格输出不指定类型为csv会导致输出文件无后缀名，默认输出为csv
             }
             outputRecords.add(new GeoAnalysisOutputRecDTO(filePhysicalName, output.getName())); //记录输出的一系列文件
-            commands.add(MessageFormat.format("{0}={1}", output.getFlag(), filePath));
+            commands.add(MessageFormat.format("-{0}={1}", output.getIdentifier(), filePath));
         }
         //格式化Options配置
-        for (DscGeoAnalysisToolParams option : dscGeoAnalysisTool.getOptions()) {
+        for (DscGeoAnalysisToolInnerParams option : dscGeoAnalysisTool.getParameters().getOptions()) {
             Map<String, Object> options = dscGeoAnalysisExecTask.getParams().getOptions();
             Object o = options.get(option.getName());
             if (o == null) {
                 continue;
             }
-            commands.add(MessageFormat.format("{0}={1}", option.getFlag(), o));
+            commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), o));
         }
         return commands.toArray(new String[commands.size()]);
     }
