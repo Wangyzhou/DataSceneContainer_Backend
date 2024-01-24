@@ -30,6 +30,8 @@ public class DscGeoAnalysisTool {
 
     private List<String> references;
 
+    private Boolean isEnabled;
+
     private DscGeoAnalysisToolDesParams parameters;
 
 }

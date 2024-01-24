@@ -10,6 +10,7 @@ import com.github.dockerjava.core.command.ExecStartResultCallback;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.systemMS.config.MinioConfig;
+import nnu.wyz.systemMS.config.SagaDockerConfig;
 import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.*;
 import nnu.wyz.systemMS.model.dto.TaskInfoDTO;
@@ -53,7 +54,7 @@ public class DscGeoAnalysisExecService {
     private DscCatalogService dscCatalogService;
 
     @Autowired
-    private DockerClient dockerClient;
+    private SagaDockerConfig sagaDockerConfig;
 
     @Autowired
     private MinioConfig minioConfig;
@@ -88,7 +89,7 @@ public class DscGeoAnalysisExecService {
         ArrayList<GeoAnalysisOutputRecDTO> outputRecords = new ArrayList<>();
         String[] execCommand = getExecCommand(dscGeoAnalysisExecTask, outputRecords);
         log.info(Arrays.toString(execCommand));
-        ExecCreateCmdResponse containerResponse = dockerClient.execCreateCmd(CONTAINER_ID)
+        ExecCreateCmdResponse containerResponse = sagaDockerConfig.getDockerClient().execCreateCmd(CONTAINER_ID)
                 .withAttachStdout(true)
                 .withAttachStderr(true)
                 .withCmd(execCommand)
@@ -97,7 +98,7 @@ public class DscGeoAnalysisExecService {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream stderr = new PrintStream(baos);
         try {
-            dockerClient.execStartCmd(containerResponse.getId())
+            sagaDockerConfig.getDockerClient().execStartCmd(containerResponse.getId())
                     .exec(new ExecStartResultCallback(stdout, stderr) {
                         @Override
                         public void onNext(Frame frame) {
@@ -173,6 +174,9 @@ public class DscGeoAnalysisExecService {
         commands.add(dscGeoAnalysisTool.getIdentifier());
         //格式化Input输入,目前只支持对场景文件的输入
         for (DscGeoAnalysisToolInnerParams input : dscGeoAnalysisTool.getParameters().getInputs()) {
+            if(input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getName())){
+                continue;
+            }
             Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscGeoAnalysisExecTask.getParams().getInput().get(input.getName()));
             DscFileInfo dscFileInfo = byId1.get();
             String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
