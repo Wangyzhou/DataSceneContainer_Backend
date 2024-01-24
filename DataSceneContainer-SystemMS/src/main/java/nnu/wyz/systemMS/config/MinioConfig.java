@@ -27,4 +27,6 @@ public class MinioConfig {
     private String avatarBucket;
 
     private String gaOutputBucket;
+
+    private String pyFilesBucket;
 }

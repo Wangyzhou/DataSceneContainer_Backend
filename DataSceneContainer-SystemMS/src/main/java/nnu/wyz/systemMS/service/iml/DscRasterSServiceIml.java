@@ -2,25 +2,37 @@ package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.ExecCreateCmdResponse;
+import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.core.command.ExecStartResultCallback;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
 import nnu.wyz.systemMS.config.MinioConfig;
+import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.dao.DscFileDAO;
 import nnu.wyz.systemMS.dao.DscRasterSDAO;
 import nnu.wyz.systemMS.dao.DscUserRasterSDAO;
-import nnu.wyz.systemMS.model.dto.PageableDTO;
-import nnu.wyz.systemMS.model.dto.PublishImageDTO;
-import nnu.wyz.systemMS.model.entity.DscFileInfo;
-import nnu.wyz.systemMS.model.entity.DscRasterService;
-import nnu.wyz.systemMS.model.entity.DscUserRasterS;
-import nnu.wyz.systemMS.model.entity.PageInfo;
+import nnu.wyz.systemMS.model.dto.*;
+import nnu.wyz.systemMS.model.entity.*;
+import nnu.wyz.systemMS.model.param.InitTaskParam;
+import nnu.wyz.systemMS.service.DscCatalogService;
+import nnu.wyz.systemMS.service.DscFileService;
 import nnu.wyz.systemMS.service.DscRasterSService;
+import nnu.wyz.systemMS.service.SysUploadTaskService;
 import nnu.wyz.systemMS.utils.CompareUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
+import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +53,27 @@ public class DscRasterSServiceIml implements DscRasterSService {
     private DscUserRasterSDAO dscUserRasterSDAO;
 
     @Autowired
+    private DscCatalogDAO dscCatalogDAO;
+
+    @Autowired
+    private DscCatalogService dscCatalogService;
+
+    @Autowired
+    private DockerClient dockerClient;
+
+    @Autowired
+    private DscFileService dscFileService;
+
+    @Autowired
+    private SysUploadTaskService sysUploadTaskService;
+
+    @Autowired
     private MinioConfig minioConfig;
+
+    @Value("${fileSavePath}")
+    private String rootPath;
+
+    private static final String GDAL_CONTAINER_ID = "0b9ec1ec970f7d8000b7ead841821af61bafe01517820920f8c3f061dc2f65df";
 
     @Override
     public CommonResult<String> publishImage2RasterS(PublishImageDTO publishImageDTO) {
@@ -86,6 +118,118 @@ public class DscRasterSServiceIml implements DscRasterSService {
     }
 
     @Override
+    public CommonResult<String> publishTiff2RasterS(PublishTiffDTO publishTiffDTO) {
+        String pyPath = rootPath + minioConfig.getPyFilesBucket() + File.separator + "tiff2Png.py";
+        String condaPath = "D:\\Software\\miniconda\\Scripts";//获取conda的系统变量
+//        String command = condaPath + "\\activate.bat && C: && conda activate gdalTest && python D:\\Project\\workingProject\\gdalTest\\test.py \"D:\\Data\\tif\\LT51200381984352HAJ00\\LT05_L1TP_120038_19841217_20170219_01_T1_B1.tif\"";
+        Optional<DscFileInfo> byId = dscFileDAO.findById(publishTiffDTO.getFileId());
+        if (!byId.isPresent()) {
+            return CommonResult.failed("未找到该文件!");
+        }
+        Optional<DscCatalog> byCatalog = dscCatalogDAO.findById(publishTiffDTO.getOutputCatalogId());
+        if (!byCatalog.isPresent()) {
+            return CommonResult.failed("未找到载体目录!");
+        }
+        DscUserRasterS isExist = dscUserRasterSDAO.findDscUserRasterSByUserIdAndRasterSNameAndRasterSType(publishTiffDTO.getUserId(), publishTiffDTO.getName(), "image");
+        if (!Objects.isNull(isExist)) {
+            return CommonResult.failed("存在名称相同的Image服务，请更改发布服务的名称！");
+        }
+//        DscCatalog dscCatalog = byCatalog.get();
+        DscFileInfo dscFileInfo = byId.get();
+        String tiffUrl = minioConfig.getEndpoint() + "/" + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
+        String tiffPath = rootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
+        System.out.println("tif地址: " + tiffUrl);
+        System.out.println("tif地址2: " + tiffPath);
+        String catalogPath = dscCatalogService.getCatalogPath(publishTiffDTO.getOutputCatalogId());
+        String outputDirPath = rootPath + minioConfig.getGaOutputBucket() + File.separator + publishTiffDTO.getUserId() + catalogPath;
+//        File outputDir = new File(outputDirPath);
+        System.out.println(outputDirPath);
+        // 如果该文件夹不存在，则创建
+//        if (!outputDir.exists()) {
+//            boolean isMakeDir = outputDir.mkdirs();
+//            System.out.println(123);
+//            if (!isMakeDir) {
+//                return CommonResult.failed("发布失败!");
+//            }
+//        }
+        String filePhysicalName = IdUtil.randomUUID() + ".png";
+        String filePath = outputDirPath + File.separator + filePhysicalName;
+//        String command = condaPath + "\\activate.bat && C: && conda activate gdalTest && python D:\\Project\\workingProject\\gdalTest\\test.py " + tiffUrl + " " + filePath;
+        String[] execCommand = {"python", pyPath, tiffPath, filePath};
+        System.out.println(execCommand.toString());
+
+        ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(GDAL_CONTAINER_ID)
+                .withAttachStdout(true)
+                .withAttachStderr(true)
+                .withCmd(execCommand)
+                .exec();
+
+        try {
+//            Process process = Runtime.getRuntime().exec(command);
+
+            ExecStartResultCallback execCallback = new ExecStartResultCallback();
+            dockerClient.execStartCmd(execCreateCmdResponse.getId())
+                    .exec(execCallback).awaitCompletion();
+            String output = execCallback.toString();
+            CommonResult.success(output);
+            // 添加png的文件信息
+//            File pngFile = new File(filePath);
+//            FileInputStream fileInputStream = new FileInputStream(pngFile);
+//            String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
+//            String suffix = pngFile.getName().substring(pngFile.getName().lastIndexOf(".") + 1);
+//            String fileName = pngFile.getName();
+//            String fileId = IdUtil.objectId();
+//            DscFileInfo pngFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, publishTiffDTO.getUserId(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), pngFile.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), publishTiffDTO.getUserId() + catalogPath + File.separator + fileName, 32);
+//            dscFileDAO.insert(pngFileInfo);
+//            System.out.println(pngFileInfo);
+            // 模拟上传任务，添加文件夹相关记录
+//            InitTaskParam initTaskParam = new InitTaskParam();
+//            initTaskParam.setIdentifier(md5);
+//            initTaskParam.setFileName(fileName);
+//            initTaskParam.setFileId(fileId);
+//            initTaskParam.setUserId(publishTiffDTO.getUserId());
+//            initTaskParam.setTotalSize(pngFile.length());
+//            initTaskParam.setChunkSize(pngFile.length());
+//            initTaskParam.setObjectName(fileName.substring(0, fileName.lastIndexOf(".")));
+//            TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
+//            UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiffDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), publishTiffDTO.getOutputCatalogId());
+//            dscFileService.create(uploadFileDTO);
+            //  添加栅格服务记录
+//            DscRasterService dscRasterService = new DscRasterService();
+//            String rasterId = IdUtil.randomUUID();
+//            String rasterSUrl = minioConfig.getEndpoint() + File.separator + minioConfig.getGaOutputBucket() + File.separator + pngFileInfo.getObjectKey();
+//            dscRasterService.setId(rasterId)
+//                    .setPublisher(publishTiffDTO.getUserId())
+//                    .setPublishTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
+//                    .setName(publishTiffDTO.getName())
+//                    .setFileId(fileId)
+//                    .setOriFileId(dscFileInfo.getId())
+//                    .setBbox(bbox)
+//                    .setType("image")
+//                    .setOwnerCount(1L)
+//                    .setUrl(rasterSUrl);
+//            dscRasterSDAO.insert(dscRasterService);
+//            DscUserRasterS dscUserRasterS = new DscUserRasterS();
+//            dscUserRasterS
+//                    .setId(IdUtil.randomUUID())
+//                    .setRasterSName(publishTiffDTO.getName())
+//                    .setRasterSId(rasterId)
+//                    .setUserId(publishTiffDTO.getUserId())
+//                    .setRasterSType("image");
+//            System.out.println(rasterSUrl);
+//            System.out.println(dscRasterService);
+//            dscUserRasterSDAO.insert(dscUserRasterS);
+            //增加文件发布记录（tif）
+//            dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() + 1);
+//            dscFileDAO.save(dscFileInfo);
+//            return CommonResult.success("发布成功!");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO) {
         String userId = pageableDTO.getCriteria();
         Integer pageIndex = pageableDTO.getPageIndex();
@@ -110,7 +254,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
     @Override
     public CommonResult<String> deleteRasterService(String userId, String rasterSId) {
         DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(userId, rasterSId);
-        if(Objects.isNull(dscUserRasterS)){
+        if (Objects.isNull(dscUserRasterS)) {
             return CommonResult.failed("未找到该服务");
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(rasterSId);
@@ -131,5 +275,14 @@ public class DscRasterSServiceIml implements DscRasterSService {
     public CommonResult<List<DscRasterService>> getRasterServiceListByFileId(String fileId) {
         List<DscRasterService> allByFileId = dscRasterSDAO.findAllByFileId(fileId);
         return CommonResult.success(allByFileId, "获取成功!");
+    }
+
+    private static List<Double> parseBbox(String bboxString) {
+        List<Double> bbox = new ArrayList<>();
+        String[] coordinates = bboxString.substring(1, bboxString.length() - 1).split(", ");
+        for (String coordinate : coordinates) {
+            bbox.add(Double.parseDouble(coordinate));
+        }
+        return bbox;
     }
 }

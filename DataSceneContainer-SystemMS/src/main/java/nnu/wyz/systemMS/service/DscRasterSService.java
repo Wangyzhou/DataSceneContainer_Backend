@@ -3,6 +3,7 @@ package nnu.wyz.systemMS.service;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishImageDTO;
+import nnu.wyz.systemMS.model.dto.PublishTiffDTO;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 
@@ -11,6 +12,8 @@ import java.util.List;
 public interface DscRasterSService {
 
     CommonResult<String> publishImage2RasterS(PublishImageDTO publishImageDTO);
+
+    CommonResult<String> publishTiff2RasterS(PublishTiffDTO publishTiffDTO);
 
     CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO);
 
