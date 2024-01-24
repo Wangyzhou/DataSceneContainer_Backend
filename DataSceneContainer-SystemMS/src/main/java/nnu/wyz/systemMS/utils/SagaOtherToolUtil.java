@@ -2,6 +2,7 @@ package nnu.wyz.systemMS.utils;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ExecCreateCmdResponse;
+import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.systemMS.config.SagaDockerConfig;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -38,16 +41,22 @@ public class SagaOtherToolUtil {
         String[] cmds = {"saga_cmd", "io_gdal", "2", "-GRIDS=" + sgrdPath, "-FILE" + geoTiffPath};
         ExecCreateCmdResponse exec = staticSagaDockerConfig.getDockerClient()
                 .execCreateCmd(CONTAINER_ID)
+                .withAttachStdout(true)
+                .withAttachStderr(true)
                 .withCmd(cmds)
                 .exec();
         try {
-            staticSagaDockerConfig.getDockerClient().execStartCmd(exec.getId()).exec(new ExecStartResultCallback()).awaitCompletion();
+            PrintStream stdout = System.out;
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream stderr = new PrintStream(baos);
+            staticSagaDockerConfig.getDockerClient().execStartCmd(exec.getId()).exec(new ExecStartResultCallback(stdout, stderr) {
+                @Override
+                public void onNext(Frame item) {
+                    super.onNext(item);
+                }
+            }).awaitCompletion();
             File file = new File(geoTiffPath);
-            System.out.println("file.getName() = " + file.getName());
-            if(file.exists()) {
-                return true;
-            }
-            return false;
+            return file.exists();
         } catch (InterruptedException e) {
             log.error(e.getMessage());
             return false;
