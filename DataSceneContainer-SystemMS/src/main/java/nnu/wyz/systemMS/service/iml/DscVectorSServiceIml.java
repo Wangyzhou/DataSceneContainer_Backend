@@ -127,7 +127,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
             }
         }
         String ptNamePrefix = fileName.substring(0, fileName.lastIndexOf("."));
-        String ptName = ptNamePrefix + "_" + IdUtil.objectId();
+        String ptName = (ptNamePrefix + "_" + IdUtil.objectId()).replace(" ", "_");
         String pgCmdStr = System.getProperty("os.name").startsWith("Windows") ? MessageFormat.format(pgCmdWin, srid, code, fullPath, ptName) : MessageFormat.format(pgCmd, srid, code, fullPath, ptName);
         Process pro;
         ProcessBuilder processBuilder = new ProcessBuilder();

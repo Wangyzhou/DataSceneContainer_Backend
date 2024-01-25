@@ -47,8 +47,7 @@ public class SagaOtherToolUtil {
                 .exec();
         try {
             PrintStream stdout = System.out;
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintStream stderr = new PrintStream(baos);
+            PrintStream stderr = System.err;
             staticSagaDockerConfig.getDockerClient().execStartCmd(exec.getId()).exec(new ExecStartResultCallback(stdout, stderr) {
                 @Override
                 public void onNext(Frame item) {

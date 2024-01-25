@@ -197,9 +197,15 @@ public class DscGeoAnalysisExecService {
         //格式化Options配置
         for (DscGeoAnalysisToolInnerParams option : dscGeoAnalysisTool.getParameters().getOptions()) {
             Map<String, Object> options = dscGeoAnalysisExecTask.getParams().getOptions();
+            if(!options.containsKey(option.getName())){
+                continue;
+            }
             Object o = options.get(option.getName());
             if (o == null) {
                 continue;
+            }
+            if(option.getType().equals("Value Range")) {
+
             }
             commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), o));
         }
