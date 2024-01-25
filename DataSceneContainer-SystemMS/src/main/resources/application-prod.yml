@@ -83,3 +83,4 @@ minio:
   sceneThumbnailsBucket: scene-thumbnails
   avatarBucket: avatar
   gaOutputBucket: dsc-ga-output
+  pyFilesBucket: py-files

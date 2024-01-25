@@ -36,6 +36,9 @@ public class DscRasterService {
     @ApiModelProperty(value = "发布文件Id")
     private String fileId;
 
+    @ApiModelProperty(value = "原始文件Id（可选）")
+    private String OriFileId;
+
     @ApiModelProperty(value = "空间范围")
     private List<Double> bbox;
 

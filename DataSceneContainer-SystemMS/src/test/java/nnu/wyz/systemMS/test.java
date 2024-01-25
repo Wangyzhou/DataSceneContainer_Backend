@@ -30,6 +30,7 @@ import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.ConvertSgrd2GeoTIFFDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
+import nnu.wyz.systemMS.model.dto.PublishTiffDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.model.param.*;
@@ -937,6 +938,18 @@ public class test {
             }
         }
 
+    }
+    @Autowired
+    private DscRasterSService dscRasterSService;
+    @Test
+    void testPublishTiff() {
+        PublishTiffDTO publishTiffDTO = new PublishTiffDTO();
+        publishTiffDTO.setUserId("652a5e61e4b012905c858bea");
+        publishTiffDTO.setFileId("65a88e70e4b066b4f0d6f13d");
+        publishTiffDTO.setName("test");
+        publishTiffDTO.setOutputCatalogId("d4c1b985-cce4-48bc-925b-71a0d7ba0545");
+        publishTiffDTO.setMethod("scene");
+        dscRasterSService.publishTiff2RasterS(publishTiffDTO);
     }
 
     @Test

@@ -3,6 +3,7 @@ package nnu.wyz.systemMS.controller;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishImageDTO;
+import nnu.wyz.systemMS.model.dto.PublishTiffDTO;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
 import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
 import nnu.wyz.systemMS.model.entity.PageInfo;
@@ -30,6 +31,10 @@ public class DscRasterServiceController {
         return dscRasterService.publishImage2RasterS(publishImageDTO);
     }
 
+    @PostMapping(value = "/publishTiff2ImgRasterS")
+    public CommonResult<String> publishTiff2ImgRasterS(@RequestBody PublishTiffDTO publishTiffDTO) {
+        return dscRasterService.publishTiff2RasterS(publishTiffDTO);
+    }
     @GetMapping(value = "/getRasterSList/{userId}/{pageSize}/{pageIndex}")
     public CommonResult<PageInfo<DscRasterService>> getRasterSList(@PathVariable(value = "userId") String userId,
                                                                    @PathVariable(value = "pageSize") Integer pageSize,
