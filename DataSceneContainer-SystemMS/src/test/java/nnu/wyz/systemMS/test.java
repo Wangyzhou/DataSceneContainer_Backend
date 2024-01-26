@@ -417,7 +417,7 @@ public class test {
     }
 
     @Test
-    void setSceneDataRootCatalog(){
+    void setSceneDataRootCatalog() {
         dscCatalogService.createSceneDataRootCatalog("652a4b75e4b01213a180bb5b");
     }
 
@@ -877,6 +877,7 @@ public class test {
 //        dockerClient.stopContainerCmd(container.getId()).exec();
 //        dockerClient.removeContainerCmd(container.getId()).exec();
     }
+
     @Test
     void testgetCatalogPhysicalPath() {
 //        String physicalPath = dscCatalogService.getPhysicalPath("8174f833-2a40-4cde-8fb5-20ac26f3174f");
@@ -910,8 +911,10 @@ public class test {
             System.out.println("byId = " + byId.get());
         }
     }
+
     @Autowired
     private DscGeoAnalysisService dscGeoAnalysisService;
+
     @Test
     void testGA() throws InterruptedException {
         DscGAInvokeParams dscGAInvokeParams = new DscGAInvokeParams();
@@ -939,13 +942,15 @@ public class test {
         }
 
     }
+
     @Autowired
     private DscRasterSService dscRasterSService;
+
     @Test
     void testPublishTiff() {
         PublishTiffDTO publishTiffDTO = new PublishTiffDTO();
         publishTiffDTO.setUserId("652a5e61e4b012905c858bea");
-        publishTiffDTO.setFileId("65a88e70e4b066b4f0d6f13d");
+        publishTiffDTO.setFileId("65b211ffe4b08e2b13be0131");
         publishTiffDTO.setName("test");
         publishTiffDTO.setOutputCatalogId("d4c1b985-cce4-48bc-925b-71a0d7ba0545");
         publishTiffDTO.setMethod("scene");
@@ -955,7 +960,7 @@ public class test {
     @Test
     void testSaga() {
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("cmd.exe","/c","D:\\majorSoftware\\saga-7.3.0_x64\\saga_cmd.exe","-h", "shapes_tools", "18");
+        processBuilder.command("cmd.exe", "/c", "D:\\majorSoftware\\saga-7.3.0_x64\\saga_cmd.exe", "-h", "shapes_tools", "18");
         try {
             Process start = processBuilder.start();
             BufferedReader br = new BufferedReader(new InputStreamReader(start.getInputStream()));
@@ -976,6 +981,7 @@ public class test {
     private static final String PYTHON_CONTAINER_ID = "60d00132d32e49dc192d123f7c6fe1cc4790e938078e2df314d5570aed16404f";
     @Autowired
     private DscGeoAnalysisToolService dscGeoAnalysisToolService;
+
     @Test
     void testSagaDocker() {
         ConvertSgrd2GeoTIFFDTO convertSgrd2GeoTIFFDTO = new ConvertSgrd2GeoTIFFDTO();
@@ -983,6 +989,15 @@ public class test {
         convertSgrd2GeoTIFFDTO.setOutputDir("bd204d16-c46b-4bed-994f-190bc91bd61a");
         convertSgrd2GeoTIFFDTO.setUserId("652a48fde4b01213a180bb5a");
         dscGeoAnalysisToolService.convertSgrd2Geotiff(convertSgrd2GeoTIFFDTO);
+    }
+
+    @Autowired
+    DscRasterSDAO dscRasterSDAO;
+
+    @Test
+    void testGetRsbyfileIdOrOriFileId() {
+        List<DscRasterService> allByFileId = dscRasterSDAO.findAllByFileIdOrOriFileId("65b211ffe4b08e2b13be0131");
+        System.out.println(allByFileId);
     }
 
 }

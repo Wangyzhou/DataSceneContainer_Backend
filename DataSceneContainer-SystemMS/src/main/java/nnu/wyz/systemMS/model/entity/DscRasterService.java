@@ -37,7 +37,7 @@ public class DscRasterService {
     private String fileId;
 
     @ApiModelProperty(value = "原始文件Id（可选）")
-    private String OriFileId;
+    private String oriFileId;
 
     @ApiModelProperty(value = "空间范围")
     private List<Double> bbox;
