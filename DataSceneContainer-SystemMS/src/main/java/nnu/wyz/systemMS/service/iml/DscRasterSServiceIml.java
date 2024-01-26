@@ -95,7 +95,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             return CommonResult.failed("存在名称相同的Image服务，请更改发布服务的名称！");
         }
         DscFileInfo dscFileInfo = byId.get();
-        String rasterSUrl = minioConfig.getEndpoint() + "/" + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
+        String rasterSUrl = minioConfig.getEndpoint() + File.separator + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
         DscRasterService dscRasterService = new DscRasterService();
         String rasterId = IdUtil.randomUUID();
         dscRasterService.setId(rasterId)
@@ -140,7 +140,8 @@ public class DscRasterSServiceIml implements DscRasterSService {
         DscFileInfo dscFileInfo = byId.get();
         String tiffPath = rootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
         String catalogPath = dscCatalogService.getCatalogPath(publishTiffDTO.getOutputCatalogId());
-        String outputDirPath = rootPath + minioConfig.getGaOutputBucket() + File.separator + publishTiffDTO.getUserId() + catalogPath;
+        //  物理存储在dsc-files桶
+        String outputDirPath = rootPath + minioConfig.getBucketName() + File.separator + publishTiffDTO.getUserId();
         String filePhysicalName = IdUtil.randomUUID() + ".png";
         String filePath = outputDirPath + File.separator + filePhysicalName;
         String[] execCommand = {"python", pyPath, tiffPath, filePath};
@@ -166,10 +167,12 @@ public class DscRasterSServiceIml implements DscRasterSService {
             }
             FileInputStream fileInputStream = new FileInputStream(pngFile);
             String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
-            String suffix = pngFile.getName().substring(pngFile.getName().lastIndexOf(".") + 1);
-            String fileName = pngFile.getName();
+            //  用于标识服务用途的特殊png
+            String suffix = "s" + pngFile.getName().substring(pngFile.getName().lastIndexOf(".") + 1);
+            //  png和tif同名
+            String fileName = dscFileInfo.getFileName().substring(0, dscFileInfo.getFileName().lastIndexOf(".")) + "." + suffix;
             String fileId = IdUtil.objectId();
-            DscFileInfo pngFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, publishTiffDTO.getUserId(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), pngFile.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), publishTiffDTO.getUserId() + catalogPath + File.separator + fileName, 32);
+            DscFileInfo pngFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, publishTiffDTO.getUserId(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), pngFile.length(), 0L, 0L, 0L, 0L, minioConfig.getBucketName(), publishTiffDTO.getUserId() + File.separator + pngFile.getName(), 32);
             dscFileDAO.insert(pngFileInfo);
             System.out.println(pngFileInfo);
             // 模拟上传任务，添加文件夹相关记录
@@ -187,7 +190,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             //  添加栅格服务记录
             DscRasterService dscRasterService = new DscRasterService();
             String rasterId = IdUtil.randomUUID();
-            String rasterSUrl = minioConfig.getEndpoint() + File.separator + minioConfig.getGaOutputBucket() + File.separator + pngFileInfo.getObjectKey();
+            String rasterSUrl = minioConfig.getEndpoint() + File.separator + minioConfig.getBucketName() + File.separator + pngFileInfo.getObjectKey();
             dscRasterService.setId(rasterId)
                     .setPublisher(publishTiffDTO.getUserId())
                     .setPublishTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
@@ -262,7 +265,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
 
     @Override
     public CommonResult<List<DscRasterService>> getRasterServiceListByFileId(String fileId) {
-        List<DscRasterService> allByFileId = dscRasterSDAO.findAllByFileId(fileId);
+        List<DscRasterService> allByFileId = dscRasterSDAO.findAllByFileIdOrOriFileId(fileId);
         return CommonResult.success(allByFileId, "获取成功!");
     }
 
