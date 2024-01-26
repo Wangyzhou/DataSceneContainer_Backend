@@ -1,11 +1,15 @@
 package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCatalogDAO;
+import nnu.wyz.systemMS.dao.DscGeoAnalysisDAO;
 import nnu.wyz.systemMS.dao.DscGeoAnalysisExecTaskDAO;
+import nnu.wyz.systemMS.dao.DscUserDAO;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
 import nnu.wyz.systemMS.model.entity.DscGeoToolExecTask;
@@ -48,9 +52,20 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
     @Autowired
     private DscCatalogService dscCatalogService;
 
+    @Autowired
+    private DscGeoAnalysisDAO dscGeoAnalysisDAO;
+
+    @Autowired
+    private DscUserDAO dscUserDAO;
+
     @Override
     public CommonResult<DscGeoAnalysisExecTask> submitGATask(DscGAInvokeParams params) {
         //TODO:参数校验
+        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(params.getToolId());
+        DscGeoAnalysisTool tool;
+        if (!byId.isPresent() || !(tool = byId.get()).getIsEnabled()) {
+            return CommonResult.failed("工具不可用!");
+        }
         DscGeoAnalysisExecTask dscGeoAnalysisExecTask = new DscGeoAnalysisExecTask();
         String taskId = IdUtil.randomUUID();
         String executor = params.getExecutor();
@@ -77,10 +92,16 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
         dscGARawParams.setWorkingDir(outputCatalog);
         dscGARawParams.setInput(params.getInput());
         dscGARawParams.setOptions(params.getOptions());
+        JSONObject targetTool = new JSONObject();
+        targetTool.put("id", tool.getId());
+        targetTool.put("name", tool.getName());
+        JSONObject executorJson = new JSONObject();
+        executorJson.put("id", executor);
+        executorJson.put("name", dscUserDAO.findDscUserById(executor).getUserName());
         dscGeoAnalysisExecTask.setId(taskId)
-                .setTargetTool(params.getToolId())
+                .setTargetTool(targetTool)
                 .setParams(dscGARawParams)
-                .setExecutor(executor)
+                .setExecutor(executorJson)
                 .setStatus(-2);
         dscGeoAnalysisExecTaskDAO.insert(dscGeoAnalysisExecTask);
         //异步执行任务

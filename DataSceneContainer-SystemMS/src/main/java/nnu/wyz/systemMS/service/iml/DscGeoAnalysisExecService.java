@@ -78,14 +78,14 @@ public class DscGeoAnalysisExecService {
     @SneakyThrows
     @Async
     public void invoke(DscGeoAnalysisExecTask dscGeoAnalysisExecTask) {
-        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool());
+        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool().get("id").toString());
         if (!byId.isPresent()) {
             stopTask(dscGeoAnalysisExecTask, "Target tool not found.");
             return;
         }
         DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
         startTask(dscGeoAnalysisExecTask, dscGeoAnalysisTool.getName());
-        DscUser executor = dscUserDAO.findDscUserById(dscGeoAnalysisExecTask.getExecutor());
+        DscUser executor = dscUserDAO.findDscUserById(dscGeoAnalysisExecTask.getExecutor().get("id").toString());
         ArrayList<GeoAnalysisOutputRecDTO> outputRecords = new ArrayList<>();
         String[] execCommand = getExecCommand(dscGeoAnalysisExecTask, outputRecords);
         log.info(Arrays.toString(execCommand));
@@ -140,18 +140,18 @@ public class DscGeoAnalysisExecService {
                         String suffix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                         String fileName = geoAnalysisOutputRecDTO.getFileNameWithoutSuffix() + file.getName().substring(file.getName().indexOf("."));
                         String fileId = IdUtil.objectId();
-                        DscFileInfo dscFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, dscGeoAnalysisExecTask.getExecutor(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), dscGeoAnalysisExecTask.getExecutor() + catalogPath + File.separator + file.getName(), 32);
+                        DscFileInfo dscFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, dscGeoAnalysisExecTask.getExecutor().get("id").toString(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), dscGeoAnalysisExecTask.getExecutor() + catalogPath + File.separator + file.getName(), 32);
                         dscFileDAO.insert(dscFileInfo);
                         InitTaskParam initTaskParam = new InitTaskParam();
                         initTaskParam.setIdentifier(md5);
                         initTaskParam.setFileName(file.getName());
                         initTaskParam.setFileId(fileId);
-                        initTaskParam.setUserId(dscGeoAnalysisExecTask.getExecutor());
+                        initTaskParam.setUserId(dscGeoAnalysisExecTask.getExecutor().get("id").toString());
                         initTaskParam.setTotalSize(file.length());
                         initTaskParam.setChunkSize(file.length());
                         initTaskParam.setObjectName(file.getName().substring(0, file.getName().lastIndexOf(".")));
                         TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
-                        UploadFileDTO uploadFileDTO = new UploadFileDTO(dscGeoAnalysisExecTask.getExecutor(), taskInfoDTO.getTaskRecord().getId(), dscGeoAnalysisExecTask.getParams().getWorkingDir());
+                        UploadFileDTO uploadFileDTO = new UploadFileDTO(dscGeoAnalysisExecTask.getExecutor().get("id").toString(), taskInfoDTO.getTaskRecord().getId(), dscGeoAnalysisExecTask.getParams().getWorkingDir());
                         dscFileService.create(uploadFileDTO);
                     }
                 }
@@ -166,7 +166,7 @@ public class DscGeoAnalysisExecService {
     }
 
     String[] getExecCommand(DscGeoAnalysisExecTask dscGeoAnalysisExecTask, ArrayList<GeoAnalysisOutputRecDTO> outputRecords) {
-        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool());
+        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool().get("id").toString());
         DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
         ArrayList<String> commands = new ArrayList<>();
         commands.add("saga_cmd");

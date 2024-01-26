@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS.model.DscGeoAnalysis;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
@@ -17,9 +18,9 @@ public class DscGeoAnalysisExecTask {
     @Id
     private String id;
 
-    private String executor;
+    private JSONObject executor;
 
-    private String targetTool;
+    private JSONObject targetTool;
 
     private DscGARawParams params;
 
