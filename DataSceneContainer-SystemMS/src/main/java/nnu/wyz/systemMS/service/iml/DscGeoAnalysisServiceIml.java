@@ -63,9 +63,10 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
         //TODO:参数校验
         Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(params.getToolId());
         DscGeoAnalysisTool tool;
-        if (!byId.isPresent() || !(tool = byId.get()).getIsEnabled()) {
+        if (!byId.isPresent()) {
             return CommonResult.failed("工具不可用!");
         }
+        tool = byId.get();
         DscGeoAnalysisExecTask dscGeoAnalysisExecTask = new DscGeoAnalysisExecTask();
         String taskId = IdUtil.randomUUID();
         String executor = params.getExecutor();

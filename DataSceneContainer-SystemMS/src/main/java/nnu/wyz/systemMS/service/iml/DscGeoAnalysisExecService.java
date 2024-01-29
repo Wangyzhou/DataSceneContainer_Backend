@@ -128,7 +128,7 @@ public class DscGeoAnalysisExecService {
             }
             //遍历输出文件目录，进行入库
             String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
-            File outputDir = new File(root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor() + catalogPath);
+            File outputDir = new File(root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor().get("id").toString() + catalogPath);
             for (GeoAnalysisOutputRecDTO geoAnalysisOutputRecDTO : outputRecords) {
                 //拿到所有前缀一样的文件集合
                 File[] files = outputDir.listFiles(pathname -> pathname.getName().startsWith(geoAnalysisOutputRecDTO.getPhysicalNameWithoutSuffix()));
@@ -140,7 +140,7 @@ public class DscGeoAnalysisExecService {
                         String suffix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                         String fileName = geoAnalysisOutputRecDTO.getFileNameWithoutSuffix() + file.getName().substring(file.getName().indexOf("."));
                         String fileId = IdUtil.objectId();
-                        DscFileInfo dscFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, dscGeoAnalysisExecTask.getExecutor().get("id").toString(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), dscGeoAnalysisExecTask.getExecutor() + catalogPath + File.separator + file.getName(), 32);
+                        DscFileInfo dscFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, dscGeoAnalysisExecTask.getExecutor().get("id").toString(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), dscGeoAnalysisExecTask.getExecutor().getString("id") + catalogPath + File.separator + file.getName(), 32);
                         dscFileDAO.insert(dscFileInfo);
                         InitTaskParam initTaskParam = new InitTaskParam();
                         initTaskParam.setIdentifier(md5);
@@ -184,7 +184,7 @@ public class DscGeoAnalysisExecService {
         }
         //格式化Output输出，记录
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
-        String outputDir = root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor() + catalogPath;
+        String outputDir = root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor().get("id").toString() + catalogPath;
         for (DscGeoAnalysisToolInnerParams output : dscGeoAnalysisTool.getParameters().getOutputs()) {
             String filePhysicalName = IdUtil.randomUUID();
             String filePath = outputDir + File.separator + filePhysicalName;
