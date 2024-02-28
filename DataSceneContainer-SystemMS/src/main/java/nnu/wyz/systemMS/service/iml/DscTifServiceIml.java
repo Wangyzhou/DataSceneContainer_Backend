@@ -21,10 +21,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @Desription：
@@ -63,7 +62,7 @@ public class DscTifServiceIml implements DscTifService {
     }
 
     @Override
-    public CommonResult<Integer> getBandCount(String userId,String rasterSId) {
+    public CommonResult<Integer> getBandCount(String userId, String rasterSId) {
         DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(userId, rasterSId);
         if (Objects.isNull(dscUserRasterS)) {
             return CommonResult.failed("未找到该服务！");
@@ -114,11 +113,20 @@ public class DscTifServiceIml implements DscTifService {
         if (!byId.isPresent()) {
             return CommonResult.failed("未找到服务源文件！");
         }
+
         DscFileInfo pngFileInfo = byId.get();
         DscFileInfo tifFileInfo = byId1.get();
         String filePath = rootPath + pngFileInfo.getBucketName() + File.separator + pngFileInfo.getObjectKey();
         String tiffPath = rootPath + tifFileInfo.getBucketName() + File.separator + tifFileInfo.getObjectKey();
-        String[] execCommand = {"python", pyPath, tiffPath, "change_color_map", Integer.toString(renderTifDTO.getBand()), renderTifDTO.getColorMap(), filePath};
+        String[] execCommand = null;
+        //  如果开启地形阴影
+        if (renderTifDTO.isShade()) {
+            Map<String, Object> shadeParams = renderTifDTO.getShadeParams();
+            execCommand = new String[]{"python", pyPath, tiffPath, "render_tif_png", Integer.toString(renderTifDTO.getBand()), renderTifDTO.getColorMap(), filePath, String.valueOf(renderTifDTO.isShade()), shadeParams.get("mode").toString(), shadeParams.get("azdeg").toString(), shadeParams.get("altdeg").toString(), shadeParams.get("vert_exag").toString()};
+        } else {
+            execCommand = new String[]{"python", pyPath, tiffPath, "render_tif_png", Integer.toString(renderTifDTO.getBand()), renderTifDTO.getColorMap(), filePath, String.valueOf(renderTifDTO.isShade())};
+        }
+        System.out.println(Arrays.toString(execCommand));
         //  直接向原png文件物理路径重新输出新png，其他信息不变
         DockerClient dockerClient = pythonDockerConfig.getDockerClient();
         ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(GDAL_CONTAINER_ID)

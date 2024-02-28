@@ -23,7 +23,7 @@ public class DscTifController {
         return dscTifService.getBandCount(userId, rasterSId);
     }
 
-    @PostMapping(value = "changeColorMap")
+    @PostMapping(value = "/changeColorMap")
     public CommonResult<String> changeColorMap(@RequestBody RenderTifDTO renderTifDTO) {
         return dscTifService.changeColorMap(renderTifDTO);
     }

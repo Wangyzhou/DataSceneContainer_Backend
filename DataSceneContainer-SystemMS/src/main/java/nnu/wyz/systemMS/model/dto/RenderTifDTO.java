@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
  * @Desription：
  * @Author：mfz
@@ -21,4 +23,8 @@ public class RenderTifDTO {
     private int band;
 
     private String colorMap;
+
+    private boolean isShade;
+
+    private Map<String,Object> shadeParams;
 }
