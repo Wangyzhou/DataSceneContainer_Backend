@@ -1,7 +1,10 @@
 package nnu.wyz.systemMS.service;
 
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.dto.FalseColorCompositeDTO;
 import nnu.wyz.systemMS.model.dto.RenderTifDTO;
+
+import java.util.List;
 
 /**
  * @Desription：
@@ -23,4 +26,11 @@ public interface DscTifService {
      * @return
      */
     CommonResult<String> changeColorMap(RenderTifDTO renderTifDTO);
+
+    /**
+     *
+     * @param falseColorCompositeDTO
+     * @return
+     */
+    CommonResult<String> falseColorComposite(FalseColorCompositeDTO falseColorCompositeDTO);
 }

@@ -10,6 +10,7 @@ import nnu.wyz.systemMS.config.PythonDockerConfig;
 import nnu.wyz.systemMS.dao.DscFileDAO;
 import nnu.wyz.systemMS.dao.DscRasterSDAO;
 import nnu.wyz.systemMS.dao.DscUserRasterSDAO;
+import nnu.wyz.systemMS.model.dto.FalseColorCompositeDTO;
 import nnu.wyz.systemMS.model.dto.RenderTifDTO;
 import nnu.wyz.systemMS.model.entity.DscFileInfo;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -127,6 +127,41 @@ public class DscTifServiceIml implements DscTifService {
             execCommand = new String[]{"python", pyPath, tiffPath, "render_tif_png", Integer.toString(renderTifDTO.getBand()), renderTifDTO.getColorMap(), filePath, String.valueOf(renderTifDTO.isShade())};
         }
         System.out.println(Arrays.toString(execCommand));
+
+        return processTifRender(execCommand);
+    }
+
+    @Override
+    public CommonResult<String> falseColorComposite(FalseColorCompositeDTO falseColorCompositeDTO) {
+        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(falseColorCompositeDTO.getUserId(), falseColorCompositeDTO.getRasterSId());
+        if (Objects.isNull(dscUserRasterS)) {
+            return CommonResult.failed("未找到该服务！");
+        }
+        DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(falseColorCompositeDTO.getRasterSId());
+        //  查找对应的png文件
+        Optional<DscFileInfo> byId = dscFileDAO.findById(dscRasterService.getFileId());
+        if (!byId.isPresent()) {
+            return CommonResult.failed("未找到服务引用的文件！");
+        }
+        //  查找对应的tif文件
+        Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscRasterService.getOriFileId());
+        if (!byId.isPresent()) {
+            return CommonResult.failed("未找到服务源文件！");
+        }
+
+        DscFileInfo pngFileInfo = byId.get();
+        DscFileInfo tifFileInfo = byId1.get();
+        String filePath = rootPath + pngFileInfo.getBucketName() + File.separator + pngFileInfo.getObjectKey();
+        String tiffPath = rootPath + tifFileInfo.getBucketName() + File.separator + tifFileInfo.getObjectKey();
+        List<Integer> bandList = falseColorCompositeDTO.getBandList();
+        String[] execCommand = {"python", pyPath, tiffPath, "false_color_composite", bandList.get(0).toString(), bandList.get(1).toString(), bandList.get(2).toString(), filePath};
+        System.out.println(Arrays.toString(execCommand));
+
+        return processTifRender(execCommand);
+    }
+
+
+    private CommonResult<String> processTifRender(String[] execCommand) {
         //  直接向原png文件物理路径重新输出新png，其他信息不变
         DockerClient dockerClient = pythonDockerConfig.getDockerClient();
         ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(GDAL_CONTAINER_ID)
