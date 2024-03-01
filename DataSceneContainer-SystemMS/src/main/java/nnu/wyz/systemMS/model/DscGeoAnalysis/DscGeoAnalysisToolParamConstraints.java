@@ -3,6 +3,8 @@ package nnu.wyz.systemMS.model.DscGeoAnalysis;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @description:
  * @author: yzwang
@@ -15,8 +17,8 @@ public class DscGeoAnalysisToolParamConstraints {
 
     private Double maximum;
 
-    private JSONObject choices;
+    private List<JSONObject> choices;
 
-    private String defaultValue;
+    private String defaultVal;
 
 }

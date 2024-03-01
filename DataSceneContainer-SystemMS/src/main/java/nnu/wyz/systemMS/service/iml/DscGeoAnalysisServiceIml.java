@@ -122,10 +122,10 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
         }
         tool = byId.get();
         for (DscGeoAnalysisToolInnerParams option : tool.getParameters().getOptions()) {
-            if (option.getConstraints().getMinimum() != null && (Double) params.getOptions().get(option.getName()) < option.getConstraints().getMinimum()) {
+            if (option.getConstraints().getMinimum() != null && Double.parseDouble((String) params.getOptions().get(option.getName())) < option.getConstraints().getMinimum()) {
                 return CommonResult.failed(option.getName() + ": " + "value must be greater than " + option.getConstraints().getMinimum());
             }
-            if (option.getConstraints().getMaximum() != null && (Double) params.getOptions().get(option.getName()) > option.getConstraints().getMaximum()) {
+            if (option.getConstraints().getMaximum() != null && Double.parseDouble((String) params.getOptions().get(option.getName())) > option.getConstraints().getMaximum()) {
                 return CommonResult.failed(option.getName() + ": " + "value must be less than " + option.getConstraints().getMaximum());
             }
         }

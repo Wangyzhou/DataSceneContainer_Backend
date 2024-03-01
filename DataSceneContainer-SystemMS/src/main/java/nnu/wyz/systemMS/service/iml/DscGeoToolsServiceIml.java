@@ -8,7 +8,6 @@ import nnu.wyz.systemMS.dao.DscGeoToolsDAO;
 import nnu.wyz.systemMS.model.entity.DscGeoToolExecTask;
 import nnu.wyz.systemMS.model.entity.DscGeoTools;
 import nnu.wyz.systemMS.model.param.DscInvokeToolParams;
-import nnu.wyz.systemMS.service.DscGeoToolExecService;
 import nnu.wyz.systemMS.service.DscGeoToolsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
