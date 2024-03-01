@@ -1,4 +1,4 @@
-package nnu.wyz.systemMS.service.iml;
+package nnu.wyz.systemMS.service;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;

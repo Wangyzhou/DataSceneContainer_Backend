@@ -1,4 +1,4 @@
-package nnu.wyz.systemMS.service.iml;
+package nnu.wyz.systemMS.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;

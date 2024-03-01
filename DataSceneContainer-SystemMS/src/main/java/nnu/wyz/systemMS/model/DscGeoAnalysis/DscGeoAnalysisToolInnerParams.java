@@ -23,6 +23,6 @@ public class DscGeoAnalysisToolInnerParams {
 
     private Boolean isOptional;
 
-    private String constraints;
+    private DscGeoAnalysisToolParamConstraints constraints;
 
 }

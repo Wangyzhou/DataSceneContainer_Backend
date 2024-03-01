@@ -17,4 +17,6 @@ public class DscGeoAnalysisToolParamConstraints {
 
     private JSONObject choices;
 
+    private String defaultValue;
+
 }

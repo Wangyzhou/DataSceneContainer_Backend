@@ -16,15 +16,11 @@ public class DscGeoAnalysisTool {
 
     private String name;
 
-    private String type;
+    private Integer category;
 
     private String author;
 
-    private String identifier;
-
-    private String library;
-
-    private String version;
+    private List<String> invokeCmd;
 
     private String description;
 

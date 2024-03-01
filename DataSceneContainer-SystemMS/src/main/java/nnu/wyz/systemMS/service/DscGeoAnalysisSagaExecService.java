@@ -1,9 +1,8 @@
-package nnu.wyz.systemMS.service.iml;
+package nnu.wyz.systemMS.service;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ExecCreateCmdResponse;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
@@ -11,15 +10,21 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.SagaDockerConfig;
-import nnu.wyz.systemMS.dao.*;
-import nnu.wyz.systemMS.model.DscGeoAnalysis.*;
+import nnu.wyz.systemMS.dao.DscFileDAO;
+import nnu.wyz.systemMS.dao.DscGeoAnalysisDAO;
+import nnu.wyz.systemMS.dao.DscGeoAnalysisExecTaskDAO;
+import nnu.wyz.systemMS.dao.DscUserDAO;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisToolInnerParams;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.GeoAnalysisOutputRecDTO;
 import nnu.wyz.systemMS.model.dto.TaskInfoDTO;
 import nnu.wyz.systemMS.model.dto.UploadFileDTO;
-import nnu.wyz.systemMS.model.entity.*;
+import nnu.wyz.systemMS.model.entity.DscFileInfo;
+import nnu.wyz.systemMS.model.entity.DscUser;
+import nnu.wyz.systemMS.model.entity.GeoToolExecTaskStatus;
+import nnu.wyz.systemMS.model.entity.Message;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
-import nnu.wyz.systemMS.service.DscCatalogService;
-import nnu.wyz.systemMS.service.DscFileService;
-import nnu.wyz.systemMS.service.SysUploadTaskService;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,11 +40,11 @@ import java.util.*;
 /**
  * @description:
  * @author: yzwang
- * @time: 2024/1/5 22:36
+ * @time: 2024/2/29 16:14
  */
 @Service
 @Slf4j
-public class DscGeoAnalysisExecService {
+public class DscGeoAnalysisSagaExecService {
 
     @Autowired
     private DscGeoAnalysisDAO dscGeoAnalysisDAO;
@@ -76,13 +81,8 @@ public class DscGeoAnalysisExecService {
     private static final String CONTAINER_ID = "e904431d1b38ec6fba77361019321875536deaf0169ebd6872af66bbab67d879";
 
     @SneakyThrows
-    @Async
-    public void invoke(DscGeoAnalysisExecTask dscGeoAnalysisExecTask) {
+    void invoke(DscGeoAnalysisExecTask dscGeoAnalysisExecTask) {
         Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool().get("id").toString());
-        if (!byId.isPresent()) {
-            stopTask(dscGeoAnalysisExecTask, "Target tool not found.");
-            return;
-        }
         DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
         startTask(dscGeoAnalysisExecTask, dscGeoAnalysisTool.getName());
         DscUser executor = dscUserDAO.findDscUserById(dscGeoAnalysisExecTask.getExecutor().get("id").toString());
@@ -168,10 +168,7 @@ public class DscGeoAnalysisExecService {
     String[] getExecCommand(DscGeoAnalysisExecTask dscGeoAnalysisExecTask, ArrayList<GeoAnalysisOutputRecDTO> outputRecords) {
         Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool().get("id").toString());
         DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
-        ArrayList<String> commands = new ArrayList<>();
-        commands.add("saga_cmd");
-        commands.add(dscGeoAnalysisTool.getLibrary());
-        commands.add(dscGeoAnalysisTool.getIdentifier());
+        List<String> commands = dscGeoAnalysisTool.getInvokeCmd();
         //格式化Input输入,目前只支持对场景文件的输入
         for (DscGeoAnalysisToolInnerParams input : dscGeoAnalysisTool.getParameters().getInputs()) {
             if(input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getName())){
@@ -204,8 +201,12 @@ public class DscGeoAnalysisExecService {
             if (o == null) {
                 continue;
             }
+            // 当类型为Value range时，前端传的值是一个数组，为saga做特殊处理
             if(option.getType().equals("Value Range")) {
-
+                ArrayList<Double> valueRange = (ArrayList<Double>) o;
+                commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier() + "_MIN", valueRange.get(0)));
+                commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier() + "_MAX", valueRange.get(1)));
+                continue;
             }
             commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), o));
         }
@@ -232,4 +233,5 @@ public class DscGeoAnalysisExecService {
         dscGeoAnalysisExecTask.setDescription(toolName + " is finished.");
         dscGeoAnalysisExecTaskDAO.save(dscGeoAnalysisExecTask);
     }
+
 }

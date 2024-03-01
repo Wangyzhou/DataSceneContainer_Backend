@@ -8,14 +8,11 @@ import nnu.wyz.systemMS.dao.DscCatalogDAO;
 import nnu.wyz.systemMS.dao.DscGeoAnalysisDAO;
 import nnu.wyz.systemMS.dao.DscGeoAnalysisExecTaskDAO;
 import nnu.wyz.systemMS.dao.DscUserDAO;
-import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
-import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.*;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
-import nnu.wyz.systemMS.model.entity.DscGeoToolExecTask;
-import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
-import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGARawParams;
 import nnu.wyz.systemMS.service.DscCatalogService;
+import nnu.wyz.systemMS.service.DscGeoAnalysisExecService;
 import nnu.wyz.systemMS.service.DscGeoAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -61,12 +59,12 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
     @Override
     public CommonResult<DscGeoAnalysisExecTask> submitGATask(DscGAInvokeParams params) {
         //TODO:参数校验
-        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(params.getToolId());
-        DscGeoAnalysisTool tool;
-        if (!byId.isPresent()) {
-            return CommonResult.failed("工具不可用!");
+        CommonResult<String> examineParamRes = this.examineParams(params);
+        if(examineParamRes.getCode() != 200){
+            return CommonResult.failed(examineParamRes.getMessage());
         }
-        tool = byId.get();
+        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(params.getToolId());
+        DscGeoAnalysisTool tool = byId.get();
         DscGeoAnalysisExecTask dscGeoAnalysisExecTask = new DscGeoAnalysisExecTask();
         String taskId = IdUtil.randomUUID();
         String executor = params.getExecutor();
@@ -113,9 +111,25 @@ public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
     @Override
     public CommonResult<DscGeoAnalysisExecTask> getGATask(String taskId) {
         Optional<DscGeoAnalysisExecTask> byId = dscGeoAnalysisExecTaskDAO.findById(taskId);
-        if (!byId.isPresent()) {
-            return CommonResult.failed("未找到该任务");
-        }
-        return CommonResult.success(byId.get(), "获取任务成功");
+        return byId.map(dscGeoAnalysisExecTask -> CommonResult.success(dscGeoAnalysisExecTask, "获取任务成功")).orElseGet(() -> CommonResult.failed("未找到该任务"));
     }
+
+    CommonResult<String> examineParams(DscGAInvokeParams params) {
+        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(params.getToolId());
+        DscGeoAnalysisTool tool;
+        if (!byId.isPresent()) {
+            return CommonResult.failed("工具不可用!");
+        }
+        tool = byId.get();
+        for (DscGeoAnalysisToolInnerParams option : tool.getParameters().getOptions()) {
+            if (option.getConstraints().getMinimum() != null && (Double) params.getOptions().get(option.getName()) < option.getConstraints().getMinimum()) {
+                return CommonResult.failed(option.getName() + ": " + "value must be greater than " + option.getConstraints().getMinimum());
+            }
+            if (option.getConstraints().getMaximum() != null && (Double) params.getOptions().get(option.getName()) > option.getConstraints().getMaximum()) {
+                return CommonResult.failed(option.getName() + ": " + "value must be less than " + option.getConstraints().getMaximum());
+            }
+        }
+        return CommonResult.success("参数校验成功！");
+    }
+
 }
