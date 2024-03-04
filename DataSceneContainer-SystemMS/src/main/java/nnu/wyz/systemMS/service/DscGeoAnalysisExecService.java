@@ -46,34 +46,10 @@ public class DscGeoAnalysisExecService {
     private DscGeoAnalysisDAO dscGeoAnalysisDAO;
 
     @Autowired
-    private DscGeoAnalysisExecTaskDAO dscGeoAnalysisExecTaskDAO;
-
-    @Autowired
-    private DscFileDAO dscFileDAO;
-
-    @Autowired
-    private DscCatalogService dscCatalogService;
-
-    @Autowired
-    private SagaDockerConfig sagaDockerConfig;
-
-    @Autowired
-    private MinioConfig minioConfig;
-
-    @Autowired
-    private DscUserDAO dscUserDAO;
-
-    @Autowired
-    private WebSocketServer webSocketServer;
-
-    @Autowired
-    private DscFileService dscFileService;
-
-    @Autowired
-    private SysUploadTaskService sysUploadTaskService;
-
-    @Autowired
     private DscGeoAnalysisSagaExecService dscGeoAnalysisSagaExecService;
+
+    @Autowired
+    private DscGeoAnalysisDIYExecService dscGeoAnalysisDIYExecService;
     @Value("${fileSavePath}")
     private String root;
 
@@ -93,7 +69,7 @@ public class DscGeoAnalysisExecService {
                 // TODO: grass
                 break;
             case DIY_GIS_TOOL:
-                // TODO: 噪声模型
+                dscGeoAnalysisDIYExecService.invoke(dscGeoAnalysisExecTask);
                 break;
             default:
                 break;
