@@ -100,7 +100,7 @@ public class test {
 
     @Test
     void testGetFile() {
-        GetObjectRequest getObjectRequest = new GetObjectRequest(minioConfig.getBucketName(), "2023-08-31/ebd89c91-41d9-472b-9648-bcc217499a60.pdf");
+        GetObjectRequest getObjectRequest = new GetObjectRequest(minioConfig.getBucketName(), "652a4b75e4b01213a180bb5b/a68e206c-b611-499c-801c-f9c1d0a7f22f.zip");
         S3Object object = amazonS3.getObject(getObjectRequest);
         ObjectMetadata objectMetadata = object.getObjectMetadata();
         String eTag = objectMetadata.getETag();
@@ -998,6 +998,14 @@ public class test {
     void testGetRsbyfileIdOrOriFileId() {
         List<DscRasterService> allByFileId = dscRasterSDAO.findAllByFileIdOrOriFileId("65b211ffe4b08e2b13be0131");
         System.out.println(allByFileId);
+    }
+
+    @Test
+    void testGetGeoAnalysisTool() {
+        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById("d69c9af4-dac0-11ee-bc5a-f44efc6889fd");
+        if (byId.isPresent()) {
+            System.out.println(byId.get());
+        }
     }
 
 }

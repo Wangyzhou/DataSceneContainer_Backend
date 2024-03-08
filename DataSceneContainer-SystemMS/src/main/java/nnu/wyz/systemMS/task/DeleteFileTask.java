@@ -60,13 +60,13 @@ public class DeleteFileTask {
             DeleteError error = null;
             try {
                 error = result.get();
+                System.out.println(
+                        "Error in deleting object " + error.objectName() + "; " + error.message());
             } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
                      InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
                      XmlParserException e) {
                 e.printStackTrace();
             }
-            System.out.println(
-                    "Error in deleting object " + error.objectName() + "; " + error.message());
         }
         System.out.println("objects = " + objects);
         log.info("删除" + objects.size() + "个文件!");

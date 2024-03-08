@@ -174,10 +174,15 @@ public class DscGeoAnalysisSagaExecService {
             if(input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getName())){
                 continue;
             }
-            Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscGeoAnalysisExecTask.getParams().getInput().get(input.getName()));
-            DscFileInfo dscFileInfo = byId1.get();
-            String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
-            commands.add(MessageFormat.format("-{0}={1}", input.getIdentifier(), filePath));
+            String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getName()).split(",");
+            StringBuilder totalPath = new StringBuilder();
+            for (String id : inputIds) {
+                Optional<DscFileInfo> byId1 = dscFileDAO.findById(id);
+                DscFileInfo dscFileInfo = byId1.get();
+                String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
+                totalPath.append(filePath).append(";");
+            }
+            commands.add(MessageFormat.format("-{0}={1}", input.getIdentifier(), totalPath.substring(0, totalPath.length() - 1)));
         }
         //格式化Output输出，记录
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());

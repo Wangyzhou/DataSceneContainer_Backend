@@ -358,10 +358,7 @@ public class DscFileServiceIml implements DscFileService {
         DscFileInfo dscFileInfo = byId.get();
         String bucket = dscFileInfo.getBucketName();
         String objectKey = dscFileInfo.getObjectKey();
-        GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, objectKey);
-        S3Object s3Object = amazonS3.getObject(getObjectRequest);
-        String contentType = s3Object.getObjectMetadata().getContentType();
-        if (!contentType.equals("application/zip")) {
+        if (!dscFileInfo.getFileSuffix().equals("zip")) {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED, "文件类型不支持解压！");
         }
         String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;

@@ -178,7 +178,7 @@ public class DscGeoAnalysisDIYExecService {
             Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscGeoAnalysisExecTask.getParams().getInput().get(input.getName()));
             DscFileInfo dscFileInfo = byId1.get();
             String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
-            commands.add(MessageFormat.format("-{0} {1}", input.getIdentifier(), filePath));
+            commands.add(MessageFormat.format("-{0}={1}", input.getIdentifier(), filePath));
         }
         //格式化Output输出，记录
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
@@ -190,7 +190,7 @@ public class DscGeoAnalysisDIYExecService {
                 filePath += ".csv";     //表格输出不指定类型为csv会导致输出文件无后缀名，默认输出为csv
             }
             outputRecords.add(new GeoAnalysisOutputRecDTO(filePhysicalName, output.getName())); //记录输出的一系列文件
-            commands.add(MessageFormat.format("-{0} {1}", output.getIdentifier(), filePath));
+            commands.add(MessageFormat.format("-{0}={1}", output.getIdentifier(), filePath));
         }
         //格式化Options配置
         for (DscGeoAnalysisToolInnerParams option : dscGeoAnalysisTool.getParameters().getOptions()) {
@@ -205,11 +205,11 @@ public class DscGeoAnalysisDIYExecService {
             // 当类型为Value range时，前端传的值是一个数组，为saga做特殊处理
             if(option.getType().equals("Value Range")) {
                 ArrayList<Double> valueRange = (ArrayList<Double>) o;
-                commands.add(MessageFormat.format("-{0} {1}", option.getIdentifier() + "_MIN", valueRange.get(0)));
-                commands.add(MessageFormat.format("-{0} {1}", option.getIdentifier() + "_MAX", valueRange.get(1)));
+                commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier() + "_MIN", valueRange.get(0)));
+                commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier() + "_MAX", valueRange.get(1)));
                 continue;
             }
-            commands.add(MessageFormat.format("-{0} {1}", option.getIdentifier(), o));
+            commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), o));
         }
         return commands.toArray(new String[commands.size()]);
     }

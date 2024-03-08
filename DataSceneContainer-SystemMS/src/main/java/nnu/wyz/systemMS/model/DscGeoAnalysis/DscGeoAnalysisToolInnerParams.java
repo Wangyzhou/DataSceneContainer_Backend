@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class DscGeoAnalysisToolInnerParams {
 
+    private String paramId;
+
     private String name;
 
     private String type;
@@ -24,5 +26,7 @@ public class DscGeoAnalysisToolInnerParams {
     private Boolean isOptional;
 
     private DscGeoAnalysisToolParamConstraints constraints;
+
+    private DscGeoAnalysisToolParamRelyOn relyOn;
 
 }

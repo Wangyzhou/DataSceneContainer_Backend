@@ -146,7 +146,6 @@ public class DscVectorSServiceIml implements DscVectorSService {
             String line;
             StringBuilder output = new StringBuilder();
             while ((line = bf.readLine()) != null) {
-                log.info(line);
                 output.append(line);
             }
             if (output.toString().contains("COMMIT") && output.toString().contains("CREATE INDEX") && output.toString().contains("ANALYZE")) {
