@@ -1,12 +1,8 @@
-deployIp: 172.21.212.245
-#deployIp: 172.21.213.86
-#deployIp: 119.45.181.127
-
 spring:
   redis:
-    host: ${deployIp}
+    host: redis-cache
     port: 6379
-    password: ninja980903
+    password: dsc123
     jedis:
       pool:
         max-active: 200
@@ -18,18 +14,22 @@ spring:
     gateway:
       routes:
         - id: dsc-systemMS
-          uri: http://${deployIp}:7890/
+          uri: http://system-core:7890/
           predicates:
             - Path=/dsc-systemMS/**
         - id: dsc-auth-central
-          uri: http://${deployIp}:9400/
+          uri: http://auth-central:9400/
           predicates:
             - Path=/dsc-auth-central/**
+        - id: dsc-ws
+          uri: ws://system-core:7890/
+          predicates:
+            - Path=/dsc-systemMS/webSocket/**
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: 'http://${deployIp}:9400/dsc-auth-central/rsa/publicKey'
+          jwk-set-uri: 'http://auth-central:9400/dsc-auth-central/rsa/publicKey'
 secure:
   ignore:
     urls: #配置白名单路径，更新白名单必须重启网关服务，否则不生效！
@@ -42,4 +42,5 @@ secure:
       - "/dsc-systemMS/static/**"
       - "/dsc-systemMS/dsc-user/active/**"
       - "/dsc-systemMS/dsc-vector-service/getMvt/**"
+      - "/dsc-systemMS/webSocket/**"
       # - "/dsc-systemMS/dsc-file-uploader/**"

@@ -66,8 +66,8 @@ public class DscVectorSServiceIml implements DscVectorSService {
     @Value("${pg_password}")
     private String pgPassword;
 
-    @Value("${gateway_addr}")
-    private String gateway_addr;
+    @Value("${mvt_url}")
+    private String mvtUrl;
 
     @Value("${spring.application.name}")
     private String msName;
@@ -161,9 +161,12 @@ public class DscVectorSServiceIml implements DscVectorSService {
                 center.add((SLat + NLat) / 2);
                 DscVectorServiceInfo dscVectorServiceInfo = new DscVectorServiceInfo();
                 String mvtId = IdUtil.objectId();
+                if(mvtUrl.endsWith("/")){
+                    mvtUrl = mvtUrl.substring(0,mvtUrl.length()-1);
+                }
                 dscVectorServiceInfo.setId(mvtId)
                         .setName(publishShapefileDTO.getName())
-                        .setUrl(gateway_addr + "/" + msName + "/dsc-vector-service/getMvt/" + ptName + "/{z}/{x}/{y}.pbf")
+                        .setUrl(mvtUrl + "/" + msName + "/dsc-vector-service/getMvt/" + ptName + "/{z}/{x}/{y}.pbf")
                         .setPublisher(userId)
                         .setPublishTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
                         .setFileId(fileId)

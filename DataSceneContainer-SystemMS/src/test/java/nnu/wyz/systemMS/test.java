@@ -1008,4 +1008,10 @@ public class test {
         }
     }
 
+    @Test
+    void testMinioClient() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        MinioClient minioClient = MinioClient.builder().endpoint("https://dsc-file.onesis.geobeans.cn").credentials("dsc", "dsc123456").build();
+        List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
+        System.out.println(buckets);
+    }
 }

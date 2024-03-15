@@ -10,7 +10,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: yzwang
       MONGO_INITDB_ROOT_PASSWORD: wyz980903
     volumes:
-      - /home/dsc-mongo/data:/data/db
+      - /home/dsc/dsc-mongo/data:/data/db
   mongo-express:
     image: mongo-express
     container_name: dsc-mongo-express
@@ -34,7 +34,7 @@ services:
       POSTGRES_DB: dsc_postdb
       POSTGRES_PASSWORD: wyz980903
     volumes:
-      - /home/dsc-postdb/data:/var/lib/postgresql/data
+      - /home/dsc/dsc-postdb/data:/var/lib/postgresql/data
   pgadmin:
     container_name: dsc-pgadmin
     image: dpage/pgadmin4

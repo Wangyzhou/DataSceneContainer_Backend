@@ -24,6 +24,7 @@ public class CustomServerAuthenticationEntryPoint implements ServerAuthenticatio
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
         return Mono.defer(() -> Mono.just(exchange.getResponse()))
                 .flatMap(response -> {
+                    log.info(response.getHeaders().getOrigin() + ", " + response.getHeaders().getHost());
                     response.setStatusCode(HttpStatus.UNAUTHORIZED);
                     String body = "{\"code\":401,\"msg\":\"token不合法或过期\"}";
                     DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
