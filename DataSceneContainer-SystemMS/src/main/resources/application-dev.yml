@@ -1,5 +1,5 @@
 deployIp: 172.21.213.86
-frontendIp: 172.21.213.86
+frontendIp: localhost:8889/dsc-app
 sagaDockerServer: 172.21.213.86       #部署要改
 pythonDockerServer: 172.21.213.86        #部署要改
 
@@ -14,16 +14,16 @@ spring:
   data:
     mongodb:
       host: ${deployIp}
-      port: 27017
+      port: 17016
       authentication-database: admin
       database: dsc
-      username: yzwang
-      password: wyz980903
+      username: dsc
+      password: dsc123
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${deployIp}:5432/dsc_postdb
-    username: postgres
-    password: wyz980903
+    url: jdbc:postgresql://${deployIp}:15431/dsc_postdb
+    username: dsc
+    password: dsc123
   mail:
     host: smtp.qq.com
     username: 2740962735@qq.com
@@ -31,8 +31,8 @@ spring:
     password: uxkmfprmynvhdeai
   redis:                          #redis存jwt黑名单
     host: ${deployIp}
-    port: 6379
-    password: ninja980903
+    port: 16378
+#    password: ninja980903
     jedis:
       pool:
         max-active: 200
@@ -46,19 +46,34 @@ spring:
     static-path-pattern: /static/**
 
 mvt_url: ${MVT_SOURCE_URL:http://localhost:9527}
-gateway_addr: http://172.21.213.250:9527   # gateway
+gateway_addr: http://localhost:9527   # gateway
 frontend_url: http://${frontendIp}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
-fileSavePath: /home/minio-data/
-unzipTempPath: /home/temp/{0}
-fileSavePathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\data\
-unzipTempPathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\temp\{0}
-shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
-shp2pgsqlWin: ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\psql.exe -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
-pg_password: wyz980903
+fileSavePath: F:\dsc\dsc-minio\data
+unzipTempPath: F:\dsc\dsc-minio\temp\{0}
+fileSavePathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\data
+unzipTempPathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\temp\{0}
+shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
+shp2pgsqlWin: ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\psql.exe -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
+pg_password: dsc123
+
+DOCKER:
+  DOCKER_HOST: tcp://localhost:2375
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: /home/user/.docker/certs
+  DOCKER_CONFIG: /home/user/.docker
+  api:
+    version: 1.23
+  registry:
+    url: https://index.docker.io/v1/
+    username: dockeruser
+    password: ilovedocker
+    email: dockeruser@github.com
+
+
 
 minio:
-  endpoint: http://119.45.181.127:82/
+  endpoint: http://localhost:19000
   accessKey: dsc
   secretKey: dsc123456
   bucketName: dsc-file

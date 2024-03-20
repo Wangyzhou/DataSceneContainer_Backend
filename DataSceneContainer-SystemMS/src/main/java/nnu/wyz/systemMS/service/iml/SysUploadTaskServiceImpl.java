@@ -15,7 +15,6 @@ import nnu.wyz.systemMS.model.dto.TaskRecordDTO;
 import nnu.wyz.systemMS.model.entity.SysUploadTask;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
 import nnu.wyz.systemMS.service.SysUploadTaskService;
-import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,13 +22,7 @@ import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +42,6 @@ public class SysUploadTaskServiceImpl implements SysUploadTaskService {
 
     @Resource
     private MinioConfig minioProperties;
-
 
     @Autowired
     private SysUploadTaskDAO sysUploadTaskDAO;
