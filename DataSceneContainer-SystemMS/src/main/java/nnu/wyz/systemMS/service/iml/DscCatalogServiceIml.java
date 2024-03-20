@@ -150,8 +150,6 @@ public class DscCatalogServiceIml implements DscCatalogService {
         return isDelete ? CommonResult.success("删除成功！") : CommonResult.failed("删除失败！");
     }
 
-    //    @MongoTransactional
-//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
     public Boolean deleteByRecursion(String catalogId) {
         //递归出口：当前目录为空目录
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
@@ -181,8 +179,6 @@ public class DscCatalogServiceIml implements DscCatalogService {
         return true;
     }
 
-    //    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 120)
-//    @MongoTransactional
     public void deleteEmptyCatalog(String catalogId, String parentCatalogId) {
         Optional<DscCatalog> byId = dscCatalogDAO.findById(parentCatalogId);
         DscCatalog parentCatalog = byId.get();

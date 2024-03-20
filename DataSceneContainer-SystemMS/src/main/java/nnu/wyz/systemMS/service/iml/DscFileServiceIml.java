@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
@@ -87,6 +88,7 @@ public class DscFileServiceIml implements DscFileService {
      * @return
      */
     @Override
+    @SneakyThrows
     public CommonResult<String> create(UploadFileDTO uploadFileDTO) {
         String userId = uploadFileDTO.getUserId();
         String taskId = uploadFileDTO.getTaskId();
@@ -133,43 +135,54 @@ public class DscFileServiceIml implements DscFileService {
         }
         //若用户未上传过该文件，则创建该文件记录并更新目录
         GetObjectRequest getObjectRequest = new GetObjectRequest(task.getBucketName(), task.getObjectKey());
-        S3Object s3Object = amazonS3.getObject(getObjectRequest);
-        ObjectMetadata objectMetadata = s3Object.getObjectMetadata();
-        long size = objectMetadata.getContentLength();
-        String fileName = task.getFileName();
-        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
-        DscFileInfo dscFileInfo = new DscFileInfo();
-        String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        fileId = IdUtil.objectId();
-        task.setFileId(fileId);     //任务实体中保存该文件的ID，方便之后文件删除时删除任务
-        sysUploadTaskDAO.save(task);
-        dscFileInfo
-                .setId(fileId)
-                .setMd5(task.getFileIdentifier())
-                .setFileName(fileName)
-                .setFileSuffix(ext)
-                .setCreatedUser(userId)
-                .setSize(size)
-                .setCreatedTime(dateTime)
-                .setUpdatedTime(dateTime)
-                .setPreviewCount(0L)
-                .setDownloadCount(0L)
-                .setOwnerCount(1L)
-                .setPublishCount(0L)
-                .setBucketName(task.getBucketName())
-                .setObjectKey(task.getObjectKey());
-        dscFileDAO.insert(dscFileInfo);
-        CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
-        childrenDTO.setId(fileId)
-                .setName(fileName)
-                .setType(ext)
-                .setSize(size)
-                .setUpdatedTime(dateTime);
-        dscCatalog.getChildren().add(childrenDTO);
-        dscCatalog.setTotal(dscCatalog.getTotal() + 1);
-        dscCatalog.setUpdatedTime(dateTime);
-        dscCatalogDAO.save(dscCatalog);
-        return CommonResult.success("文件：" + fileName + "上传成功！");
+        S3Object s3Object = null;
+        try {
+            s3Object = amazonS3.getObject(getObjectRequest);
+            ObjectMetadata objectMetadata = s3Object.getObjectMetadata();
+            long size = objectMetadata.getContentLength();
+            String fileName = task.getFileName();
+            String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+            DscFileInfo dscFileInfo = new DscFileInfo();
+            String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+            fileId = IdUtil.objectId();
+            task.setFileId(fileId);     //任务实体中保存该文件的ID，方便之后文件删除时删除任务
+            sysUploadTaskDAO.save(task);
+            dscFileInfo
+                    .setId(fileId)
+                    .setMd5(task.getFileIdentifier())
+                    .setFileName(fileName)
+                    .setFileSuffix(ext)
+                    .setCreatedUser(userId)
+                    .setSize(size)
+                    .setCreatedTime(dateTime)
+                    .setUpdatedTime(dateTime)
+                    .setPreviewCount(0L)
+                    .setDownloadCount(0L)
+                    .setOwnerCount(1L)
+                    .setPublishCount(0L)
+                    .setBucketName(task.getBucketName())
+                    .setObjectKey(task.getObjectKey());
+            dscFileDAO.insert(dscFileInfo);
+            CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
+            childrenDTO.setId(fileId)
+                    .setName(fileName)
+                    .setType(ext)
+                    .setSize(size)
+                    .setUpdatedTime(dateTime);
+            dscCatalog.getChildren().add(childrenDTO);
+            dscCatalog.setTotal(dscCatalog.getTotal() + 1);
+            dscCatalog.setUpdatedTime(dateTime);
+            dscCatalogDAO.save(dscCatalog);
+            return CommonResult.success("文件：" + fileName + "上传成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed("文件上传失败");
+        } finally {
+            if (s3Object != null) {
+                s3Object.getObjectContent().abort();
+                s3Object.close();
+            }
+        }
     }
 
 
@@ -411,7 +424,7 @@ public class DscFileServiceIml implements DscFileService {
                 objectMetadata.setContentType(contentType2);
                 PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectKey1, file);
                 putObjectRequest.setMetadata(objectMetadata);
-                amazonS3.putObject(putObjectRequest);
+                PutObjectResult putObjectResult = amazonS3.putObject(putObjectRequest);
                 UploadFileDTO uploadFileDTO = new UploadFileDTO();
                 uploadFileDTO.setUserId(userId)
                         .setTaskId(data.getTaskRecord().getId())

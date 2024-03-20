@@ -27,8 +27,9 @@ public class AmazonS3Config {
         //设置连接方式为HTTP，可选参数为HTTP和HTTPS
         config.setProtocol(Protocol.HTTP);
         //设置网络访问超时时间
-        config.setConnectionTimeout(5000);
+        config.setConnectionTimeout(400);
         config.setUseExpectContinue(true);
+        config.setClientExecutionTimeout(400);
         AWSCredentials credentials = new BasicAWSCredentials(minioProperties.getAccessKey(), minioProperties.getSecretKey());
         //设置Endpoint
         AwsClientBuilder.EndpointConfiguration end_point = new AwsClientBuilder.EndpointConfiguration(minioProperties.getEndpoint(), Regions.US_EAST_1.name());

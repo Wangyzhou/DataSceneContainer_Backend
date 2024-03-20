@@ -23,7 +23,6 @@ import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.PythonDockerConfig;
 import nnu.wyz.systemMS.config.SagaDockerConfig;
 import nnu.wyz.systemMS.dao.*;
-import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeInnerParams;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
@@ -98,13 +97,23 @@ public class test {
         System.out.println("copyObjectResult = " + copyObjectResult);
     }
 
+
     @Test
-    void testGetFile() {
-        GetObjectRequest getObjectRequest = new GetObjectRequest(minioConfig.getBucketName(), "652a4b75e4b01213a180bb5b/a68e206c-b611-499c-801c-f9c1d0a7f22f.zip");
-        S3Object object = amazonS3.getObject(getObjectRequest);
-        ObjectMetadata objectMetadata = object.getObjectMetadata();
-        String eTag = objectMetadata.getETag();
-        System.out.println("eTag = " + eTag);
+    void testGetFile() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        GetObjectRequest getObjectRequest = new GetObjectRequest(minioConfig.getBucketName(), "65f2c2c9e4b04f0617e5a89d/162c5475-33f1-4274-b1e8-c25e5b1dc872.cpg");
+        S3Object object = null;
+        for (int i = 0; i < 501; i++) {
+            object = amazonS3.getObject(getObjectRequest);
+            ObjectMetadata objectMetadata = object.getObjectMetadata();
+            String eTag = objectMetadata.getETag();
+            System.out.println("eTag = " + eTag);
+            object.close();
+        }
+//        for (int i = 0; i < 501; i++) {
+//            GetObjectResponse object = minioClient.getObject(GetObjectArgs.builder().bucket(minioConfig.getBucketName()).object("65f2c2c9e4b04f0617e5a89d/162c5475-33f1-4274-b1e8-c25e5b1dc872.cpg").build());
+//            System.out.println("object = " + object);
+//        }
+//        minioClient.createMultipartUpload(bucketName, key);
     }
 
     @Test
@@ -882,6 +891,10 @@ public class test {
     void testgetCatalogPhysicalPath() {
 //        String physicalPath = dscCatalogService.getPhysicalPath("8174f833-2a40-4cde-8fb5-20ac26f3174f");
 //        System.out.println("physicalPath = " + physicalPath);
+    }
+    @Test
+    void testWinDocker() {
+
     }
 
     @Test
