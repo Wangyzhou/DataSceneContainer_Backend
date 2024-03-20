@@ -1014,4 +1014,12 @@ public class test {
         List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
         System.out.println(buckets);
     }
+
+    @Autowired
+    private ShpProcessDAO shpProcessDAO;
+    @Test
+    void testGetCenterFromPg(){
+        String[] fields = {"name","shape_leng"};
+        shpProcessDAO.getCenterAndAttrByFields("chinaprovince_65f2fcf9e4b0d760656a8325", fields);
+    }
 }

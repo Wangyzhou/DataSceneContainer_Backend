@@ -27,6 +27,12 @@ public class DscShapefileServiceIml implements DscShapeFileService {
     }
 
     @Override
+    public CommonResult<List<String>> getNumericFields(String tableName) {
+        List<String> fields = shpProcessDAO.getNumericFields(tableName);
+        return CommonResult.success(fields, "获取成功！");
+    }
+
+    @Override
     public CommonResult<List<Object>> getUniqueValues(String ptName, String field, String method) {
         List<Object> uniqueValues = shpProcessDAO.getUniqueValues(ptName, field, method);
         return CommonResult.success(uniqueValues, "获取成功！");
@@ -42,5 +48,11 @@ public class DscShapefileServiceIml implements DscShapeFileService {
     public CommonResult<List<Map<String, Object>>> getShpAttrInfoFromPG(String tableName) {
         List<Map<String, Object>> shpAttrInfoFromPG = shpProcessDAO.getShpAttrInfoFromPG(tableName);
         return CommonResult.success(shpAttrInfoFromPG, "获取成功！");
+    }
+
+    @Override
+    public CommonResult<List<Map<String, Object>>> getCenterAndAttrByFields(String tableName, String[] fields) {
+        List<Map<String, Object>> centerAndAttrInfo = shpProcessDAO.getCenterAndAttrByFields(tableName, fields);
+        return CommonResult.success(centerAndAttrInfo, "获取成功！");
     }
 }

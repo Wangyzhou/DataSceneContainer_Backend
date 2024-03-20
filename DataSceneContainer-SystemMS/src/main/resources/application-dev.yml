@@ -21,9 +21,12 @@ spring:
       password: wyz980903
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${deployIp}:5432/dsc_postdb
+#    url: jdbc:postgresql://${deployIp}:5432/dsc_postdb
+    url: jdbc:postgresql://${deployIp}:15432/dsc_postdb
+#    username: postgres
+#    password: wyz980903
     username: postgres
-    password: wyz980903
+    password: dsc123
   mail:
     host: smtp.qq.com
     username: 2740962735@qq.com

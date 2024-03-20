@@ -3,14 +3,13 @@ package nnu.wyz.systemMS.dao;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Array;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @description:
@@ -67,7 +66,7 @@ public class ShpProcessDAO {
 
     public List<String> getFields(String tableName) {
         try {
-            String sql = "SELECT column_name FROM information_schema.columns WHERE table_name   = '" + tableName.toLowerCase() + "'";
+            String sql = "SELECT column_name FROM information_schema.columns WHERE table_name = '" + tableName.toLowerCase() + "'";
             List<Map<String, Object>> re = jdbcTemplate.queryForList(sql);
             ArrayList<String> fields = new ArrayList<>();
             re.forEach(field -> {
@@ -117,5 +116,63 @@ public class ShpProcessDAO {
             log.error(e.getMessage());
             return null;
         }
+    }
+
+    public List<Map<String, Object>> getCenterAndAttrByFields(String tableName, String[] fields) {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        for (int i = 0; i < fields.length; i++) {
+            sb.append(fields[i]);
+            if (i < fields.length - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(", ST_AsText(ST_Centroid(geom)) AS center FROM ")
+                .append(tableName.toLowerCase());
+        String sql = sb.toString();
+        try {
+            List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql);
+            for (Map<String, Object> result : resultList) {
+                String pointStr = result.get("center").toString();// POINT(10 10)
+                String coordStr = pointStr.substring(6, pointStr.length() - 1);// 10 10
+                Double lon = Double.parseDouble(coordStr.split(" ")[0]);
+                Double lat = Double.parseDouble(coordStr.split(" ")[1]);
+                Double[] center = {lon, lat};// [10,10]
+                result.put("center", center);
+            }
+            System.out.println(Arrays.toString((Double[]) resultList.get(1).get("center")));
+            return resultList;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<String> getNumericFields(String tableName) {
+        try {
+            String sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '" + tableName.toLowerCase() + "'";
+            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
+
+            ArrayList<String> fields = new ArrayList<>();
+            result.forEach(field -> {
+                if (!field.get("column_name").toString().equals("geom") && isNumericDataType(field.get("data_type").toString())) {
+                    fields.add(field.get("column_name").toString());
+                }
+            });
+            return fields;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    //  判读pg表中字段是否为数值
+    public boolean isNumericDataType(String dataType) {
+        String[] numericTypes = {"smallint", "integer", "bigint", "numeric", "decimal", "real", "double precision"};
+        for (String numericType : numericTypes) {
+            if (dataType.equalsIgnoreCase(numericType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
