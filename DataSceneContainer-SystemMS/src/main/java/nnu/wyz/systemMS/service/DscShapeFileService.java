@@ -21,6 +21,13 @@ public interface DscShapeFileService {
     CommonResult<List<String>> getFields(String tableName);
 
     /**
+     * 获取数值型字段名
+     * @param tableName
+     * @return
+     */
+    CommonResult<List<String>> getNumericFields(String tableName);
+
+    /**
      * 获取某字段的唯一值升/降序数组
      * @param ptName
      * @param field
@@ -42,4 +49,12 @@ public interface DscShapeFileService {
      * @return
      */
     CommonResult<List<Map<String, Object>>> getShpAttrInfoFromPG(String tableName);
+
+    /**
+     * 获取要素中心及指定字段值
+     * @param tableName
+     * @param fields
+     * @return
+     */
+    CommonResult<List<Map<String, Object>>> getCenterAndAttrByFields(String tableName, String[] fields);
 }
