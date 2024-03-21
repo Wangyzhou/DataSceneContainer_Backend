@@ -50,9 +50,9 @@ gateway_addr: http://localhost:9527   # gateway
 frontend_url: http://${frontendIp}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
 fileSavePath: F:\dsc\dsc-minio\data
-unzipTempPath: F:\dsc\dsc-minio\temp\{0}
+fileTempPath: F:\dsc\dsc-minio\temp
 fileSavePathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\data
-unzipTempPathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\temp\{0}
+fileTempPathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\temp\{0}
 shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
 shp2pgsqlWin: ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\psql.exe -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
 pg_password: dsc123

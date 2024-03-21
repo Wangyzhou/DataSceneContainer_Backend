@@ -43,10 +43,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -1026,5 +1029,12 @@ public class test {
         MinioClient minioClient = MinioClient.builder().endpoint("https://dsc-file.onesis.geobeans.cn").credentials("dsc", "dsc123456").build();
         List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
         System.out.println(buckets);
+    }
+    @Test
+    void testCompressImage() throws IOException {
+        File file = new File("F:\\ea6c7543-8090-494d-ad40-a74b05e5417a.png");
+        MockMultipartFile mfile = new MockMultipartFile("file", file.getName(), null, new FileInputStream(file));
+        File file1 = ImageUtil.compressImageFile(mfile);
+        System.out.println(file1.length());
     }
 }

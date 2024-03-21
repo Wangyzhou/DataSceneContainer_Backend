@@ -74,10 +74,10 @@ public class DscFileServiceIml implements DscFileService {
     @Value("${fileSavePathWin}")
     private String fileRootPathWin;
 
-    @Value("${unzipTempPath}")
+    @Value("${fileTempPath}")
     private String unzipTempPath;
 
-    @Value("${unzipTempPathWin}")
+    @Value("${fileTempPathWin}")
     private String unzipTempPathWin;
 
     /**
@@ -377,9 +377,11 @@ public class DscFileServiceIml implements DscFileService {
         String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;
         String separator = File.separator;
         String fullPath = fileRoot + bucket + separator + objectKey;
-        String unzipDirPath = System.getProperty("os.name").startsWith("Windows") ? MessageFormat.format(unzipTempPathWin, UUID.randomUUID()) : MessageFormat.format(unzipTempPath, UUID.randomUUID());
+        String unzipDirPath = System.getProperty("os.name").startsWith("Windows") ? unzipTempPathWin: unzipTempPath;
         File unzipDir = new File(unzipDirPath);
-        unzipDir.mkdirs();  //创建临时解压文件夹
+        if (!unzipDir.exists()) {
+            unzipDir.mkdirs();  //创建临时解压文件夹
+        }
         int successCount = 0;
         List<JSONObject> fileObjects;
         try {
@@ -439,7 +441,7 @@ public class DscFileServiceIml implements DscFileService {
             return CommonResult.failed("解压失败！");
         }
         //删除临时解压文件夹
-        FileUtils.deleteDirectory(unzipDirPath);
+//        FileUtils.deleteDirectory(unzipDirPath);
         if (successCount >= fileObjects.size()) {
             return CommonResult.success("解压全部完成！");
         } else {

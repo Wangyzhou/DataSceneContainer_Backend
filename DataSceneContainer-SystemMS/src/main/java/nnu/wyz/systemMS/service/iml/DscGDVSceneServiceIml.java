@@ -17,13 +17,17 @@ import nnu.wyz.systemMS.model.entity.DscGDVSceneConfig;
 import nnu.wyz.systemMS.model.entity.DscScene;
 import nnu.wyz.systemMS.model.entity.DscUserScene;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
+import nnu.wyz.systemMS.utils.ImageUtil;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -60,14 +64,15 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
         String sceneId = Objects.equals(saveGDVSceneDTO.getSceneId(), "") ? IdUtil.randomUUID() : saveGDVSceneDTO.getSceneId();
         MultipartFile thumbnail = saveGDVSceneDTO.getThumbnail();
         String contentType = thumbnail.getContentType();
-        System.out.println("contentType = " + contentType);
         String ext = MimeTypesUtil.getDefaultExt(contentType);
         DscUserScene isExist = dscUserSceneDAO.findByUserIdAndSceneName(userId, saveGDVSceneDTO.getName());
         if(!Objects.isNull(isExist) && !isExist.getSceneId().equals(sceneId)) {
             return CommonResult.failed("与现有场景名重复，请修改名称后重新创建！");
         }
+        File thumbnailAfterCompress = null;
         try {
-            InputStream thumbnailInputStream = thumbnail.getInputStream();
+            thumbnailAfterCompress = ImageUtil.compressImageFile(thumbnail);   //压缩图片
+//            InputStream thumbnailInputStream = thumbnail.getInputStream();
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType("img/png");
             String objectKey = MessageFormat.format("{0}/{1}.{2}", userId, sceneId, ext);
@@ -75,7 +80,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             if(isThumbnailExist) {
                 amazonS3.deleteObject(minioConfig.getSceneThumbnailsBucket(), objectKey);
             }
-            PutObjectRequest putObjectRequest = new PutObjectRequest(minioConfig.getSceneThumbnailsBucket(), objectKey, thumbnailInputStream, objectMetadata);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(minioConfig.getSceneThumbnailsBucket(), objectKey, Files.newInputStream(thumbnailAfterCompress.toPath()), objectMetadata);
             amazonS3.putObject(putObjectRequest);
             String createdTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
             Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
@@ -109,9 +114,14 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             dscGDVSceneConfigDAO.save(dscGDVSceneConfig);
             return CommonResult.success(dscScene,"场景保存成功！");
         } catch (IOException e) {
-            log.error("场景保存失败！");
             e.printStackTrace();
-            throw new RuntimeException("场景保存失败！");
+            return CommonResult.success("场景保存失败！");
+        } finally {
+            try {
+                thumbnailAfterCompress.delete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     @Override
