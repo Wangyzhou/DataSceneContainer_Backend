@@ -63,6 +63,7 @@ public class DscSceneServiceIml implements DscSceneService {
     @Override
     public CommonResult<PageInfo<DscScene>> getSceneList(PageableDTO pageableDTO) {
         String userId = pageableDTO.getCriteria();
+        String keyword = pageableDTO.getKeyword(); // 新增关键词参数
         Integer pageIndex = pageableDTO.getPageIndex();
         Integer pageSize = pageableDTO.getPageSize();
         List<DscScene> sceneListNoLimit = dscUserSceneDAO.findAllByUserId(userId)
@@ -71,13 +72,14 @@ public class DscSceneServiceIml implements DscSceneService {
                 .map(dscSceneDAO::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .filter(info -> info.getName().contains(keyword)) // 根据关键词进行模糊匹配
                 .sorted(Comparator.comparing(DscScene::getUpdatedTime).reversed()).collect(Collectors.toList());
         List<DscScene> sceneList = sceneListNoLimit
                 .stream()
                 .skip((long) (pageIndex - 1) * pageSize)
                 .limit(pageSize)
                 .collect(Collectors.toList());
-        PageInfo<DscScene> dscScenePageInfo = new PageInfo<>(sceneList, sceneListNoLimit.size(), sceneListNoLimit.size() / pageSize + 1);
+        PageInfo<DscScene> dscScenePageInfo = new PageInfo<>(sceneList, sceneListNoLimit.size(), (int) Math.ceil((double) sceneListNoLimit.size() / pageSize));
         return CommonResult.success(dscScenePageInfo, "获取场景列表成功！");
     }
 

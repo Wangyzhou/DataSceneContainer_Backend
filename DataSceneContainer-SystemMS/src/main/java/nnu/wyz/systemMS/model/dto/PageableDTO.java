@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PageableDTO {
     private String criteria;
+    private String keyword;
     private Integer pageIndex;
     private Integer pageSize;
 }

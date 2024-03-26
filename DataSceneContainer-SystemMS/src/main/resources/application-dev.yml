@@ -14,7 +14,7 @@ spring:
   data:
     mongodb:
       host: ${deployIp}
-      port: 17016
+      port: 17017
       authentication-database: admin
       database: dsc
       username: dsc
@@ -73,7 +73,8 @@ DOCKER:
 
 
 minio:
-  endpoint: http://localhost:19000
+#  endpoint: http://localhost:19000
+  endpoint: http://172.21.213.86:19001
   accessKey: dsc
   secretKey: dsc123456
   bucketName: dsc-file

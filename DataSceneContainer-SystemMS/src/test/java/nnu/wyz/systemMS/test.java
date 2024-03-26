@@ -609,14 +609,25 @@ public class test {
     @Test
     void testGetCatalogChildren() {
         PageableDTO pageableDTO = new PageableDTO();
-        pageableDTO.setCriteria("ce344b9e-0b68-46b1-9765-e50922855b6f");
-        pageableDTO.setPageIndex(2);
+        pageableDTO.setCriteria("b9eb6e25-70d2-4802-9789-caacff49125a");
+        pageableDTO.setKeyword("");
+        pageableDTO.setPageIndex(1);
         pageableDTO.setPageSize(10);
         CommonResult<PageInfo<CatalogChildrenDTO>> childrenByPageable = dscCatalogService.getChildrenByPageable(pageableDTO);
         PageInfo<CatalogChildrenDTO> data = childrenByPageable.getData();
         System.out.println("data = " + data);
     }
 
+    @Autowired
+    private DscVectorSService dscVectorSService;
+    @Test
+    void testGetVectorServiceList(){
+        int pageIndex = 1;
+        int pageSize = 4;
+        PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329","", pageIndex, pageSize);
+        CommonResult<PageInfo<DscVectorServiceInfo>> vectorSList = dscVectorSService.getVectorServiceList(pageableDTO);
+        System.out.println(vectorSList.getData());
+    }
     @Autowired
     private DscUserSceneDAO dscUserSceneDAO;
     @Autowired
@@ -629,7 +640,7 @@ public class test {
     void testGetSceneListByTime() {
         int pageIndex = 1;
         int pageSize = 6;
-        PageableDTO pageableDTO = new PageableDTO("652a5e61e4b012905c858bea", pageIndex, pageSize);
+        PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329","", pageIndex, pageSize);
         CommonResult<PageInfo<DscScene>> sceneList = dscSceneService.getSceneList(pageableDTO);
         System.out.println("sceneList = " + sceneList);
         System.out.println(sceneList.getData());
