@@ -40,12 +40,14 @@ public class DscCatalogController {
     }
 
     @ApiOperation(value = "分页获取目录节点列表")
-    @GetMapping("/getChildrenByPageable/{catalogId}/{pageSize}/{pageIndex}")
+    @GetMapping("/getChildrenByPageable/{catalogId}/{keyword}/{pageSize}/{pageIndex}")
     public CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(@PathVariable("catalogId") String catalogId,
+                                                                            @PathVariable("keyword") String keyword,
                                                                             @PathVariable("pageSize") Integer pageSize,
                                                                             @PathVariable("pageIndex") Integer pageIndex) {
         PageableDTO pageableDTO = new PageableDTO();
         pageableDTO.setCriteria(catalogId);
+        pageableDTO.setKeyword(keyword);
         pageableDTO.setPageIndex(pageIndex);
         pageableDTO.setPageSize(pageSize);
         return catalogService.getChildrenByPageable(pageableDTO);

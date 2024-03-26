@@ -25,11 +25,12 @@ public class DscSceneController {
     @Autowired
     private DscSceneService dscSceneService;
 
-    @GetMapping("/getList/{userId}/{pageSize}/{pageIndex}")
+    @GetMapping("/getList/{userId}/{keyword}/{pageSize}/{pageIndex}")
     public CommonResult<PageInfo<DscScene>> getSceneList(@PathVariable("userId") String userId,
+                                                         @PathVariable("keyword") String keyword,
                                                          @PathVariable("pageSize") Integer pageSize,
                                                          @PathVariable("pageIndex") Integer pageIndex) {
-        PageableDTO pageableDTO = new PageableDTO(userId, pageIndex, pageSize);
+        PageableDTO pageableDTO = new PageableDTO(userId, keyword, pageIndex, pageSize);
         return dscSceneService.getSceneList(pageableDTO);
     }
 

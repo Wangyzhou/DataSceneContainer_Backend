@@ -38,11 +38,13 @@ public class DscVectorServiceController {
     public void getMvt(@PathVariable int zoom, @PathVariable int x, @PathVariable int y, @PathVariable String tableName, HttpServletResponse response) {
         dscVectorSService.getMvt(zoom, x, y, tableName, response);
     }
-    @GetMapping(value = "/getVectorSList/{userId}/{pageSize}/{pageIndex}")
+
+    @GetMapping(value = "/getVectorSList/{userId}/{keyword}/{pageSize}/{pageIndex}")
     public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorSList(@PathVariable String userId,
+                                                                       @PathVariable String keyword,
                                                                        @PathVariable Integer pageSize,
                                                                        @PathVariable Integer pageIndex) {
-        PageableDTO pageableDTO = new PageableDTO(userId, pageIndex, pageSize);
+        PageableDTO pageableDTO = new PageableDTO(userId, keyword, pageIndex, pageSize);
         return dscVectorSService.getVectorServiceList(pageableDTO);
     }
 

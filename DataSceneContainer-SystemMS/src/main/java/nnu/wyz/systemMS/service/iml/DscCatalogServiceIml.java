@@ -285,6 +285,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
     @Override
     public CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(PageableDTO pageableDTO) {
         String catalogId = pageableDTO.getCriteria();
+        String keyword = pageableDTO.getKeyword(); // 新增关键词参数
         Integer pageIndex = pageableDTO.getPageIndex();
         Integer pageSize = pageableDTO.getPageSize();
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
@@ -293,14 +294,20 @@ public class DscCatalogServiceIml implements DscCatalogService {
         }
         DscCatalog dscCatalog = byId.get();
         List<CatalogChildrenDTO> children = dscCatalog.getChildren();
-        List<CatalogChildrenDTO> childrenDTOS = children.stream().filter(item -> item.getType().equals("folder")).sorted(Comparator.comparing(CatalogChildrenDTO::getName)).collect(Collectors.toList());
-        List<CatalogChildrenDTO> noFolders = children.stream().filter(item -> !item.getType().equals("folder")).sorted(Comparator.comparing(CatalogChildrenDTO::getName)).collect(Collectors.toList());
+        // 根据关键词进行模糊查找
+        List<CatalogChildrenDTO> filteredChildren = children.stream()
+                .filter(item -> item.getName().contains(keyword)) // 根据名称进行模糊匹配
+                .sorted(Comparator.comparing(CatalogChildrenDTO::getName))
+                .collect(Collectors.toList());
+        List<CatalogChildrenDTO> childrenDTOS = filteredChildren.stream().filter(item -> item.getType().equals("folder")).sorted(Comparator.comparing(CatalogChildrenDTO::getName)).collect(Collectors.toList());
+        List<CatalogChildrenDTO> noFolders = filteredChildren.stream().filter(item -> !item.getType().equals("folder")).sorted(Comparator.comparing(CatalogChildrenDTO::getName)).collect(Collectors.toList());
         childrenDTOS.addAll(noFolders);
         List<CatalogChildrenDTO> results = childrenDTOS.stream().skip((long) (pageIndex - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
         PageInfo<CatalogChildrenDTO> pageInfo = new PageInfo<>();
         pageInfo.setBody(results);
-        pageInfo.setCount(children.size());
-        pageInfo.setPageNum((children.size() / pageSize) + 1);
+        pageInfo.setCount(filteredChildren.size()); // 使用过滤后的数据量
+        //  pageInfo.setPageNum((children.size() / pageSize) + 1);
+        pageInfo.setPageNum((int) Math.ceil((double) filteredChildren.size() / pageSize));
         return CommonResult.success(pageInfo, "获取第" + pageIndex + "页目录列表成功！");
     }
 

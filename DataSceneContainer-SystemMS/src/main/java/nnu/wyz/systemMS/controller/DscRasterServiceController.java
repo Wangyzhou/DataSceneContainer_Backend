@@ -35,11 +35,13 @@ public class DscRasterServiceController {
     public CommonResult<String> publishTiff2ImgRasterS(@RequestBody PublishTiffDTO publishTiffDTO) {
         return dscRasterService.publishTiff2RasterS(publishTiffDTO);
     }
-    @GetMapping(value = "/getRasterSList/{userId}/{pageSize}/{pageIndex}")
+
+    @GetMapping(value = "/getRasterSList/{userId}/{keyword}/{pageSize}/{pageIndex}")
     public CommonResult<PageInfo<DscRasterService>> getRasterSList(@PathVariable(value = "userId") String userId,
+                                                                   @PathVariable(value = "keyword") String keyword,
                                                                    @PathVariable(value = "pageSize") Integer pageSize,
                                                                    @PathVariable(value = "pageIndex") Integer pageIndex) {
-        PageableDTO pageableDTO = new PageableDTO(userId, pageIndex, pageSize);
+        PageableDTO pageableDTO = new PageableDTO(userId, keyword, pageIndex, pageSize);
         return dscRasterService.getRasterServiceList(pageableDTO);
     }
 

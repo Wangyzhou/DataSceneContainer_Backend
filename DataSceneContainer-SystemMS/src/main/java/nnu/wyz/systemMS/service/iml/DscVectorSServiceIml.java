@@ -206,6 +206,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
     @Override
     public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(PageableDTO pageableDTO) {
         String userId = pageableDTO.getCriteria();
+        String keyword = pageableDTO.getKeyword(); // 新增关键词参数
         Integer pageIndex = pageableDTO.getPageIndex();
         Integer pageSize = pageableDTO.getPageSize();
         List<DscVectorServiceInfo> vsListNoLimit = dscUserVectorSDAO.findAllByUserId(userId)
@@ -214,6 +215,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
                 .map(dscVectorSDAO::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .filter(info -> info.getName().contains(keyword)) // 根据关键词进行模糊匹配
                 .sorted(Comparator.comparing(DscVectorServiceInfo::getName))
                 .collect(Collectors.toList());
         List<DscVectorServiceInfo> dscVectorServiceInfos = vsListNoLimit
@@ -221,7 +223,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
                 .skip((long) (pageIndex - 1) * pageSize)
                 .limit(pageSize)
                 .collect(Collectors.toList());
-        PageInfo<DscVectorServiceInfo> pageInfo = new PageInfo<>(dscVectorServiceInfos, vsListNoLimit.size(), vsListNoLimit.size() / pageSize + 1);
+        PageInfo<DscVectorServiceInfo> pageInfo = new PageInfo<>(dscVectorServiceInfos, vsListNoLimit.size(), (int) Math.ceil((double) vsListNoLimit.size() / pageSize));
         return CommonResult.success(pageInfo, "获取成功！");
     }
 

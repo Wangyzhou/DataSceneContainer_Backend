@@ -224,6 +224,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
     @Override
     public CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO) {
         String userId = pageableDTO.getCriteria();
+        String keyword = pageableDTO.getKeyword(); // 新增关键词参数
         Integer pageIndex = pageableDTO.getPageIndex();
         Integer pageSize = pageableDTO.getPageSize();
         List<DscRasterService> rsListNoLimit = dscUserRasterSDAO.findAllByUserId(userId)
@@ -232,6 +233,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
                 .map(dscRasterSDAO::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .filter(info -> info.getName().contains(keyword)) // 根据关键词进行模糊匹配
                 .sorted(Comparator.comparing(DscRasterService::getName))
                 .collect(Collectors.toList());
         List<DscRasterService> dscRasterServices = rsListNoLimit
@@ -239,7 +241,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
                 .skip((long) (pageIndex - 1) * pageSize)
                 .limit(pageSize)
                 .collect(Collectors.toList());
-        PageInfo<DscRasterService> dscRasterServicePageInfo = new PageInfo<>(dscRasterServices, rsListNoLimit.size(), (rsListNoLimit.size() / pageSize) + 1);
+        PageInfo<DscRasterService> dscRasterServicePageInfo = new PageInfo<>(dscRasterServices, rsListNoLimit.size(), (int) Math.ceil((double) rsListNoLimit.size() / pageSize));
         return CommonResult.success(dscRasterServicePageInfo, "获取成功！");
     }
 
