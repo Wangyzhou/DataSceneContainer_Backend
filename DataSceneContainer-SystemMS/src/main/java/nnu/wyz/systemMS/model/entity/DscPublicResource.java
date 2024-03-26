@@ -28,6 +28,6 @@ public class DscPublicResource {
 
     private String publishTime;
 
-
+    private String thumbnail;
 
 }

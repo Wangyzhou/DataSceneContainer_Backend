@@ -43,10 +43,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -904,8 +907,28 @@ public class test {
 //        System.out.println("physicalPath = " + physicalPath);
     }
     @Test
-    void testWinDocker() {
-
+    void testWinDocker() throws InterruptedException {
+        String[] arr = new String[]{"saga_cmd", "-h"};
+        DockerClient dockerClient = sagaDockerConfig.getDockerClient();
+        ExecCreateCmdResponse exec = dockerClient.execCreateCmd("1ec1306fc17c599af3aeeea226a107244fa136fbe63e36a3f3fc85becf751cbf")
+                .withAttachStdout(true)
+                .withAttachStderr(true)
+                .withCmd(arr)
+                .exec();
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        dockerClient.execStartCmd(exec.getId())
+                .exec(new ExecStartResultCallback(stdout, stderr) {
+                    @Override
+                    public void onNext(Frame frame) {
+//                        if(frame.toString().contains("Save")) {
+//                            return;
+//                        }
+                        System.out.println(frame.toString().replace("STDOUT: ", "").replace("STDERR: ", ""));
+                        super.onNext(frame);
+                    }
+                })
+                .awaitCompletion();
     }
 
     @Test
@@ -1034,16 +1057,16 @@ public class test {
 
     @Test
     void testMinioClient() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        MinioClient minioClient = MinioClient.builder().endpoint("https://dsc-file.onesis.geobeans.cn").credentials("dsc", "dsc123456").build();
-        List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
-        System.out.println(buckets);
-    }
+        System.out.println(minioConfig.getEndpoint());
 
-    @Autowired
-    private ShpProcessDAO shpProcessDAO;
+//        MinioClient minioClient = MinioClient.builder().endpoint(minioConfig.getEndpoint()).credentials(minioConfig.getSecretKey(), minioConfig.getSecretKey()).build();
+//        List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
+//        System.out.println(buckets);
+    }
     @Test
-    void testGetCenterFromPg(){
-        String[] fields = {"name","shape_leng"};
-        shpProcessDAO.getCenterAndAttrByFields("chinaprovince_65f2fcf9e4b0d760656a8325", fields);
+    void testCompressImage() throws IOException {
+        File file = new File("F:\\ea6c7543-8090-494d-ad40-a74b05e5417a.png");
+        MultipartFile file1 = ImageUtil.compressImageFile(file);
+        System.out.println(file1.getSize());
     }
 }

@@ -1,6 +1,6 @@
 deployIp: 172.21.213.86
 frontendIp: localhost:8889/dsc-app
-sagaDockerServer: 172.21.213.86       #部署要改
+sagaDockerServer: 124.70.17.22/dsc-wps/       #部署要改
 pythonDockerServer: 172.21.213.86        #部署要改
 
 spring:
@@ -14,7 +14,7 @@ spring:
   data:
     mongodb:
       host: ${deployIp}
-      port: 17017
+      port: 17016
       authentication-database: admin
       database: dsc
       username: dsc
@@ -50,15 +50,15 @@ gateway_addr: http://localhost:9527   # gateway
 frontend_url: http://${frontendIp}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
 fileSavePath: F:\dsc\dsc-minio\data
-unzipTempPath: F:\dsc\dsc-minio\temp\{0}
+fileTempPath: F:\dsc\dsc-minio\temp
 fileSavePathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\data
-unzipTempPathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\temp\{0}
+fileTempPathWin: ${MINIO_HOME:F:\dsc\dsc-minio}\temp\{0}
 shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
 shp2pgsqlWin: ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\psql.exe -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
 pg_password: dsc123
 
 DOCKER:
-  DOCKER_HOST: tcp://localhost:2375
+  DOCKER_HOST: tcp://124.70.17.22/dsc-wps/
   DOCKER_TLS_VERIFY: 1
   DOCKER_CERT_PATH: /home/user/.docker/certs
   DOCKER_CONFIG: /home/user/.docker
@@ -73,8 +73,7 @@ DOCKER:
 
 
 minio:
-#  endpoint: http://localhost:19000
-  endpoint: http://172.21.213.86:19001
+  endpoint: http://127.70.17.22
   accessKey: dsc
   secretKey: dsc123456
   bucketName: dsc-file
