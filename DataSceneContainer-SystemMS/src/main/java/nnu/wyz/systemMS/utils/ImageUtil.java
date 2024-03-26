@@ -3,8 +3,10 @@ package nnu.wyz.systemMS.utils;
 import cn.hutool.core.util.IdUtil;
 import lombok.SneakyThrows;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,24 +34,29 @@ public class ImageUtil {
     }
 
     @SneakyThrows
-    public static File compressImageFile(MultipartFile multipartFile) {
-        if (multipartFile == null || multipartFile.isEmpty()) {
+    public static MultipartFile compressImageFile(File file) {
+        if (file == null || !file.exists()) {
             return null;
         }
-        String fileName = multipartFile.getOriginalFilename();
-        String suffix = StringUtils.substringAfterLast(fileName, ".");
-        File imageFile = new File(imageCompressPath + File.separator + IdUtil.fastSimpleUUID() + "." + suffix);
-        multipartFile.transferTo(imageFile);
-        if (multipartFile.getSize() >= 1024 * 1024 * 0.1) {
-            if (multipartFile.getSize() >= 1024 * 1024 * 0.1 && multipartFile.getSize() < 1024 * 1024) {
-                Thumbnails.of(multipartFile.getInputStream()).scale(0.5f).outputQuality(1f).toFile(imageFile);
-            } else if(multipartFile.getSize() >= 1024 * 1024 && multipartFile.getSize() < 1024 * 1024 * 2) {
-                Thumbnails.of(multipartFile.getInputStream()).scale(0.5f).outputQuality(0.5f).toFile(imageFile);
-            } else {
-                Thumbnails.of(multipartFile.getInputStream()).scale(0.5f).outputQuality(0.1f).toFile(imageFile);
-            }
+        File imageCompressTempDir = new File(imageCompressPath);
+        if(!imageCompressTempDir.exists()) {
+            imageCompressTempDir.mkdirs();
         }
-        return imageFile;
+        String suffix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+        File imageFile = new File(imageCompressPath + File.separator + IdUtil.fastSimpleUUID() + "." + suffix);
+//        System.out.println(imageCompressPath + File.separator + IdUtil.fastSimpleUUID() + "." + suffix);
+        if (file.length() >= 1024 * 1024 * 0.1) {
+            if (file.length() >= 1024 * 1024 * 0.1 && file.length() < 1024 * 1024) {
+                Thumbnails.of(file).scale(0.5f).outputQuality(1f).toFile(imageFile);
+            } else if(file.length() >= 1024 * 1024 && file.length() < 1024 * 1024 * 2) {
+                Thumbnails.of(file).scale(0.5f).outputQuality(0.5f).toFile(imageFile);
+            } else {
+                Thumbnails.of(file).scale(0.5f).outputQuality(0.1f).toFile(imageFile);
+            }
+        } else {
+            FileUtils.copyFile(file, imageFile);
+        }
+        return new MockMultipartFile(imageFile.getName(), imageFile.getName(), MimeTypesUtil.getMimeType(suffix), FileUtils.readFileToByteArray(imageFile));
     }
 
     /**

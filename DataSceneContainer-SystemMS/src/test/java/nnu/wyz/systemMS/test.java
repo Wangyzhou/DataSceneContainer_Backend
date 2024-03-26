@@ -896,8 +896,28 @@ public class test {
 //        System.out.println("physicalPath = " + physicalPath);
     }
     @Test
-    void testWinDocker() {
-
+    void testWinDocker() throws InterruptedException {
+        String[] arr = new String[]{"saga_cmd", "-h"};
+        DockerClient dockerClient = sagaDockerConfig.getDockerClient();
+        ExecCreateCmdResponse exec = dockerClient.execCreateCmd("1ec1306fc17c599af3aeeea226a107244fa136fbe63e36a3f3fc85becf751cbf")
+                .withAttachStdout(true)
+                .withAttachStderr(true)
+                .withCmd(arr)
+                .exec();
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        dockerClient.execStartCmd(exec.getId())
+                .exec(new ExecStartResultCallback(stdout, stderr) {
+                    @Override
+                    public void onNext(Frame frame) {
+//                        if(frame.toString().contains("Save")) {
+//                            return;
+//                        }
+                        System.out.println(frame.toString().replace("STDOUT: ", "").replace("STDERR: ", ""));
+                        super.onNext(frame);
+                    }
+                })
+                .awaitCompletion();
     }
 
     @Test
@@ -1026,15 +1046,16 @@ public class test {
 
     @Test
     void testMinioClient() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        MinioClient minioClient = MinioClient.builder().endpoint("https://dsc-file.onesis.geobeans.cn").credentials("dsc", "dsc123456").build();
-        List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
-        System.out.println(buckets);
+        System.out.println(minioConfig.getEndpoint());
+
+//        MinioClient minioClient = MinioClient.builder().endpoint(minioConfig.getEndpoint()).credentials(minioConfig.getSecretKey(), minioConfig.getSecretKey()).build();
+//        List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
+//        System.out.println(buckets);
     }
     @Test
     void testCompressImage() throws IOException {
         File file = new File("F:\\ea6c7543-8090-494d-ad40-a74b05e5417a.png");
-        MockMultipartFile mfile = new MockMultipartFile("file", file.getName(), null, new FileInputStream(file));
-        File file1 = ImageUtil.compressImageFile(mfile);
-        System.out.println(file1.length());
+        MultipartFile file1 = ImageUtil.compressImageFile(file);
+        System.out.println(file1.getSize());
     }
 }

@@ -21,7 +21,7 @@ public class SagaDockerConfig {
     private String deployIp;
 
     public DockerClient getDockerClient() {
-        String dockerUrl = MessageFormat.format("tcp://{0}:2375", deployIp);
+        String dockerUrl = MessageFormat.format("tcp://{0}", deployIp);
         DefaultDockerClientConfig config
                 = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withRegistryEmail("info@baeldung.com")

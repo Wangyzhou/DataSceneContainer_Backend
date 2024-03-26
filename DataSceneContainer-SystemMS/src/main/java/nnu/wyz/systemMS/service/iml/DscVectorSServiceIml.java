@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -74,6 +75,9 @@ public class DscVectorSServiceIml implements DscVectorSService {
 
     @Override
     public CommonResult<String> publishShp2VectorS(PublishShapefileDTO publishShapefileDTO) {
+        if(Pattern.matches("[0-9].*", publishShapefileDTO.getName())) {
+            return CommonResult.failed("服务名称不能以数字开头");
+        }
         String userId = publishShapefileDTO.getUserId();
         String fileId = publishShapefileDTO.getFileId();
         String catalogId = publishShapefileDTO.getCatalogId();
@@ -126,8 +130,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
                 return CommonResult.failed("读取cpg文件失败");
             }
         }
-        String ptNamePrefix = fileName.substring(0, fileName.lastIndexOf("."));
-        String ptName = (ptNamePrefix + "_" + IdUtil.objectId()).replace(" ", "_");
+        String ptName = (publishShapefileDTO.getName() + "_" + IdUtil.objectId()).replace(" ", "_");
         String pgCmdStr = System.getProperty("os.name").startsWith("Windows") ? MessageFormat.format(pgCmdWin, srid, code, fullPath, ptName) : MessageFormat.format(pgCmd, srid, code, fullPath, ptName);
         Process pro;
         ProcessBuilder processBuilder = new ProcessBuilder();

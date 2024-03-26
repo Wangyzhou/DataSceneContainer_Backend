@@ -1,8 +1,8 @@
 deployIp: 172.21.212.177        #部署要改
 frontendIp: 172.21.212.177:9192        #部署要改
 #deployIp: 119.45.181.127       #部署要改
-sagaDockerServer: 172.21.212.177        #部署要改
-pythonDockerServer: 172.21.212.177        #部署要改
+sagaDockerServer: ${DOCKER_SOURCE_URL:124.70.17.22/dsc-wps/}        #部署要改
+pythonDockerServer: ${DOCKER_SOURCE_URL:124.70.17.22/dsc-wps/}        #部署要改
 
 spring:
   web:
@@ -60,9 +60,9 @@ gateway_addr: http://gateway:9527
 frontend_url: ${APP_SOURCE_URL:http://localhost:9192}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
 fileSavePath: /home/minio-data/
-unzipTempPath: /home/temp/{0}
+fileTempPath: /home/temp
 fileSavePathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\data\
-unzipTempPathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\temp\{0}
+fileTempPathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\temp\
 shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h postgres-db -p 5432 -U postgres -d dsc_postdb
 shp2pgsqlWin: ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\psql.exe -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
 pg_password: ${PG_PASSWORD:dsc123}

@@ -1,6 +1,6 @@
 deployIp: 172.21.213.86
 frontendIp: localhost:8889/dsc-app
-sagaDockerServer: 172.21.213.86       #部署要改
+sagaDockerServer: 124.70.17.22/dsc-wps/       #部署要改
 pythonDockerServer: 172.21.213.86        #部署要改
 
 spring:
@@ -58,7 +58,7 @@ shp2pgsqlWin: ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\shp2pgsql.exe -I -s 
 pg_password: dsc123
 
 DOCKER:
-  DOCKER_HOST: tcp://localhost:2375
+  DOCKER_HOST: tcp://124.70.17.22/dsc-wps/
   DOCKER_TLS_VERIFY: 1
   DOCKER_CERT_PATH: /home/user/.docker/certs
   DOCKER_CONFIG: /home/user/.docker
@@ -73,7 +73,7 @@ DOCKER:
 
 
 minio:
-  endpoint: http://localhost:19000
+  endpoint: http://127.70.17.22
   accessKey: dsc
   secretKey: dsc123456
   bucketName: dsc-file
