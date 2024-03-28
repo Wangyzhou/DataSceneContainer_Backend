@@ -1,8 +1,6 @@
 deployIp: 172.21.212.177        #部署要改
 frontendIp: 172.21.212.177:9192        #部署要改
 #deployIp: 119.45.181.127       #部署要改
-sagaDockerServer: ${DOCKER_SOURCE_URL:124.70.17.22/dsc-wps/}        #部署要改
-pythonDockerServer: ${DOCKER_SOURCE_URL:124.70.17.22/dsc-wps/}        #部署要改
 
 spring:
   web:
@@ -69,22 +67,16 @@ shp2pgsqlWin: ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\shp2pgsql.exe 
 pg_password: ${PG_PASSWORD:dsc123}
 
 # docker相关
-DOCKER:
-  DOCKER_HOST: tcp://${deployIp}:2375
-  DOCKER_TLS_VERIFY: 1
-  DOCKER_CERT_PATH: /home/user/.docker/certs
-  DOCKER_CONFIG: /home/user/.docker
-  api:
-    version: 1.23
-  registry:
-    url: https://index.docker.io/v1/
-    username: dockeruser
-    password: ilovedocker
-    email: dockeruser@github.com
+docker:
+  docker_url: ${DOCKER_URL}
+  docker_tls_verify: ${DOCKER_TLS_VERIFY:no}
+  docker_cert_path: ${DOCKER_CERT_PATH:none}
+  docker_api_version: ${DOCKER_API_VERSION}
 
+minioEndpoint: http://124.70.17.22
 
 minio:
-  endpoint: ${MINIO_API_URL:http://localhost:9000}
+  endpoint: ${MINIO_API_URL:http://124.70.17.22}
   accessKey: dsc
   secretKey: dsc123456
   bucketName: dsc-file

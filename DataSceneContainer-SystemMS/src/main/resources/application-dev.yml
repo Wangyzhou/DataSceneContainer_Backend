@@ -1,7 +1,8 @@
 deployIp: 172.21.213.86
 frontendIp: localhost:8889/dsc-app
-sagaDockerServer: 124.70.17.22/dsc-wps/       #部署要改
+sagaDockerServer: 119.45.181.127/dsc-wps/       #部署要改
 pythonDockerServer: 172.21.213.86        #部署要改
+dockerCert: D:/docker-2375-cert
 
 spring:
   web:
@@ -58,23 +59,16 @@ shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 15431 -U 
 shp2pgsqlWin: ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\psql.exe -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
 pg_password: dsc123
 
-DOCKER:
-  DOCKER_HOST: tcp://124.70.17.22/dsc-wps/
-  DOCKER_TLS_VERIFY: 1
-  DOCKER_CERT_PATH: /home/user/.docker/certs
-  DOCKER_CONFIG: /home/user/.docker
-  api:
-    version: 1.23
-  registry:
-    url: https://index.docker.io/v1/
-    username: dockeruser
-    password: ilovedocker
-    email: dockeruser@github.com
+docker:
+  docker_url: ${DOCKER_URL:119.45.181.127:2375}
+  docker_tls_verify: ${DOCKER_TLS_VERIFY:yes}
+  docker_cert_path: ${DOCKER_CERT_PATH:D:\\docker-2375-cert\\}
+  docker_api_version: ${DOCKER_API_VERSION:1.43}
 
 
 
 minio:
-  endpoint: http://127.70.17.22
+  endpoint: http://124.70.17.22
   accessKey: dsc
   secretKey: dsc123456
   bucketName: dsc-file

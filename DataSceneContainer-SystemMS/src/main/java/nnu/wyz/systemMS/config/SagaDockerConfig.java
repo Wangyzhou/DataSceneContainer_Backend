@@ -3,11 +3,15 @@ package nnu.wyz.systemMS.config;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.LocalDirectorySSLConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.Objects;
 
 /**
  * @description:
@@ -17,18 +21,18 @@ import java.text.MessageFormat;
 @Configuration
 public class SagaDockerConfig {
 
-    @Value("${sagaDockerServer}")
-    private String deployIp;
+    @Autowired
+    private DockerConfig dockerConfig;
 
     public DockerClient getDockerClient() {
-        String dockerUrl = MessageFormat.format("tcp://{0}", deployIp);
-        DefaultDockerClientConfig config
-                = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withRegistryEmail("info@baeldung.com")
-                .withRegistryPassword("baeldung")
-                .withRegistryUsername("baeldung")
-                .withDockerTlsVerify(false)
-                .withDockerHost(dockerUrl).build();
-        return DockerClientBuilder.getInstance(config).build();
+        DefaultDockerClientConfig.Builder builder =
+                DefaultDockerClientConfig.createDefaultConfigBuilder()
+                        .withDockerHost("tcp://" + dockerConfig.getDocker_url())
+                        .withApiVersion(dockerConfig.getDocker_api_version());
+        if(dockerConfig.getDocker_tls_verify().equals("yes")) {
+            builder.withDockerTlsVerify(true);
+            builder.withDockerCertPath(dockerConfig.getDocker_cert_path());
+        }
+        return DockerClientBuilder.getInstance(builder.build()).build();
     }
 }

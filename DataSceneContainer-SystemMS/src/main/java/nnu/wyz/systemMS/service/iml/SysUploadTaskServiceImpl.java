@@ -114,6 +114,7 @@ public class SysUploadTaskServiceImpl implements SysUploadTaskService {
         if (params != null) {
             params.forEach(request::addRequestParameter);
         }
+
         URL preSignedUrl = amazonS3.generatePresignedUrl(request);
         return preSignedUrl.toString();
     }

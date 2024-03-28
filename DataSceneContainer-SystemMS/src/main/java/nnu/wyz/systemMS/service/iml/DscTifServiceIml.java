@@ -52,16 +52,13 @@ public class DscTifServiceIml implements DscTifService {
     @Value("${fileSavePath}")
     private String rootPath;
 
-    @Value("${scriptPath}")
-    private String scriptPath;
-
-    private static final String GDAL_CONTAINER_ID = "2785cdc9e39cafece987c54ad8ee4c13b19e3e2905bfa1f11aeb8388bad2973e";
+    private static final String GDAL_CONTAINER_ID = "d00338b7a11e81935cf3d815284fb7316d928880ce3a999c7d20ed494a1cbdf1";
 
     private String pyPath;
 
     @PostConstruct
     public void init() {
-        pyPath = scriptPath + "tif_service.py";
+        pyPath = rootPath + minioConfig.getPyFilesBucket() + File.separator + "tif_service.py";
     }
 
     @Override

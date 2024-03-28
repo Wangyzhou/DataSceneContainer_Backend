@@ -908,9 +908,9 @@ public class test {
     }
     @Test
     void testWinDocker() throws InterruptedException {
-        String[] arr = new String[]{"saga_cmd", "-h"};
+        String[] arr = new String[]{"ip", "addr"};
         DockerClient dockerClient = sagaDockerConfig.getDockerClient();
-        ExecCreateCmdResponse exec = dockerClient.execCreateCmd("1ec1306fc17c599af3aeeea226a107244fa136fbe63e36a3f3fc85becf751cbf")
+        ExecCreateCmdResponse exec = dockerClient.execCreateCmd("63090661c87dbaf295404706869b373e48de2554ccc2f83026ae425634bb42af")
                 .withAttachStdout(true)
                 .withAttachStderr(true)
                 .withCmd(arr)
@@ -1057,11 +1057,14 @@ public class test {
 
     @Test
     void testMinioClient() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        System.out.println(minioConfig.getEndpoint());
+//        System.out.println(minioConfig.getEndpoint());
 
-//        MinioClient minioClient = MinioClient.builder().endpoint(minioConfig.getEndpoint()).credentials(minioConfig.getSecretKey(), minioConfig.getSecretKey()).build();
-//        List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
-//        System.out.println(buckets);
+        MinioClient minioClient = MinioClient.builder()
+                .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
+                .endpoint("http://119.45.181.127:82")
+                .build();
+        List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
+        buckets.forEach(bucket -> System.out.println(bucket.name()));
     }
     @Test
     void testCompressImage() throws IOException {
