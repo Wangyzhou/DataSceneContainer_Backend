@@ -30,7 +30,7 @@ public class SagaOtherToolUtil {
     @Autowired
     private static SagaDockerConfig staticSagaDockerConfig;
 
-    private static final String CONTAINER_ID = "e904431d1b38ec6fba77361019321875536deaf0169ebd6872af66bbab67d879";
+    private static final String CONTAINER_ID = "2135d7c4e677e3c90d81f7542723a15fe8aa04579010357725cf6d5af8953968";
 
     @PostConstruct
     public void init() {
