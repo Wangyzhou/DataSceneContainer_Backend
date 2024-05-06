@@ -2,9 +2,8 @@ package nnu.wyz.systemMS.controller;
 
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
-import nnu.wyz.systemMS.model.entity.DscGeoToolExecTask;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
-import nnu.wyz.systemMS.service.DscGeoAnalysisService;
+import nnu.wyz.systemMS.service.DscGeoAnalysisTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,19 +14,19 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(value = "/dsc-geoAnalysis")
-public class DscGeoAnalysisController {
+public class DscGeoAnalysisTaskController {
 
     @Autowired
-    private DscGeoAnalysisService dscGeoAnalysisService;
+    private DscGeoAnalysisTaskService dscGeoAnalysisTaskService;
 
     @PostMapping(value = "/submitGATask")
     CommonResult<DscGeoAnalysisExecTask> submitGATask(@RequestBody DscGAInvokeParams params) {
-        return dscGeoAnalysisService.submitGATask(params);
+        return dscGeoAnalysisTaskService.submitGATask(params);
     }
 
     @GetMapping(value = "/getGATask/{taskId}")
     public CommonResult<DscGeoAnalysisExecTask> getTask(@PathVariable("taskId") String taskId) {
-        return dscGeoAnalysisService.getGATask(taskId);
+        return dscGeoAnalysisTaskService.getGATask(taskId);
     }
 
 }

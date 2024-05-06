@@ -42,5 +42,6 @@ secure:
       - "/dsc-systemMS/static/**"
       - "/dsc-systemMS/dsc-user/active/**"
       - "/dsc-systemMS/dsc-vector-service/getMvt/**"
+      - "/dsc-systemMS/dsc-raster-service/getRasterTiles/**"
       - "/dsc-systemMS/webSocket/**"
       # - "/dsc-systemMS/dsc-file-uploader/**"

@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.ExecCreateCmdResponse;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
@@ -19,6 +20,7 @@ import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.config.DockerClientConfig;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.PythonDockerConfig;
 import nnu.wyz.systemMS.config.SagaDockerConfig;
@@ -29,34 +31,38 @@ import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.ConvertSgrd2GeoTIFFDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
-import nnu.wyz.systemMS.model.dto.PublishTiffDTO;
+import nnu.wyz.systemMS.model.dto.PublishTiff2ImageDTO;
 import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.model.param.*;
 import nnu.wyz.systemMS.service.*;
 import nnu.wyz.systemMS.utils.*;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
+import okhttp3.*;
 import org.junit.jupiter.api.Test;
+import org.opengis.referencing.FactoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sun.net.www.http.HttpClient;
 
 import java.io.*;
-import java.nio.file.Files;
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * @description:
@@ -233,7 +239,7 @@ public class test {
         message.setTopic("test");
         message.setType("tool-execute");
         message.setText("hahaha");
-        webSocketServer.sendInfo("652a48fde4b01213a180bb5a", JSON.toJSONString(message));
+//        webSocketServer.sendInfo("652a48fde4b01213a180bb5a", JSON.toJSONString(message));
     }
 
     @Test
@@ -623,14 +629,16 @@ public class test {
 
     @Autowired
     private DscVectorSService dscVectorSService;
+
     @Test
-    void testGetVectorServiceList(){
+    void testGetVectorServiceList() {
         int pageIndex = 1;
         int pageSize = 4;
-        PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329","", pageIndex, pageSize);
+        PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329", "", pageIndex, pageSize);
         CommonResult<PageInfo<DscVectorServiceInfo>> vectorSList = dscVectorSService.getVectorServiceList(pageableDTO);
         System.out.println(vectorSList.getData());
     }
+
     @Autowired
     private DscUserSceneDAO dscUserSceneDAO;
     @Autowired
@@ -643,7 +651,7 @@ public class test {
     void testGetSceneListByTime() {
         int pageIndex = 1;
         int pageSize = 6;
-        PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329","", pageIndex, pageSize);
+        PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329", "", pageIndex, pageSize);
         CommonResult<PageInfo<DscScene>> sceneList = dscSceneService.getSceneList(pageableDTO);
         System.out.println("sceneList = " + sceneList);
         System.out.println(sceneList.getData());
@@ -708,104 +716,104 @@ public class test {
         log.info("************定时任务执行结束************");
     }
 
-    @Autowired
-    private DscGeoToolsDAO dscGeoToolsDAO;
+//    @Autowired
+//    private DscGeoToolsDAO dscGeoToolsDAO;
 
-    @Test
-    void testGeoTools() {
-        List<DscGeoTools> all = dscGeoToolsDAO.findAll();
-        System.out.println("all = " + all.get(0));
-        ArrayList<JSONObject> Data_Tools = new ArrayList<>();
-        ArrayList<JSONObject> GeomorphometricAnalysis = new ArrayList<>();
-        ArrayList<JSONObject> GISAnalysis = new ArrayList<>();
-        ArrayList<JSONObject> HydrologicalAnalysis = new ArrayList<>();
-        ArrayList<JSONObject> ImageAnalysis = new ArrayList<>();
-        ArrayList<JSONObject> LiDARAnalysis = new ArrayList<>();
-        ArrayList<JSONObject> MathematicalandStatisticalAnalysis = new ArrayList<>();
-        ArrayList<JSONObject> StreamNetworkAnalysis = new ArrayList<>();
-        for (DscGeoTools dscGeoTools : all) {
-            JSONObject tool = new JSONObject();
-            tool.put("id", dscGeoTools.getId());
-            tool.put("label", dscGeoTools.getName());
-            tool.put("isLeaf", true);
-            switch (dscGeoTools.getType()) {
-                case "Data Tools":
-                    Data_Tools.add(tool);
-                    break;
-                case "Geomorphometric Analysis":
-                    GeomorphometricAnalysis.add(tool);
-                    break;
-                case "GIS Analysis":
-                    GISAnalysis.add(tool);
-                    break;
-                case "Hydrological Analysis":
-                    HydrologicalAnalysis.add(tool);
-                    break;
-                case "Image Analysis":
-                    ImageAnalysis.add(tool);
-                    break;
-                case "LiDAR Analysis":
-                    LiDARAnalysis.add(tool);
-                    break;
-                case "Mathematical and Statistical Analysis":
-                    MathematicalandStatisticalAnalysis.add(tool);
-                    break;
-                case "Stream Network Analysis":
-                    StreamNetworkAnalysis.add(tool);
-                    break;
-            }
-        }
-        JSONObject data_tools = new JSONObject();
-        data_tools.put("id", IdUtil.objectId());
-        data_tools.put("label", "Data Tools");
-        data_tools.put("isLeaf", false);
-        data_tools.put("children", Data_Tools);
-        JSONObject geomorphometric_analysis = new JSONObject();
-        geomorphometric_analysis.put("id", IdUtil.objectId());
-        geomorphometric_analysis.put("label", "Geomorphometric Analysis");
-        geomorphometric_analysis.put("isLeaf", false);
-        geomorphometric_analysis.put("children", GeomorphometricAnalysis);
-        JSONObject gis_analysis = new JSONObject();
-        gis_analysis.put("id", IdUtil.objectId());
-        gis_analysis.put("label", "GIS Analysis");
-        gis_analysis.put("isLeaf", false);
-        gis_analysis.put("children", GISAnalysis);
-        JSONObject hydrological_analysis = new JSONObject();
-        hydrological_analysis.put("id", IdUtil.objectId());
-        hydrological_analysis.put("label", "Hydrological Analysis");
-        hydrological_analysis.put("isLeaf", false);
-        hydrological_analysis.put("children", HydrologicalAnalysis);
-        JSONObject image_analysis = new JSONObject();
-        image_analysis.put("id", IdUtil.objectId());
-        image_analysis.put("label", "Image Analysis");
-        image_analysis.put("isLeaf", false);
-        image_analysis.put("children", ImageAnalysis);
-        JSONObject lidar_analysis = new JSONObject();
-        lidar_analysis.put("id", IdUtil.objectId());
-        lidar_analysis.put("label", "LiDAR Analysis");
-        lidar_analysis.put("isLeaf", false);
-        lidar_analysis.put("children", LiDARAnalysis);
-        JSONObject mathematical_and_statistical_analysis = new JSONObject();
-        mathematical_and_statistical_analysis.put("id", IdUtil.objectId());
-        mathematical_and_statistical_analysis.put("label", "Mathematical and Statistical Analysis");
-        mathematical_and_statistical_analysis.put("isLeaf", false);
-        mathematical_and_statistical_analysis.put("children", MathematicalandStatisticalAnalysis);
-        JSONObject stream_network_analysis = new JSONObject();
-        stream_network_analysis.put("id", IdUtil.objectId());
-        stream_network_analysis.put("label", "Stream Network Analysis");
-        stream_network_analysis.put("isLeaf", false);
-        stream_network_analysis.put("children", StreamNetworkAnalysis);
-        ArrayList<JSONObject> all_tools = new ArrayList<>();
-        all_tools.add(data_tools);
-        all_tools.add(geomorphometric_analysis);
-        all_tools.add(gis_analysis);
-        all_tools.add(hydrological_analysis);
-        all_tools.add(image_analysis);
-        all_tools.add(lidar_analysis);
-        all_tools.add(mathematical_and_statistical_analysis);
-        all_tools.add(stream_network_analysis);
-        System.out.println(all_tools);
-    }
+//    @Test
+//    void testGeoTools() {
+//        List<DscGeoTools> all = dscGeoToolsDAO.findAll();
+//        System.out.println("all = " + all.get(0));
+//        ArrayList<JSONObject> Data_Tools = new ArrayList<>();
+//        ArrayList<JSONObject> GeomorphometricAnalysis = new ArrayList<>();
+//        ArrayList<JSONObject> GISAnalysis = new ArrayList<>();
+//        ArrayList<JSONObject> HydrologicalAnalysis = new ArrayList<>();
+//        ArrayList<JSONObject> ImageAnalysis = new ArrayList<>();
+//        ArrayList<JSONObject> LiDARAnalysis = new ArrayList<>();
+//        ArrayList<JSONObject> MathematicalandStatisticalAnalysis = new ArrayList<>();
+//        ArrayList<JSONObject> StreamNetworkAnalysis = new ArrayList<>();
+//        for (DscGeoTools dscGeoTools : all) {
+//            JSONObject tool = new JSONObject();
+//            tool.put("id", dscGeoTools.getId());
+//            tool.put("label", dscGeoTools.getName());
+//            tool.put("isLeaf", true);
+//            switch (dscGeoTools.getType()) {
+//                case "Data Tools":
+//                    Data_Tools.add(tool);
+//                    break;
+//                case "Geomorphometric Analysis":
+//                    GeomorphometricAnalysis.add(tool);
+//                    break;
+//                case "GIS Analysis":
+//                    GISAnalysis.add(tool);
+//                    break;
+//                case "Hydrological Analysis":
+//                    HydrologicalAnalysis.add(tool);
+//                    break;
+//                case "Image Analysis":
+//                    ImageAnalysis.add(tool);
+//                    break;
+//                case "LiDAR Analysis":
+//                    LiDARAnalysis.add(tool);
+//                    break;
+//                case "Mathematical and Statistical Analysis":
+//                    MathematicalandStatisticalAnalysis.add(tool);
+//                    break;
+//                case "Stream Network Analysis":
+//                    StreamNetworkAnalysis.add(tool);
+//                    break;
+//            }
+//        }
+//        JSONObject data_tools = new JSONObject();
+//        data_tools.put("id", IdUtil.objectId());
+//        data_tools.put("label", "Data Tools");
+//        data_tools.put("isLeaf", false);
+//        data_tools.put("children", Data_Tools);
+//        JSONObject geomorphometric_analysis = new JSONObject();
+//        geomorphometric_analysis.put("id", IdUtil.objectId());
+//        geomorphometric_analysis.put("label", "Geomorphometric Analysis");
+//        geomorphometric_analysis.put("isLeaf", false);
+//        geomorphometric_analysis.put("children", GeomorphometricAnalysis);
+//        JSONObject gis_analysis = new JSONObject();
+//        gis_analysis.put("id", IdUtil.objectId());
+//        gis_analysis.put("label", "GIS Analysis");
+//        gis_analysis.put("isLeaf", false);
+//        gis_analysis.put("children", GISAnalysis);
+//        JSONObject hydrological_analysis = new JSONObject();
+//        hydrological_analysis.put("id", IdUtil.objectId());
+//        hydrological_analysis.put("label", "Hydrological Analysis");
+//        hydrological_analysis.put("isLeaf", false);
+//        hydrological_analysis.put("children", HydrologicalAnalysis);
+//        JSONObject image_analysis = new JSONObject();
+//        image_analysis.put("id", IdUtil.objectId());
+//        image_analysis.put("label", "Image Analysis");
+//        image_analysis.put("isLeaf", false);
+//        image_analysis.put("children", ImageAnalysis);
+//        JSONObject lidar_analysis = new JSONObject();
+//        lidar_analysis.put("id", IdUtil.objectId());
+//        lidar_analysis.put("label", "LiDAR Analysis");
+//        lidar_analysis.put("isLeaf", false);
+//        lidar_analysis.put("children", LiDARAnalysis);
+//        JSONObject mathematical_and_statistical_analysis = new JSONObject();
+//        mathematical_and_statistical_analysis.put("id", IdUtil.objectId());
+//        mathematical_and_statistical_analysis.put("label", "Mathematical and Statistical Analysis");
+//        mathematical_and_statistical_analysis.put("isLeaf", false);
+//        mathematical_and_statistical_analysis.put("children", MathematicalandStatisticalAnalysis);
+//        JSONObject stream_network_analysis = new JSONObject();
+//        stream_network_analysis.put("id", IdUtil.objectId());
+//        stream_network_analysis.put("label", "Stream Network Analysis");
+//        stream_network_analysis.put("isLeaf", false);
+//        stream_network_analysis.put("children", StreamNetworkAnalysis);
+//        ArrayList<JSONObject> all_tools = new ArrayList<>();
+//        all_tools.add(data_tools);
+//        all_tools.add(geomorphometric_analysis);
+//        all_tools.add(gis_analysis);
+//        all_tools.add(hydrological_analysis);
+//        all_tools.add(image_analysis);
+//        all_tools.add(lidar_analysis);
+//        all_tools.add(mathematical_and_statistical_analysis);
+//        all_tools.add(stream_network_analysis);
+//        System.out.println(all_tools);
+//    }
 
     @Test
     void testPWD() {
@@ -813,32 +821,7 @@ public class test {
         System.out.println("pwd.getData() = " + pwd.getData());
     }
 
-    @Autowired
-    DscGeoToolsService dscGeoToolsService;
     static Object lock = new Object();
-
-    @Test
-    void testAsync() throws InterruptedException {
-        DscInvokeToolParams dscInvokeToolParams = new DscInvokeToolParams();
-        dscInvokeToolParams.setToolId("656dcc54ccc545e844ef6071");
-        dscInvokeToolParams.setUserId("652a48fde4b01213a180bb5a");
-        DscToolRawParams p1 = new DscToolRawParams("Input DEM", "657ab0bae4b0f9826e8f799b", null);
-        DscToolRawParams p2 = new DscToolRawParams("Output File", "output.tif", "adb52290-36e4-487c-96eb-736d54351fc8");
-        DscToolRawParams p3 = new DscToolRawParams("Z Conversion Factor", null, null);
-        ArrayList<DscToolRawParams> dscToolRawParams = new ArrayList<>();
-        dscToolRawParams.add(p1);
-        dscToolRawParams.add(p2);
-        dscToolRawParams.add(p3);
-        dscInvokeToolParams.setToolRawParams(dscToolRawParams);
-        CommonResult<DscGeoToolExecTask> stringCommonResult = dscGeoToolsService.initToolExec(dscInvokeToolParams);
-        System.out.println("stringCommonResult = " + stringCommonResult.getData());
-        while (true) {
-            synchronized (lock) {
-                // 除非有线程唤醒他 lock.notify();
-                lock.wait();
-            }
-        }
-    }
 
     @Autowired
     private SagaDockerConfig sagaDockerConfig;
@@ -906,11 +889,12 @@ public class test {
 //        String physicalPath = dscCatalogService.getPhysicalPath("8174f833-2a40-4cde-8fb5-20ac26f3174f");
 //        System.out.println("physicalPath = " + physicalPath);
     }
+
     @Test
     void testWinDocker() throws InterruptedException {
         String[] arr = new String[]{"ip", "addr"};
         DockerClient dockerClient = sagaDockerConfig.getDockerClient();
-        ExecCreateCmdResponse exec = dockerClient.execCreateCmd("63090661c87dbaf295404706869b373e48de2554ccc2f83026ae425634bb42af")
+        ExecCreateCmdResponse exec = dockerClient.execCreateCmd("2785cdc9e39cafece987c54ad8ee4c13b19e3e2905bfa1f11aeb8388bad2973e")
                 .withAttachStdout(true)
                 .withAttachStderr(true)
                 .withCmd(arr)
@@ -960,7 +944,7 @@ public class test {
     }
 
     @Autowired
-    private DscGeoAnalysisService dscGeoAnalysisService;
+    private DscGeoAnalysisTaskService dscGeoAnalysisTaskService;
 
     @Test
     void testGA() throws InterruptedException {
@@ -979,7 +963,7 @@ public class test {
         options.put("Arc Vertex Distance [Degree]", 5);
         dscGAInvokeParams.setInput(input);
         dscGAInvokeParams.setOptions(options);
-        CommonResult<DscGeoAnalysisExecTask> dscGeoAnalysisExecTaskCommonResult = dscGeoAnalysisService.submitGATask(dscGAInvokeParams);
+        CommonResult<DscGeoAnalysisExecTask> dscGeoAnalysisExecTaskCommonResult = dscGeoAnalysisTaskService.submitGATask(dscGAInvokeParams);
         System.out.println(dscGAInvokeParams);
         while (true) {
             synchronized (lock) {
@@ -995,13 +979,13 @@ public class test {
 
     @Test
     void testPublishTiff() {
-        PublishTiffDTO publishTiffDTO = new PublishTiffDTO();
-        publishTiffDTO.setUserId("652a5e61e4b012905c858bea");
-        publishTiffDTO.setFileId("65b211ffe4b08e2b13be0131");
-        publishTiffDTO.setName("test");
-        publishTiffDTO.setOutputCatalogId("d4c1b985-cce4-48bc-925b-71a0d7ba0545");
-        publishTiffDTO.setMethod("scene");
-        dscRasterSService.publishTiff2RasterS(publishTiffDTO);
+        PublishTiff2ImageDTO publishTiff2ImageDTO = new PublishTiff2ImageDTO();
+        publishTiff2ImageDTO.setUserId("652a5e61e4b012905c858bea");
+        publishTiff2ImageDTO.setFileId("65b211ffe4b08e2b13be0131");
+        publishTiff2ImageDTO.setName("test");
+        publishTiff2ImageDTO.setOutputCatalogId("d4c1b985-cce4-48bc-925b-71a0d7ba0545");
+        publishTiff2ImageDTO.setMethod("scene");
+        dscRasterSService.publishTiff2RasterS(publishTiff2ImageDTO);
     }
 
     @Test
@@ -1066,10 +1050,271 @@ public class test {
         List<io.minio.messages.Bucket> buckets = minioClient.listBuckets();
         buckets.forEach(bucket -> System.out.println(bucket.name()));
     }
+
     @Test
     void testCompressImage() throws IOException {
         File file = new File("F:\\ea6c7543-8090-494d-ad40-a74b05e5417a.png");
         MultipartFile file1 = ImageUtil.compressImageFile(file);
         System.out.println(file1.getSize());
+    }
+
+    @Test
+    void testGeoTools() throws IOException, FactoryException {
+        GeoToolsUtil.init("E:\\\\GeoserverTestData\\\\caijianhou2.tif");
+        String tiffEpsgCode = GeoToolsUtil.getTiffEpsgCode();
+        System.out.println("tiffEpsgCode = " + tiffEpsgCode);
+        List<Double> tiffBbox = GeoToolsUtil.getTiffBbox();
+        System.out.println("tiffBbox = " + tiffBbox);
+//        File file = new File("E:\\GeoserverTestData\\caijianhou2.tif");
+//        AbstractGridFormat format = GridFormatFinder.findFormat( file );
+//        GridCoverage2DReader reader = format.getReader( file );
+//        GridCoverage2D coverage = reader.read(null);
+//        CoordinateReferenceSystem crs = coverage.getCoordinateReferenceSystem2D();
+//        String crsWKTStr = crs.toWKT();
+//        Map<String, String> map = extractEPSG(crsWKTStr);
+//        System.out.println("map = " + map.get("EPSG"));
+        //resample参数修改
+//        Hints hints = new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
+//        CRSAuthorityFactory factory = ReferencingFactoryFinder.getCRSAuthorityFactory("EPSG", hints);
+//        CoordinateReferenceSystem new_crs = factory.createCoordinateReferenceSystem("EPSG:4326");
+//        GridCoverage2D newCoverage2D = (GridCoverage2D) Operations.DEFAULT.resample(coverage, new_crs);
+//        Envelope2D envelope2D = newCoverage2D.getEnvelope2D();
+//        double maxX = envelope2D.getMaxX();
+//        double minX = envelope2D.getMinX();
+//        double maxY = envelope2D.getMaxY();
+//        double minY = envelope2D.getMinY();
+//        final File writeFile =
+//                new File(
+//                        new StringBuilder("E:/GeoserverTestData/output/")
+//                                .append(File.separatorChar)
+//                                .append(newCoverage2D.getName().toString())
+//                                .append(".png")
+//                                .toString());
+//        final GridCoverageWriter writer = format.getWriter(writeFile);
+//
+//        try {
+//            writer.write(newCoverage2D, null);
+//        } catch (IOException ignored) {
+//        } finally {
+//            try {
+//                writer.dispose();
+//            } catch (Throwable ignored) {
+//            }
+//        }
+//        String s = crs.toWKT();
+//        System.out.println("crs = " + s);
+//        Envelope env = coverage.getEnvelope();
+//        System.out.println("env = " + env);
+//        RenderedImage image = coverage.getRenderedImage();
+    }
+
+    public static Map<String, String> extractEPSG(String crsWKTStr) {
+        Map<String, String> map = new HashMap<>();
+        String pattern = "AUTHORITY\\[\"(\\w+)\",\"(\\d+)\"\\]";
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(crsWKTStr);
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            String value = matcher.group(2);
+            map.put(key, value);
+        }
+        return map;
+    }
+
+    @Autowired
+    private DscComputeContainerInstanceDAO dscComputeContainerInstanceDAO;
+
+    @Test
+    void testInitComputeContainer() throws InterruptedException {
+        /*
+         * 初始化计算容器
+         * 1、
+         */
+//        pythonDockerConfig.getDockerClient().startContainerCmd("377c9eca57efed5b016247e8083b28ff6ed3178d23d06ff979acd9a7373917ff").exec();
+
+//        HostConfig hostConfig = new HostConfig();
+//        Bind bind = new Bind("/home/yzwang/dsc/dsc-minio/data",new Volume("/home/minio-data"));
+//        hostConfig.setBinds(bind);
+        CreateContainerResponse testComputeContainer = pythonDockerConfig.getDockerClient().createContainerCmd("fangzhuom/dsc-tools:v1.0.0")
+//                .withHostConfig(hostConfig)
+//                .withCmd("init")
+                .withName("testComputeContainer")
+                .exec();
+        dockerClientConfig.getDockerClient().startContainerCmd(testComputeContainer.getId()).exec();
+
+//        InspectContainerResponse test = pythonDockerConfig.getDockerClient().inspectContainerCmd("ef28e4eee22503de5cd9252c69ba031d8a1f37f2b47aaa90e9c90b2f5810af4a").exec();
+//        String image = test.getConfig().getImage();
+//        System.out.println("image = " + image);
+//        String targetImage = "yzwang98/dsc-saga-module:saga8.2.0";
+//        List<Image> images = pythonDockerConfig.getDockerClient().listImagesCmd().exec();
+//        List<String> collect = images.stream().map(image -> image.getRepoTags()).map(repoTags -> Arrays.toString(repoTags)).filter(repoTagArrStr -> repoTagArrStr.contains(targetImage)).collect(Collectors.toList());
+//        if(collect.size() == 0) {    // 不存在镜像
+//            try {
+//                pythonDockerConfig.getDockerClient().pullImageCmd(targetImage).start().awaitCompletion();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        // 拉取私人仓库镜像
+//        AuthConfig authConfig = new AuthConfig()
+//                .withUsername("wyz980903@163.com")
+//                .withPassword("Ninja19981022..")
+//                .withEmail("wyz980903@1623.com");
+//        pythonDockerConfig.getDockerClient().pullImageCmd("yzwang98/dsc.minio:latest")
+//                .withAuthConfig(authConfig)
+//                .start().awaitCompletion();
+
+    }
+
+    @Autowired
+    private DockerClientConfig dockerClientConfig;
+
+    @Test
+    void testFilterLocalImages() {
+        List<Image> localImages = dockerClientConfig.getDockerClient().listImagesCmd().withShowAll(true).exec();
+        ArrayList<String> localImageNames = new ArrayList<>();
+        localImages.stream().map(Image::getRepoTags).filter(Objects::nonNull).flatMap(Arrays::stream).forEach(localImageNames::add); // 将每个元素添加到 localImageIds
+        localImageNames.forEach(System.out::println);
+    }
+
+    @Test
+    void testOllama() {
+        String question = "Why does the sky is blue?";
+        String[] cmds = {"curl", "-X", "POST", "http://localhost:11434/api/generate", "-d", "{\\\"model\\\": \\\"llama2\\\", \\\"prompt\\\":\\\"" + question + "\\\"}", "-H", "Content-Type: application/json"};
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command(cmds);
+        Process process;
+        try {
+            process = pb.start();
+            BufferedReader bf = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            StringBuilder output = new StringBuilder();
+            while ((line = bf.readLine()) != null) {
+//                JSONObject jsonObject = JSON.parseObject(line);
+//                if((boolean)jsonObject.get("done")) {
+//                    break;
+//                }
+//                System.out.println(jsonObject.get("response"));
+                System.out.println(line);
+            }
+//            bf.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static final MediaType JSON = MediaType.get("application/json");
+
+    @Test
+    void testOllama2() {
+        String question = "{'tools': [{'id': '864b93fa-c97d-7883-3382-71072c4fac94', 'name': '15-minutes living area model', 'params': {'options': [{'name': 'Routing', 'description': 'mode of travel, 0 for driving, 1 for driving-traffic, 2 for walking, 3 for cycling', 'defaultVal': '2'}, {'name': 'Contour', 'description': 'when coutour type is minutes, it represents time; when coutour type is meters, it represents distance.', 'defaultVal': '20'}, {'name': 'Countour type', 'description': 'measurement, 0 for minutes, 1 for meters', 'defaultVal': '0'}], 'inputs': [{'name': 'District', 'description': 'district data in study area.'}, {'name': 'Community', 'description': 'community data in study area.'}, {'name': 'POIs', 'description': 'POI data in study area.'}]}}]}";
+        String data = "{\"model\": \"llama3:8b\", \"prompt\": \"" + question + "\", \"system\": \"You are a model management assistant and have been asked to describe the model to the user based on the given data.\", \"options\": {\"temperature\": 0.1}}";
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        // 请求体 根据自己的需求更换get、post请求及请求变量
+        RequestBody body = RequestBody.create(data, JSON);
+        Request request = new Request.Builder()
+                .url("http://172.21.252.160:11434/api/generate")
+                .method("POST", body)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            //执行成功
+            if (response.isSuccessful()) {
+                InputStream inputStream = response.body().byteStream();
+                BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                StringBuilder output = new StringBuilder();
+                while ((line = bf.readLine()) != null) {
+                    JSONObject jsonObject = com.alibaba.fastjson.JSON.parseObject(line);
+                    System.out.println(line);
+                    output.append(jsonObject.get("response"));
+                }
+                bf.close();
+                System.out.println(output);
+            } else {
+                System.out.println(response.body().string());
+            }
+        } catch (IOException e) {
+            // 处理IO异常
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testPythonOllama() {
+        String pyPath = "F:\\数据场景容器相关\\Code_sz_0419\\Code_sz_0419\\main_for_one_chat.py";
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("python", pyPath, "-MODEL", "llama3:8b", "-IDENTIFIER", "2e05fce0-34bf-4e5e-a134-1fd567153a53", "-PROMPT", "I would like to do a simulation of NanJing's 15-minute living area, please let me know the available models.");
+        Process pro;
+        BufferedReader bf = null;
+        try {
+            pro = processBuilder.start();
+            bf = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            while ((line = bf.readLine()) != null) {
+                System.out.println(line);
+                // websocket
+                Message message = new Message();
+                message.setFrom("system")
+                        .setTo("1132691603@qq.com")
+                        .setType("ai-chat")
+                        .setTopic("response")
+                        .setText(line)
+                        .setIsRead(false)
+                        .setIsFinished(false);
+                webSocketServer.sendInfo("1132691603@qq.com", JSONObject.toJSONString(message));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (bf != null) {
+                try {
+                    bf.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+    @Test
+    void testDockerOllama() {
+        String containerId = "e3ea9f45b1f04df523b26b12ceed1dfcd50a0ee4685c7ef52ef617d62df5c340";
+        DockerClient dockerClient = dockerClientConfig.getDockerClient();
+        ExecCreateCmdResponse exec = dockerClient.execCreateCmd(containerId)
+                .withCmd("python", "main_for_one_chat.py", "-MODEL", "llama3:8b", "-IDENTIFIER", "2e05fce0-34bf-4e5e-a134-1fd567153a53", "-PROMPT", "I would like to do a simulation of NanJing's 15-minute living area, please let me know the available models.")
+                .withAttachStdout(true)
+                .withAttachStderr(true)
+                .exec();
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream stderr = new PrintStream(baos);
+        try {
+            dockerClient.execStartCmd(exec.getId())
+                    .exec(new ExecStartResultCallback(stdout,stderr) {
+                        @Override
+                        public void onNext(Frame frame) {
+                            System.out.println(frame.toString().replace("STDOUT: ", ""));
+                            super.onNext(frame);
+                        }
+                    }).awaitCompletion();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            stderr.close();
+            try {
+                baos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+    @Test
+    void testGetCatalogByRootAndFileId() {
+//        DscCatalog dscCatalogById = dscCatalogDAO.findDscCatalogById("e44e9f12-3ea6-4146-985c-7415b4e85732");
+//        System.out.println(dscCatalogById.toString());
+        CommonResult<String> catalogIdByFileIdAndRoot = dscCatalogService.getCatalogIdByFileIdAndRoot("e44e9f12-3ea6-4146-985c-7415b4e85732", "6628710de4b04d5bc14a80d0");
+        System.out.println(catalogIdByFileIdAndRoot.getData());
     }
 }

@@ -348,4 +348,40 @@ public class DscCatalogServiceIml implements DscCatalogService {
         }
         return path.toString();
     }
+
+    @Override
+    public CommonResult<String> getCatalogIdByFileIdAndRoot(String rootCatalog, String fileId) {
+        return CommonResult.success(dfs(rootCatalog, fileId), "获取成功");
+    }
+
+    String dfs(String catalog, CatalogChildrenDTO child, String targetId) {
+        if (child.getId().equals(targetId)) {
+            return catalog;
+        }
+        if (child.getType().equals("folder")) {
+            DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogById(child.getId());
+            for (CatalogChildrenDTO childrenDTO : dscCatalog.getChildren()) {
+                String res = dfs(child.getId(), childrenDTO, targetId);
+                if (res != null) {
+                    return res;
+                }
+            }
+        }
+        return null;
+    }
+    String dfs(String catalog, String targetId) {
+        DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogById(catalog);
+        for (CatalogChildrenDTO childrenDTO : dscCatalog.getChildren()) {
+            if (childrenDTO.getId().equals(targetId)) {
+                return catalog;
+            }
+            if (childrenDTO.getType().equals("folder")) {
+                String res = dfs(childrenDTO.getId(), targetId);
+                if (res != null) {
+                    return res;
+                }
+            }
+        }
+        return null;
+    }
 }

@@ -40,6 +40,7 @@ public class InitMinioListener implements ApplicationListener<ContextRefreshedEv
         String sceneThumbnailsBucketPolicy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getSceneThumbnailsBucket() + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:PutObject\",\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListMultipartUploadParts\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getSceneThumbnailsBucket() + "/*\"]}]}";
         String avatarBucketPolicy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getAvatarBucket() + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:PutObject\",\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListMultipartUploadParts\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getAvatarBucket() + "/*\"]}]}";
         String gaOutputBucketPolicy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getGaOutputBucket() + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:PutObject\",\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListMultipartUploadParts\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getGaOutputBucket() + "/*\"]}]}";
+        String rasterTilesBucketPolicy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getRasterTilesBucket() + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:PutObject\",\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListMultipartUploadParts\"],\"Resource\":[\"arn:aws:s3:::" + minioConfig.getRasterTilesBucket() + "/*\"]}]}";
         MinioClient minioClient = MinioClient.builder()
                 .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
                 .endpoint(minioConfig.getEndpoint())
@@ -48,11 +49,13 @@ public class InitMinioListener implements ApplicationListener<ContextRefreshedEv
         boolean isSceneThumbnailsBucketExist;
         boolean isAvatarBucketExist;
         boolean isGaOutputBucketExist;
+        boolean isRasterTilesBucketExist;
         try {
             isFileBucketExist = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.getBucketName()).build());
             isSceneThumbnailsBucketExist = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.getSceneThumbnailsBucket()).build());
             isAvatarBucketExist = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.getAvatarBucket()).build());
             isGaOutputBucketExist = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.getGaOutputBucket()).build());
+            isRasterTilesBucketExist = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.getRasterTilesBucket()).build());
             if (!isFileBucketExist) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioConfig.getBucketName()).build());
                 minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(minioConfig.getBucketName()).config(fileBucketPolicy).build());
@@ -72,6 +75,11 @@ public class InitMinioListener implements ApplicationListener<ContextRefreshedEv
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioConfig.getGaOutputBucket()).build());
                 minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(minioConfig.getGaOutputBucket()).config(gaOutputBucketPolicy).build());
                 log.info("创建模型输出桶: " + minioConfig.getGaOutputBucket());
+            }
+            if (!isRasterTilesBucketExist) {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioConfig.getRasterTilesBucket()).build());
+                minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(minioConfig.getRasterTilesBucket()).config(rasterTilesBucketPolicy).build());
+                log.info("创建影像瓦片桶: " + minioConfig.getRasterTilesBucket());
             }
             log.info("*******初始化minio完成*******");
         } catch (ErrorResponseException | InternalException | InsufficientDataException | InvalidKeyException |

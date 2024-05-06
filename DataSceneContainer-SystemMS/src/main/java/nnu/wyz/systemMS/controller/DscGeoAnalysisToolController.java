@@ -1,11 +1,14 @@
 package nnu.wyz.systemMS.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
 import nnu.wyz.systemMS.model.dto.ConvertSgrd2GeoTIFFDTO;
 import nnu.wyz.systemMS.service.DscGeoAnalysisToolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @description:
@@ -27,6 +30,11 @@ public class DscGeoAnalysisToolController {
     @PostMapping(value = "/convertSgrd2Geotiff")
     public CommonResult<String> convertSgrd2Geotiff(@RequestBody ConvertSgrd2GeoTIFFDTO convertSgrd2GeoTIFFDTO) {
         return dscGeoAnalysisToolService.convertSgrd2Geotiff(convertSgrd2GeoTIFFDTO);
+    }
+
+    @GetMapping(value = "/getGAToolList")
+    public CommonResult<List<JSONObject>> getGAToolList() {
+        return dscGeoAnalysisToolService.getGeoAnalysisToolList();
     }
 
 }

@@ -3,6 +3,7 @@ frontendIp: localhost:8889/dsc-app
 sagaDockerServer: 119.45.181.127/dsc-wps/       #部署要改
 pythonDockerServer: 172.21.213.86        #部署要改
 dockerCert: D:/docker-2375-cert
+deployHostname: ${DEPLOY_HOSTNAME:localhost}
 
 spring:
   web:
@@ -15,14 +16,14 @@ spring:
   data:
     mongodb:
       host: ${deployIp}
-      port: 17016
+      port: 17017
       authentication-database: admin
       database: dsc
       username: dsc
       password: dsc123
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${deployIp}:15431/dsc_postdb
+    url: jdbc:postgresql://${deployIp}:15432/dsc_postdb
     username: dsc
     password: dsc123
   mail:
@@ -32,8 +33,8 @@ spring:
     password: uxkmfprmynvhdeai
   redis:                          #redis存jwt黑名单
     host: ${deployIp}
-    port: 16378
-#    password: ninja980903
+    port: 16379
+    password: dsc123
     jedis:
       pool:
         max-active: 200
@@ -47,6 +48,7 @@ spring:
     static-path-pattern: /static/**
 
 mvt_url: ${MVT_SOURCE_URL:http://localhost:9527}
+tms_root_url: ${TMS_ROOT_URL:http://localhost:9527}
 gateway_addr: http://localhost:9527   # gateway
 frontend_url: http://${frontendIp}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
@@ -58,10 +60,15 @@ scriptPath: /home/script/
 shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
 shp2pgsqlWin: ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:D:\majorSoftware\PostgreSQL\10\bin}\psql.exe -h ${deployIp} -p 15431 -U postgres -d dsc_postdb
 pg_password: dsc123
+project_base_path: ${PROJECT_BASE_PATH:D:/dsc-systemMS}
+docker_cert_path: ${DOCKER_CERT_PATH:D:/docker-2375-cert}
+ollama_container: ${OLLAMA_CONTAINER:dsc-ollama}
+docker_local_host: ${DOCKER_LOCAL_HOST:172.21.213.86}
+docker_local_port: ${DOCKER_LOCAL_PORT:2375}
 
 docker:
-  docker_url: ${DOCKER_URL:119.45.181.127:2375}
-  docker_tls_verify: ${DOCKER_TLS_VERIFY:yes}
+  docker_url: ${DOCKER_LOCAL_HOST:172.21.213.86}:${DOCKER_LOCAL_PORT:2375}
+  docker_tls_verify: ${DOCKER_TLS_VERIFY:no}
   docker_cert_path: ${DOCKER_CERT_PATH:D:\\docker-2375-cert\\}
   docker_api_version: ${DOCKER_API_VERSION:1.43}
 
@@ -75,4 +82,4 @@ minio:
   sceneThumbnailsBucket: scene-thumbnails
   avatarBucket: avatar
   gaOutputBucket: dsc-ga-output
-  pyFilesBucket: py-files
+  rasterTilesBucket: raster-tiles

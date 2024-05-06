@@ -7,15 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.PythonDockerConfig;
-import nnu.wyz.systemMS.dao.DscFileDAO;
-import nnu.wyz.systemMS.dao.DscRasterSDAO;
-import nnu.wyz.systemMS.dao.DscUserRasterSDAO;
+import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.dto.FalseColorCompositeDTO;
 import nnu.wyz.systemMS.model.dto.RenderTifDTO;
-import nnu.wyz.systemMS.model.entity.DscFileInfo;
-import nnu.wyz.systemMS.model.entity.DscRasterService;
-import nnu.wyz.systemMS.model.entity.DscUserRasterS;
+import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.service.DscTifService;
+import nnu.wyz.systemMS.utils.DockerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,9 +52,17 @@ public class DscTifServiceIml implements DscTifService {
     @Value("${scriptPath}")
     private String scriptPath;
 
-    private static final String GDAL_CONTAINER_ID = "d00338b7a11e81935cf3d815284fb7316d928880ce3a999c7d20ed494a1cbdf1";
+    private String GDAL_CONTAINER_ID;
 
     private String pyPath;
+
+    @Autowired
+    private DscComputeContainerImageDAO dscComputeContainerImageDAO;
+
+    @Autowired
+    private DscComputeContainerInstanceDAO dscComputeContainerInstanceDAO;
+
+    private static final String TOOL_CATEGORY = "System Tool";
 
     @PostConstruct
     public void init() {
@@ -78,8 +83,19 @@ public class DscTifServiceIml implements DscTifService {
         DscFileInfo dscFileInfo = byId.get();
         String tiffPath = rootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
         String[] execCommand = {"python", pyPath, tiffPath, "get_band_count"};
-        DockerClient dockerClient = pythonDockerConfig.getDockerClient();
-        ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(GDAL_CONTAINER_ID)
+        Optional<DscComputeContainerImage> optional = dscComputeContainerImageDAO.findByIdentifier(TOOL_CATEGORY);
+        if (!optional.isPresent()) {
+            return CommonResult.failed("无可用计算容器镜像！");
+        }
+        List<DscComputeContainerInstance> allAvailableImages = dscComputeContainerInstanceDAO.findAllByImageId(optional.get().getId());
+        if (allAvailableImages.isEmpty()) {
+            return CommonResult.failed("无可用计算容器实例！");
+        }
+        // TODO: 容器调度
+        DscComputeContainerInstance dscComputeContainerInstance = allAvailableImages.get(0);
+        // TODO: 检查计算容器实例健康状态
+        DockerClient dockerClient = DockerUtil.getDockerClient(dscComputeContainerInstance);
+        ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(dscComputeContainerInstance.getContainerId())
                 .withAttachStdout(true)
                 .withAttachStderr(true)
                 .withCmd(execCommand)
@@ -166,8 +182,19 @@ public class DscTifServiceIml implements DscTifService {
 
     private CommonResult<String> processTifRender(String[] execCommand) {
         //  直接向原png文件物理路径重新输出新png，其他信息不变
-        DockerClient dockerClient = pythonDockerConfig.getDockerClient();
-        ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(GDAL_CONTAINER_ID)
+        Optional<DscComputeContainerImage> optional = dscComputeContainerImageDAO.findByIdentifier(TOOL_CATEGORY);
+        if (!optional.isPresent()) {
+            return CommonResult.failed("无可用计算容器镜像！");
+        }
+        List<DscComputeContainerInstance> allAvailableImages = dscComputeContainerInstanceDAO.findAllByImageId(optional.get().getId());
+        if (allAvailableImages.isEmpty()) {
+            return CommonResult.failed("无可用计算容器实例！");
+        }
+        // TODO: 容器调度
+        DscComputeContainerInstance dscComputeContainerInstance = allAvailableImages.get(0);
+        // TODO: 检查计算容器实例健康状态
+        DockerClient dockerClient = DockerUtil.getDockerClient(dscComputeContainerInstance);
+        ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(dscComputeContainerInstance.getContainerId())
                 .withAttachStdout(true)
                 .withAttachStderr(true)
                 .withCmd(execCommand)

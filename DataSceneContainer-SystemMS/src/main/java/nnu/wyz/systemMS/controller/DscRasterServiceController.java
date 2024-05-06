@@ -3,15 +3,16 @@ package nnu.wyz.systemMS.controller;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishImageDTO;
-import nnu.wyz.systemMS.model.dto.PublishTiffDTO;
+import nnu.wyz.systemMS.model.dto.PublishTiff2ImageDTO;
+import nnu.wyz.systemMS.model.dto.PublishTiff2TMSDTO;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
-import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscRasterSService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -32,8 +33,13 @@ public class DscRasterServiceController {
     }
 
     @PostMapping(value = "/publishTiff2ImgRasterS")
-    public CommonResult<String> publishTiff2ImgRasterS(@RequestBody PublishTiffDTO publishTiffDTO) {
-        return dscRasterService.publishTiff2RasterS(publishTiffDTO);
+    public CommonResult<String> publishTiff2ImgRasterS(@RequestBody PublishTiff2ImageDTO publishTiff2ImageDTO) {
+        return dscRasterService.publishTiff2RasterS(publishTiff2ImageDTO);
+    }
+
+    @PostMapping(value = "/publishTiff2TMS")
+    public CommonResult<String> publishTiff2TMS(@RequestBody PublishTiff2TMSDTO publishTiff2TMSDTO) {
+        return dscRasterService.publishTiff2TMS(publishTiff2TMSDTO);
     }
 
     @GetMapping(value = "/getRasterSList/{userId}/{pageSize}/{pageIndex}")
@@ -54,5 +60,15 @@ public class DscRasterServiceController {
     @GetMapping(value = "/getRasterSListByFileId/{fileId}")
     public CommonResult<List<DscRasterService>> getRasterSListByFileId(@PathVariable(value = "fileId") String fileId) {
         return dscRasterService.getRasterServiceListByFileId(fileId);
+    }
+
+    @GetMapping(value = "/getRasterTiles/{userId}/{rasterSId}/{z}/{x}/{y}.png")
+    public void getRasterTiles(@PathVariable(value = "z") Integer z,
+                               @PathVariable(value = "x") Integer x,
+                               @PathVariable(value = "y") Integer y,
+                               @PathVariable(value = "userId") String userId,
+                               @PathVariable(value = "rasterSId") String rasterSId,
+                               HttpServletResponse response) {
+        dscRasterService.getRasterTiles(z, x, y, userId, rasterSId, response);
     }
 }

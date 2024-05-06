@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS.model.DscGeoAnalysis;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.util.List;
@@ -20,5 +21,7 @@ public class DscGARawParams {
 //    private List<DscGAInvokeInnerParams> output;
 
     private Map<String, Object> options;
+
+    private List<JSONObject> outputs;
 
 }

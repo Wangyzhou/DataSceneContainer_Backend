@@ -7,6 +7,7 @@ spring:
     resources:
       static-locations: classpath:/resources/, classpath:/static/
   servlet:
+
     multipart:
       max-file-size: 2048MB     #单文件不超过2G
       max-request-size: 5120MB    #所有文件不超过5G
@@ -16,13 +17,13 @@ spring:
       port: 27017
       authentication-database: admin
       database: dsc
-      username: dsc
-      password: dsc123
+      username: ${MONGO_INITDB_ROOT_USERNAME:dsc}
+      password: ${MONGO_INITDB_ROOT_PASSWORD:dsc123}
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgres-db:5432/dsc_postdb
+    url: jdbc:postgresql://postgres-db:5432/${POSTGRES_DB:dsc_postdb}
     username: postgres
-    password: dsc123
+    password: ${POSTGRES_PASSWORD:dsc123}
     hikari:
       connection-timeout: 60000
   mail:
@@ -40,7 +41,7 @@ spring:
   redis:                          #redis存jwt黑名单
     host: redis-cache
     port: 6379
-    password: dsc123
+    password: ${REDIS_PASSWORD:dsc123}
     jedis:
       pool:
         max-active: 200
@@ -54,6 +55,7 @@ spring:
     static-path-pattern: /static/**
 
 mvt_url: ${MVT_SOURCE_URL:http://localhost:9527}
+tms_root_url: ${TMS_ROOT_URL:http://localhost:9527}
 gateway_addr: http://gateway:9527
 frontend_url: ${APP_SOURCE_URL:http://localhost:9192}/home/activateresult/{0}
 user_active_url: /dsc-systemMS/dsc-user/active/{0}
@@ -64,23 +66,26 @@ fileTempPathWin: ${MINIO_HOME:C:\Users\Administrator\Documents\minio-data}\temp\
 scriptPath: /home/script/
 shp2pgsql: shp2pgsql -I -s {0} -W {1} {2} {3} | psql -h postgres-db -p 5432 -U postgres -d dsc_postdb
 shp2pgsqlWin: ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\shp2pgsql.exe -I -s {0} -W {1} {2} {3} | ${PG_HOME:C:\Program Files (x86)\PostgreSQL\12\bin}\psql.exe -h ${deployIp} -p 5432 -U postgres -d dsc_postdb
-pg_password: ${PG_PASSWORD:dsc123}
-
+pg_password: ${POSTGRES_PASSWORD:dsc123}
+docker_cert_path: ${DOCKER_CERT_PATH}
+ollama_container: ${OLLAMA_CONTAINER}
+docker_local_host: ${DOCKER_LOCAL_HOST:172.21.213.86}
+docker_local_port: ${DOCKER_LOCAL_PORT:2375}
 # docker相关
 docker:
-  docker_url: ${DOCKER_URL}
+  docker_url: ${DOCKER_LOCAL_HOST}:${DOCKER_LOCAL_PORT}
   docker_tls_verify: ${DOCKER_TLS_VERIFY:no}
-  docker_cert_path: ${DOCKER_CERT_PATH:none}
+  docker_cert_path: ${DOCKER_CERT_PATH:none}/${DOCKER_LOCAL_HOST}/
   docker_api_version: ${DOCKER_API_VERSION}
 
 minioEndpoint: http://124.70.17.22
 
 minio:
   endpoint: ${MINIO_API_URL:http://124.70.17.22}
-  accessKey: dsc
-  secretKey: dsc123456
+  accessKey: ${MINIO_ROOT_USER:dsc}
+  secretKey: ${MINIO_ROOT_PASSWORD:dsc123456}
   bucketName: dsc-file
   sceneThumbnailsBucket: scene-thumbnails
   avatarBucket: avatar
   gaOutputBucket: dsc-ga-output
-  pyFilesBucket: py-files
+  rasterTilesBucket: raster-tiles

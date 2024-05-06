@@ -1,7 +1,9 @@
 package nnu.wyz.systemMS.model.entity;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 
@@ -12,6 +14,8 @@ import org.springframework.data.annotation.Id;
  */
 @Data
 @Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class DscUserRasterS {
     @Id
     @ApiModelProperty(value = "唯一标识")

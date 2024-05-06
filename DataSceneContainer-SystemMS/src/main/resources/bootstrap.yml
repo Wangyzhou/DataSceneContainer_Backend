@@ -2,6 +2,8 @@ server:
   port: 7890
   servlet:
     context-path: /dsc-systemMS
+    session:
+      timeout: 600000
 spring:
 #  cloud:
 #    nacos:

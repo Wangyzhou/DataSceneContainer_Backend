@@ -2,6 +2,7 @@ package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
@@ -27,8 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @description:
@@ -54,6 +54,9 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
     @Autowired
     private DscFileService dscFileService;
 
+    @Autowired
+    private SagaOtherToolUtil sagaOtherToolUtil;
+
     @Value("${fileSavePath}")
     private String root;
 
@@ -73,7 +76,7 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
         String sgrdFilePath = root + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
         String geoTiffId = IdUtil.randomUUID();
         String geoTiffFilePath = root + minioConfig.getBucketName() + "/" + convertSgrd2GeoTIFFDTO.getUserId() + "/" + geoTiffId + ".tif";
-        boolean isConvert = SagaOtherToolUtil.ConvertSgrd2GeoTIFF(sgrdFilePath, geoTiffFilePath);
+        boolean isConvert = sagaOtherToolUtil.ConvertSgrd2GeoTIFF(sgrdFilePath, geoTiffFilePath);
         if (!isConvert) {
             return CommonResult.failed("转换失败");
         }
@@ -103,5 +106,34 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
             log.error(e.getMessage());
             return CommonResult.failed("转换失败");
         }
+    }
+
+    @Override
+    public CommonResult<List<JSONObject>> getGeoAnalysisToolList() {
+        HashMap<String, List<DscGeoAnalysisTool>> map = new HashMap<>();
+        dscGeoAnalysisDAO.findAll().forEach(dscGeoAnalysisTool -> {
+            List<DscGeoAnalysisTool> orDefault = map.getOrDefault(dscGeoAnalysisTool.getCategory(), new ArrayList<>());
+            orDefault.add(dscGeoAnalysisTool);
+            map.put(dscGeoAnalysisTool.getCategory(), orDefault);
+        });
+        ArrayList<JSONObject> treeData = new ArrayList<>();
+        for (Map.Entry<String, List<DscGeoAnalysisTool>> entry : map.entrySet()) {
+            JSONObject treeNode = new JSONObject();
+            treeNode.put("id", IdUtil.randomUUID());
+            treeNode.put("label", entry.getKey());
+            treeNode.put("isLeaf", false);
+            ArrayList<JSONObject> children = new ArrayList<>();
+            for(DscGeoAnalysisTool dscGeoAnalysisTool : entry.getValue()) {
+                JSONObject child = new JSONObject();
+                child.put("id", dscGeoAnalysisTool.getId());
+                child.put("label", dscGeoAnalysisTool.getName());
+                child.put("isLeaf", true);
+                child.put("isEnabled", dscGeoAnalysisTool.getIsEnabled());
+                children.add(child);
+            }
+            treeNode.put("children", children);
+            treeData.add(treeNode);
+        }
+        return CommonResult.success(treeData, "获取工具列表成功");
     }
 }

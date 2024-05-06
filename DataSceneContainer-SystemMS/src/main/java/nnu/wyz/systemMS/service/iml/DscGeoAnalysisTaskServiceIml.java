@@ -13,7 +13,7 @@ import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscGeoAnalysisExecService;
-import nnu.wyz.systemMS.service.DscGeoAnalysisService;
+import nnu.wyz.systemMS.service.DscGeoAnalysisTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -30,7 +29,7 @@ import java.util.Optional;
  * @time: 2024/1/5 10:04
  */
 @Service
-public class DscGeoAnalysisServiceIml implements DscGeoAnalysisService {
+public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
 
     @Autowired
     private DscGeoAnalysisExecService dscGeoAnalysisExecService;

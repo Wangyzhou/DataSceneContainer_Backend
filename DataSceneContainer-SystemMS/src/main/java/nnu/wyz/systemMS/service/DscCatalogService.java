@@ -48,4 +48,6 @@ public interface DscCatalogService {
      * @return
      */
     String getCatalogPath(String catalogId);
+
+    CommonResult<String> getCatalogIdByFileIdAndRoot(String rootCatalog, String fileId);
 }

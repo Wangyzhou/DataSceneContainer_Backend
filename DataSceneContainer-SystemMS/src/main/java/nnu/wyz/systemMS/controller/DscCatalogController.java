@@ -77,4 +77,10 @@ public class DscCatalogController {
         return catalogService.pwd(catalogId);
     }
 
+    @ApiOperation(value = "根据根目录及文件ID查出文件所在目录ID")
+    @GetMapping(value = "/getCatalogIdByFileIdAndRoot/{rootCatalog}/{fileId}")
+    public CommonResult<String> getCatalogIdByFileIdAndRoot(@PathVariable("rootCatalog") String rootCatalog, @PathVariable("fileId") String fileId) {
+        return catalogService.getCatalogIdByFileIdAndRoot(rootCatalog, fileId);
+    }
+
 }

@@ -8,7 +8,7 @@ import lombok.Data;
  * @Date：2024/1/17 20:51
  */
 @Data
-public class PublishTiffDTO {
+public class PublishTiff2ImageDTO {
 
     private String userId;
 
@@ -20,4 +20,5 @@ public class PublishTiffDTO {
 
     // 发布的方式：1、从个人空间发布（user);2、从场景中发布（scene)
     private String method;
+
 }

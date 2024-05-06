@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGASceneChat;
 
 import java.util.List;
 
@@ -23,5 +24,9 @@ public class DscDASceneConfig extends DscGDVSceneConfig{
 
     @ApiModelProperty(value = "场景日志")
     private List<DASSceneLog> sceneLogs;
+
+    @ApiModelProperty(value = "场景聊天记录")
+    private List<DscGASceneChat> sceneChatLog;
+
 
 }

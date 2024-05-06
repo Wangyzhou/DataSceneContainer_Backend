@@ -28,5 +28,5 @@ public class MinioConfig {
 
     private String gaOutputBucket;
 
-    private String pyFilesBucket;
+    private String rasterTilesBucket;
 }

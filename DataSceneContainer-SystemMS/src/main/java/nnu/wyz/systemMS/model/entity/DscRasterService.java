@@ -2,7 +2,9 @@ package nnu.wyz.systemMS.model.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PublishImageDTO;
@@ -18,6 +20,8 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value = "栅格服务实体")
+@AllArgsConstructor
+@NoArgsConstructor
 public class DscRasterService {
 
     @Id

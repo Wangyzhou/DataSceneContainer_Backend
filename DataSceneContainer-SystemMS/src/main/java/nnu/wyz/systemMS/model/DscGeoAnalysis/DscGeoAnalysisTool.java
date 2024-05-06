@@ -16,7 +16,7 @@ public class DscGeoAnalysisTool {
 
     private String name;
 
-    private Integer category;
+    private String category;
 
     private String author;
 

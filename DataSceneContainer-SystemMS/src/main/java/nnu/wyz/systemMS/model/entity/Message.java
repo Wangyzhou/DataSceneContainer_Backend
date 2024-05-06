@@ -50,4 +50,7 @@ public class Message {
 
     @ApiModelProperty(value = "是否已读")
     private Boolean isRead;
+
+    @ApiModelProperty(value = "是否结束")
+    private Boolean isFinished;
 }
