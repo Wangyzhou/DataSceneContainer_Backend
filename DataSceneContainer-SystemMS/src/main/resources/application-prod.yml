@@ -78,8 +78,6 @@ docker:
   docker_cert_path: ${DOCKER_CERT_PATH:none}/${DOCKER_LOCAL_HOST}/
   docker_api_version: ${DOCKER_API_VERSION}
 
-minioEndpoint: http://124.70.17.22
-
 minio:
   endpoint: ${MINIO_API_URL:http://124.70.17.22}
   accessKey: ${MINIO_ROOT_USER:dsc}

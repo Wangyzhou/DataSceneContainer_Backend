@@ -2,7 +2,7 @@ spring:
   redis:
     host: redis-cache
     port: 6379
-    password: dsc123
+    password: ${REDIS_PASSWORD:dsc123}
     jedis:
       pool:
         max-active: 200

@@ -5,7 +5,7 @@ spring:
       port: 27017
       authentication-database: admin
       database: dsc
-      username: dsc
-      password: dsc123
+      username: ${MONGO_INITDB_ROOT_USERNAME:dsc}
+      password: ${MONGO_INITDB_ROOT_PASSWORD:dsc123}
 
 jks_path: ${JKS_PATH}

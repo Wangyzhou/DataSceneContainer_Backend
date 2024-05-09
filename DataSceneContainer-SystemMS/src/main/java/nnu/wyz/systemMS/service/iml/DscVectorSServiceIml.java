@@ -87,10 +87,6 @@ public class DscVectorSServiceIml implements DscVectorSService {
         if (!byId.isPresent()) {
             return CommonResult.failed("文件不存在");
         }
-        DscUserVectorS isExist = dscUserVectorSDAO.findDscUserVectorSByUserIdAndVectorSNameAndVectorSType(userId, publishShapefileDTO.getName(), "vector");
-        if (!Objects.isNull(isExist)) {
-            return CommonResult.failed("存在名称相同的MVT服务，请更改发布服务的名称！");
-        }
         DscFileInfo dscFileInfo = byId.get();
         String fileName = dscFileInfo.getFileName();
         String fileNameWithoutSuffix = fileName.substring(0, fileName.lastIndexOf("."));
