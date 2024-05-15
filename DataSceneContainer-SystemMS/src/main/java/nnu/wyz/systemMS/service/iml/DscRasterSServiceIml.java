@@ -114,10 +114,6 @@ public class DscRasterSServiceIml implements DscRasterSService {
         if (!byId.isPresent()) {
             return CommonResult.failed("未找到该文件!");
         }
-        DscUserRasterS isExist = dscUserRasterSDAO.findDscUserRasterSByUserIdAndRasterSNameAndRasterSType(userId, rasterSName, "image");
-        if (!Objects.isNull(isExist)) {
-            return CommonResult.failed("存在名称相同的Image服务，请更改发布服务的名称！");
-        }
         DscFileInfo dscFileInfo = byId.get();
         String rasterSUrl = minioConfig.getEndpoint() + File.separator + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
         DscRasterService dscRasterService = new DscRasterService();
@@ -156,10 +152,6 @@ public class DscRasterSServiceIml implements DscRasterSService {
         Optional<DscCatalog> byCatalog = dscCatalogDAO.findById(publishTiff2ImageDTO.getOutputCatalogId());
         if (!byCatalog.isPresent()) {
             return CommonResult.failed("未找到载体目录!");
-        }
-        DscUserRasterS isExist = dscUserRasterSDAO.findDscUserRasterSByUserIdAndRasterSNameAndRasterSType(publishTiff2ImageDTO.getUserId(), publishTiff2ImageDTO.getName(), "image");
-        if (!Objects.isNull(isExist)) {
-            return CommonResult.failed("存在名称相同的Image服务，请更改发布服务的名称！");
         }
         DscFileInfo dscFileInfo = byId.get();
         String tiffPath = rootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();

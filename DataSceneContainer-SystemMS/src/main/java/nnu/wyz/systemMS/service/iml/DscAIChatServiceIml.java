@@ -65,6 +65,9 @@ public class DscAIChatServiceIml implements DscAIChatService {
                         super.onNext(frame);
                     }
                 }).awaitCompletion();
+        if(sb.toString().equals("No tools found.")) {
+            return CommonResult.failed("没有找到工具");
+        }
         JSONArray objects = JSON.parseArray(sb.toString());
         stderr.close();
         baos.close();

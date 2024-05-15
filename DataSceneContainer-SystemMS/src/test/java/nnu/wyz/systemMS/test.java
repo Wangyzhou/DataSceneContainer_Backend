@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
@@ -15,6 +16,7 @@ import com.github.dockerjava.api.command.ExecCreateCmdResponse;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
 import io.minio.*;
+import io.minio.Result;
 import io.minio.errors.*;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
@@ -28,11 +30,7 @@ import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
-import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
-import nnu.wyz.systemMS.model.dto.ConvertSgrd2GeoTIFFDTO;
-import nnu.wyz.systemMS.model.dto.PageableDTO;
-import nnu.wyz.systemMS.model.dto.PublishTiff2ImageDTO;
-import nnu.wyz.systemMS.model.dto.ReturnUsersByEmailLikeDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.model.param.*;
 import nnu.wyz.systemMS.service.*;
@@ -1208,7 +1206,7 @@ public class test {
 
     @Test
     void testOllama2() {
-        String question = "{'tools': [{'id': '864b93fa-c97d-7883-3382-71072c4fac94', 'name': '15-minutes living area model', 'params': {'options': [{'name': 'Routing', 'description': 'mode of travel, 0 for driving, 1 for driving-traffic, 2 for walking, 3 for cycling', 'defaultVal': '2'}, {'name': 'Contour', 'description': 'when coutour type is minutes, it represents time; when coutour type is meters, it represents distance.', 'defaultVal': '20'}, {'name': 'Countour type', 'description': 'measurement, 0 for minutes, 1 for meters', 'defaultVal': '0'}], 'inputs': [{'name': 'District', 'description': 'district data in study area.'}, {'name': 'Community', 'description': 'community data in study area.'}, {'name': 'POIs', 'description': 'POI data in study area.'}]}}]}";
+        String question = "I want to do puddle filling on a dem data, can you please suggest me the available tools?";
         String data = "{\"model\": \"llama3:8b\", \"prompt\": \"" + question + "\", \"system\": \"You are a model management assistant and have been asked to describe the model to the user based on the given data.\", \"options\": {\"temperature\": 0.1}}";
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -1310,11 +1308,24 @@ public class test {
         }
 
     }
+
+    @Autowired
+    private DscAIChatService dscAIChatService;
+    @Test
+    void testDockerOllamaByService(){
+        ChatDTO chatDTO = new ChatDTO("c42e55ba-697e-4916-9596-d25fe7e386f3", "", "I would like to do a simulation of NanJing's 15-minute living area, please let me know the available models.");
+        CommonResult<JSONArray> chat = dscAIChatService.chat(chatDTO);
+        System.out.println(chat.getData());
+    }
     @Test
     void testGetCatalogByRootAndFileId() {
 //        DscCatalog dscCatalogById = dscCatalogDAO.findDscCatalogById("e44e9f12-3ea6-4146-985c-7415b4e85732");
 //        System.out.println(dscCatalogById.toString());
         CommonResult<String> catalogIdByFileIdAndRoot = dscCatalogService.getCatalogIdByFileIdAndRoot("e44e9f12-3ea6-4146-985c-7415b4e85732", "6628710de4b04d5bc14a80d0");
         System.out.println(catalogIdByFileIdAndRoot.getData());
+    }
+    @Test
+    void testOllama3() {
+
     }
 }
