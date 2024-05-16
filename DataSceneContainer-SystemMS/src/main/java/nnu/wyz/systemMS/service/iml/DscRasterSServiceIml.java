@@ -23,6 +23,7 @@ import nnu.wyz.systemMS.utils.GeoToolsUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -58,12 +59,10 @@ public class DscRasterSServiceIml implements DscRasterSService {
     private DscCatalogDAO dscCatalogDAO;
 
     @Autowired
-    private DscCatalogService dscCatalogService;
-
-    @Autowired
     private PythonDockerConfig pythonDockerConfig;
 
     @Autowired
+    @Lazy
     private DscFileService dscFileService;
 
     @Autowired
@@ -155,7 +154,6 @@ public class DscRasterSServiceIml implements DscRasterSService {
         }
         DscFileInfo dscFileInfo = byId.get();
         String tiffPath = rootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
-        String catalogPath = dscCatalogService.getCatalogPath(publishTiff2ImageDTO.getOutputCatalogId());
         //  物理存储在dsc-files桶
         String outputDirPath = rootPath + minioConfig.getBucketName() + File.separator + publishTiff2ImageDTO.getUserId();
         String filePhysicalName = IdUtil.randomUUID() + ".png";
@@ -200,9 +198,10 @@ public class DscRasterSServiceIml implements DscRasterSService {
             String fileName = dscFileInfo.getFileName().substring(0, dscFileInfo.getFileName().lastIndexOf(".")) + "." + suffix;
             String fileId = IdUtil.objectId();
             DscFileInfo pngFileInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, publishTiff2ImageDTO.getUserId(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), pngFile.length(), 0L, 0L, 0L, 0L, minioConfig.getBucketName(), publishTiff2ImageDTO.getUserId() + File.separator + pngFile.getName(), 32);
+            // 首次插入初始化文件信息，走一天内已上传的文件逻辑
             dscFileDAO.insert(pngFileInfo);
             System.out.println(pngFileInfo);
-            // 模拟上传任务，添加文件夹相关记录
+            // 模拟上传任务，添加人任务及文件相关记录
             InitTaskParam initTaskParam = new InitTaskParam();
             initTaskParam.setIdentifier(md5);
             initTaskParam.setFileName(fileName);
@@ -212,8 +211,10 @@ public class DscRasterSServiceIml implements DscRasterSService {
             initTaskParam.setChunkSize(pngFile.length());
             initTaskParam.setObjectName(fileName.substring(0, fileName.lastIndexOf(".")));
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
-            UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), publishTiff2ImageDTO.getOutputCatalogId());
-            dscFileService.create(uploadFileDTO);
+            // UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), publishTiff2ImageDTO.getOutputCatalogId());
+            // spng不增加catalog记录
+            UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), null);
+            log.info(dscFileService.create(uploadFileDTO).getMessage());
             //  添加栅格服务记录
             DscRasterService dscRasterService = new DscRasterService();
             String rasterId = IdUtil.randomUUID();
@@ -336,7 +337,6 @@ public class DscRasterSServiceIml implements DscRasterSService {
         return CommonResult.success(dscRasterServicePageInfo, "获取成功！");
     }
 
-    // TODO: 有冗余，当type是image时，spng文件不会随服务一起删
     @Override
     public CommonResult<String> deleteRasterService(String userId, String rasterSId) {
         DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(userId, rasterSId);
@@ -345,12 +345,26 @@ public class DscRasterSServiceIml implements DscRasterSService {
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(rasterSId);
         String fileId = dscRasterService.getFileId();
+        String tifId = dscRasterService.getOriFileId();
         Optional<DscFileInfo> byId1 = dscFileDAO.findById(fileId);
         if (!byId1.isPresent()) {
             return CommonResult.failed("未找到该文件");
         }
         DscFileInfo dscFileInfo = byId1.get();
-        dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() - 1);
+        // 删除服务对应的spng快照及tif的发布记录
+        if(dscRasterService.getType().equals("image") && !Objects.isNull(tifId)){
+            Optional<DscFileInfo> byId2 = dscFileDAO.findById(tifId);
+            if (!byId2.isPresent()) {
+                return CommonResult.failed("未找到该文件的原始tif文件");
+            }
+            DscFileInfo dscTifInfo = byId2.get();
+            dscTifInfo.setPublishCount(dscTifInfo.getPublishCount()-1);
+            dscFileDAO.save(dscTifInfo);
+            dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);     //文件拥有者数 - 1
+            log.info("服务快照删除成功");
+        }else{
+            dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() - 1);
+        }
         if(dscRasterService.getType().equals("tiles")){     //删除瓦片目录
             String tilesDirPath = rootPath + minioConfig.getRasterTilesBucket() + File.separator + userId + File.separator + rasterSId;
             FileUtils.deleteDirectory(tilesDirPath);

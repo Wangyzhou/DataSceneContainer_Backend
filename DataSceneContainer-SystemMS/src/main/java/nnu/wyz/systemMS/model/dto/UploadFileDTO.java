@@ -26,6 +26,7 @@ public class UploadFileDTO {
     private String taskId;
 
     @ApiModelProperty(value = "目录ID")
+    // 可以为null,不为null时代表正常用户上传，为null时代表特殊内部调用上传（目前用于快照文件spng的信息记录，但不存储文件夹记录）
     private String catalogId;
 
 }

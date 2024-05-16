@@ -15,6 +15,8 @@ import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
+import nnu.wyz.systemMS.service.DscRasterSService;
+import nnu.wyz.systemMS.service.DscVectorSService;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
 import nnu.wyz.systemMS.service.DscFileService;
 
@@ -60,6 +62,17 @@ public class DscFileServiceIml implements DscFileService {
     private DscUserDAO dscUserDAO;
 
     @Autowired
+    private DscVectorSDAO dscVectorSDAO;
+
+    @Autowired
+    private DscRasterSDAO dscRasterSDAO;
+
+    @Autowired
+    private DscRasterSService dscRasterSService;
+
+    @Autowired
+    private DscVectorSService dscVectorSService;
+    @Autowired
     private SysUploadTaskService sysUploadTaskService;
 
     @Autowired
@@ -99,38 +112,45 @@ public class DscFileServiceIml implements DscFileService {
         }
         SysUploadTask task = sysUploadTaskDAOById.get();
         String fileId = task.getFileId();
-        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
-        if (!byId.isPresent()) {
-            return CommonResult.failed("未找到载体目录!");
-        }
-        DscCatalog dscCatalog = byId.get();
-        List<CatalogChildrenDTO> children = dscCatalog.getChildren();
-        for (CatalogChildrenDTO next : children) {  //判断该目录下是否有同名文件或相同文件，即判断上传环境
-            //孩子节点不为folder且文件名出现冲突
-            if (!next.getType().equals("folder") && next.getName().equals(task.getFileName())) {
-                return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在同名文件，请更改文件名或更换文件夹进行上传！");
+        DscCatalog dscCatalog = null;
+        // 正常上传时检查
+        if (!Objects.isNull(catalogId)) {
+            Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+            if (!byId.isPresent()) {
+                return CommonResult.failed("未找到载体目录!");
             }
-            if (next.getId().equals(fileId)) {
-                return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在相同文件，请更换文件夹进行上传！");
+            dscCatalog = byId.get();
+            List<CatalogChildrenDTO> children = dscCatalog.getChildren();
+            for (CatalogChildrenDTO next : children) {  //判断该目录下是否有同名文件或相同文件，即判断上传环境
+                //孩子节点不为folder且文件名出现冲突
+                if (!next.getType().equals("folder") && next.getName().equals(task.getFileName())) {
+                    return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在同名文件，请更改文件名或更换文件夹进行上传！");
+                }
+                if (next.getId().equals(fileId)) {
+                    return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在相同文件，请更换文件夹进行上传！");
+                }
             }
         }
+        String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
         if (fileId != null) {  //说明用户一天内上传过该文件
-            String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
             Optional<DscFileInfo> dscFileDAOById = dscFileDAO.findById(fileId);
             DscFileInfo dscFileInfo = dscFileDAOById.get();
             String fileName = dscFileInfo.getFileName();
-            CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
-            childrenDTO.setId(fileId)
-                    .setName(fileName)
-                    .setType(dscFileInfo.getFileSuffix())
-                    .setSize(dscFileInfo.getSize())
-                    .setUpdatedTime(dateTime);
-            dscCatalog.getChildren().add(childrenDTO);
-            dscCatalog.setTotal(dscCatalog.getTotal() + 1);
-            dscCatalog.setUpdatedTime(dateTime);
-            dscCatalogDAO.save(dscCatalog);
-            dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1);
+            dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1).setUpdatedTime(dateTime);
             dscFileDAO.save(dscFileInfo);
+            // 正常上传时插入catalog记录
+            if (!Objects.isNull(catalogId)) {
+                CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
+                childrenDTO.setId(fileId)
+                        .setName(fileName)
+                        .setType(dscFileInfo.getFileSuffix())
+                        .setSize(dscFileInfo.getSize())
+                        .setUpdatedTime(dateTime);
+                dscCatalog.getChildren().add(childrenDTO);
+                dscCatalog.setTotal(dscCatalog.getTotal() + 1);
+                dscCatalog.setUpdatedTime(dateTime);
+                dscCatalogDAO.save(dscCatalog);
+            }
             return CommonResult.success("文件：" + fileName + "上传成功！");
         }
         //若用户未上传过该文件，则创建该文件记录并更新目录
@@ -143,7 +163,6 @@ public class DscFileServiceIml implements DscFileService {
             String fileName = task.getFileName();
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
             DscFileInfo dscFileInfo = new DscFileInfo();
-            String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
             fileId = IdUtil.objectId();
             task.setFileId(fileId);     //任务实体中保存该文件的ID，方便之后文件删除时删除任务
             sysUploadTaskDAO.save(task);
@@ -163,16 +182,20 @@ public class DscFileServiceIml implements DscFileService {
                     .setBucketName(task.getBucketName())
                     .setObjectKey(task.getObjectKey());
             dscFileDAO.insert(dscFileInfo);
-            CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
-            childrenDTO.setId(fileId)
-                    .setName(fileName)
-                    .setType(ext)
-                    .setSize(size)
-                    .setUpdatedTime(dateTime);
-            dscCatalog.getChildren().add(childrenDTO);
-            dscCatalog.setTotal(dscCatalog.getTotal() + 1);
-            dscCatalog.setUpdatedTime(dateTime);
-            dscCatalogDAO.save(dscCatalog);
+            // 正常上传时插入catalog记录
+            if (!Objects.isNull(catalogId)) {
+                CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
+                childrenDTO.setId(fileId)
+                        .setName(fileName)
+                        .setType(ext)
+                        .setSize(size)
+                        .setUpdatedTime(dateTime);
+                log.info(childrenDTO.toString());
+                dscCatalog.getChildren().add(childrenDTO);
+                dscCatalog.setTotal(dscCatalog.getTotal() + 1);
+                dscCatalog.setUpdatedTime(dateTime);
+                dscCatalogDAO.save(dscCatalog);
+            }
             return CommonResult.success("文件：" + fileName + "上传成功！");
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,7 +207,6 @@ public class DscFileServiceIml implements DscFileService {
             }
         }
     }
-
 
     /**
      * 文件删除
@@ -201,6 +223,32 @@ public class DscFileServiceIml implements DscFileService {
             return CommonResult.failed("文件不存在！");
         }
         DscFileInfo dscFileInfo = byId.get();
+        // 服务资源删除
+        log.info("当前文件服务资源数量：" + dscFileInfo.getPublishCount().toString());
+        // dscFileInfo.getOwnerCount() == 1代表文件真正被删除（场景中可能也引用）
+        if (dscFileInfo.getPublishCount() > 0 && dscFileInfo.getOwnerCount() == 1) {
+            log.info("服务资源删除");
+            // 矢量（shp暂不考虑）
+            if (dscFileInfo.getFileSuffix().equals("geojson")) {
+                List<DscVectorServiceInfo> vectorSList = dscVectorSDAO.findAllByFileId(fileId);
+                Iterator<DscVectorServiceInfo> vecIterator = vectorSList.iterator();
+                while (vecIterator.hasNext()) {
+                    DscVectorServiceInfo vectorS = vecIterator.next();
+                    log.info(dscVectorSService.deleteVectorService(deleteFileDTO.getUserId(), vectorS.getId()).getMessage());
+                }
+            } else {
+                List<DscRasterService> rasterSList = dscRasterSDAO.findAllByFileIdOrOriFileId(fileId);
+                Iterator<DscRasterService> rasterIterator = rasterSList.iterator();
+                while (rasterIterator.hasNext()) {
+                    DscRasterService rasterS = rasterIterator.next();
+                    log.info(dscRasterSService.deleteRasterService(deleteFileDTO.getUserId(), rasterS.getId()).getMessage());
+                }
+            }
+            dscFileInfo.setPublishCount(0L); //发布次数置0
+        }
+        if (dscFileInfo.getOwnerCount() == 1) {
+            dscFileInfo.setDownloadCount(0L).setPreviewCount(0L);
+        }
         dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);     //文件拥有者数 - 1
         dscFileDAO.save(dscFileInfo);
         //父目录孩子节点的摘除，更新父目录
@@ -377,7 +425,7 @@ public class DscFileServiceIml implements DscFileService {
         String fileRoot = System.getProperty("os.name").startsWith("Windows") ? fileRootPathWin : fileRootPath;
         String separator = File.separator;
         String fullPath = fileRoot + bucket + separator + objectKey;
-        String unzipDirPath = System.getProperty("os.name").startsWith("Windows") ? unzipTempPathWin: unzipTempPath;
+        String unzipDirPath = System.getProperty("os.name").startsWith("Windows") ? unzipTempPathWin : unzipTempPath;
         File unzipDir = new File(unzipDirPath);
         if (!unzipDir.exists()) {
             unzipDir.mkdirs();  //创建临时解压文件夹
