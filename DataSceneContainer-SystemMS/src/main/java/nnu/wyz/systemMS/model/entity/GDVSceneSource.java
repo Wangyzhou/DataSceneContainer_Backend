@@ -19,17 +19,17 @@ public class GDVSceneSource {
 
     private String sourceType;
 
-    private String serviceSource;
-
     private String url;
 
     private String user;
 
+    // 矢量（点线面）
     private String geoType;
 
-    private String ptName;
+    // 栅格（tif/png等）
+    private String fileType;
 
-    private Boolean isRenaming;
+    private String ptName;
 
     private List<Double> bbox;
 

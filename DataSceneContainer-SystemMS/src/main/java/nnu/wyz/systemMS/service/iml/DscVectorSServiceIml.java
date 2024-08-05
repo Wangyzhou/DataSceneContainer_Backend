@@ -237,22 +237,24 @@ public class DscVectorSServiceIml implements DscVectorSService {
         DscVectorServiceInfo dscVectorServiceInfo = byId.get();
         dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount() - 1);
         dscVectorSDAO.save(dscVectorServiceInfo);
-        Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscVectorServiceInfo.getFileId());
-        if (byId1.isPresent()) {
-            DscFileInfo dscFileInfo = byId1.get();
-            dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() - 1);
-            dscFileDAO.save(dscFileInfo);
-        }
-        if (dscVectorServiceInfo.getOwnerCount() == 0) {
-            //删除源服务
-            if (dscVectorServiceInfo.getType().equals("vector")) {
-                Boolean isDelete = shpProcessDAO.deletePgTable(dscVectorServiceInfo.getPtName());
-                if (!isDelete) {
-                    throw new RuntimeException("pg表删除失败");
-                }
-            }
-            dscVectorSDAO.delete(dscVectorServiceInfo);
-        }
+
+        // 删除服务时不再直接删除服务的物理资源，迁移至定时任务
+//        Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscVectorServiceInfo.getFileId());
+//        if (byId1.isPresent()) {
+//            DscFileInfo dscFileInfo = byId1.get();
+//            dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() - 1);
+//            dscFileDAO.save(dscFileInfo);
+//        }
+//        if (dscVectorServiceInfo.getOwnerCount() == 0) {
+//            //删除源服务
+//            if (dscVectorServiceInfo.getType().equals("vector")) {
+//                Boolean isDelete = shpProcessDAO.deletePgTable(dscVectorServiceInfo.getPtName());
+//                if (!isDelete) {
+//                    throw new RuntimeException("pg表删除失败");
+//                }
+//            }
+//            dscVectorSDAO.delete(dscVectorServiceInfo);
+//        }
         return CommonResult.success("删除成功！");
     }
 
@@ -332,5 +334,15 @@ public class DscVectorSServiceIml implements DscVectorSService {
     public CommonResult<List<DscVectorServiceInfo>> getVectorServiceListByFileId(String fileId) {
         List<DscVectorServiceInfo> allByFileId = dscVectorSDAO.findAllByFileId(fileId);
         return CommonResult.success(allByFileId, "获取成功!");
+    }
+
+    @Override
+    public void updateOwnerCount(List<String> vectorSIds, boolean isPlus) {
+        int count = isPlus ? 1 : -1;
+        List<DscVectorServiceInfo> dscVectorServiceInfos = dscVectorSDAO.findAllByIds(vectorSIds);
+        for (DscVectorServiceInfo dscVectorServiceInfo : dscVectorServiceInfos) {
+            dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount() + count);
+        }
+        dscVectorSDAO.saveAll(dscVectorServiceInfos);
     }
 }

@@ -43,12 +43,14 @@ public class DeleteFileTask {
 
     @Scheduled(cron = "0 0 6 * * ?")
     public void deleteFile(){
-        log.info("************定时任务开始执行************");
+        log.info("************删除文件定时任务开始执行************");
         MinioClient minioClient = MinioClient.builder()
                 .endpoint(minioConfig.getEndpoint())
                 .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
                 .build();
-        List<DscFileInfo> allByOwnerCount = dscFileDAO.findAllByOwnerCount(0L);
+        // List<DscFileInfo> allByOwnerCount = dscFileDAO.findAllByOwnerCount(0L);
+        // 改为ownerCount和publishCount都为0时才可删除
+        List<DscFileInfo> allByOwnerCount = dscFileDAO.findAllByOwnerCountAndPublishCount(0L,0L);
         dscFileDAO.deleteAll(allByOwnerCount);
         List<SysUploadTask> collect = allByOwnerCount.stream().map(dscFileInfo -> sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId())).filter(Objects::nonNull).collect(Collectors.toList());
         sysUploadTaskDAO.deleteAll(collect);
@@ -68,8 +70,9 @@ public class DeleteFileTask {
                 e.printStackTrace();
             }
         }
-        System.out.println("objects = " + objects);
+        System.out.println("objects：");
+        objects.forEach(deleteObject -> System.out.println(deleteObject));
         log.info("删除" + objects.size() + "个文件!");
-        log.info("************定时任务执行结束************");
+        log.info("************删除文件定时任务执行结束************");
     }
 }

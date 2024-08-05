@@ -1,10 +1,7 @@
 package nnu.wyz.systemMS.controller;
 
 import nnu.wyz.domain.CommonResult;
-import nnu.wyz.systemMS.model.dto.PageableDTO;
-import nnu.wyz.systemMS.model.dto.PublishImageDTO;
-import nnu.wyz.systemMS.model.dto.PublishTiff2ImageDTO;
-import nnu.wyz.systemMS.model.dto.PublishTiff2TMSDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscRasterSService;
@@ -70,5 +67,20 @@ public class DscRasterServiceController {
                                @PathVariable(value = "rasterSId") String rasterSId,
                                HttpServletResponse response) {
         dscRasterService.getRasterTiles(z, x, y, userId, rasterSId, response);
+    }
+
+    /**
+     * 根据场景引用添加一个栅格服务副本
+     *
+     * @return 子服务的url
+     */
+    @PostMapping(value = "/addRasterSCopy")
+    public CommonResult<String> addRasterSCopy(@RequestBody GetRasterSCopyDTO getRasterSCopyDTO) {
+        return dscRasterService.addRasterSCopy(getRasterSCopyDTO);
+    }
+
+    @DeleteMapping(value = "/deleteRasterSCopy/{sceneId}/{rasterSId}")
+    public CommonResult<String> deleteRasterSCopy(@PathVariable String sceneId, @PathVariable String rasterSId) {
+        return dscRasterService.deleteRasterSCopy(sceneId, rasterSId);
     }
 }

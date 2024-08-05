@@ -55,4 +55,7 @@ public class DscRasterService {
     @ApiModelProperty(value = "发布时间")
     private String publishTime;
 
+    @ApiModelProperty(value = "子服务列表（场景用）")
+    private List<RasterSRef> references;
+
 }

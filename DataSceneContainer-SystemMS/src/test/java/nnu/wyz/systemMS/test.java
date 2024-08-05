@@ -1275,6 +1275,7 @@ public class test {
             }
         }
     }
+
     @Test
     void testDockerOllama() {
         String containerId = "e3ea9f45b1f04df523b26b12ceed1dfcd50a0ee4685c7ef52ef617d62df5c340";
@@ -1289,7 +1290,7 @@ public class test {
         PrintStream stderr = new PrintStream(baos);
         try {
             dockerClient.execStartCmd(exec.getId())
-                    .exec(new ExecStartResultCallback(stdout,stderr) {
+                    .exec(new ExecStartResultCallback(stdout, stderr) {
                         @Override
                         public void onNext(Frame frame) {
                             System.out.println(frame.toString().replace("STDOUT: ", ""));
@@ -1311,12 +1312,14 @@ public class test {
 
     @Autowired
     private DscAIChatService dscAIChatService;
+
     @Test
-    void testDockerOllamaByService(){
+    void testDockerOllamaByService() {
         ChatDTO chatDTO = new ChatDTO("c42e55ba-697e-4916-9596-d25fe7e386f3", "", "I would like to do a simulation of NanJing's 15-minute living area, please let me know the available models.");
         CommonResult<JSONArray> chat = dscAIChatService.chat(chatDTO);
         System.out.println(chat.getData());
     }
+
     @Test
     void testGetCatalogByRootAndFileId() {
 //        DscCatalog dscCatalogById = dscCatalogDAO.findDscCatalogById("e44e9f12-3ea6-4146-985c-7415b4e85732");
@@ -1324,8 +1327,87 @@ public class test {
         CommonResult<String> catalogIdByFileIdAndRoot = dscCatalogService.getCatalogIdByFileIdAndRoot("e44e9f12-3ea6-4146-985c-7415b4e85732", "6628710de4b04d5bc14a80d0");
         System.out.println(catalogIdByFileIdAndRoot.getData());
     }
+
     @Test
     void testOllama3() {
 
+    }
+
+    @Test
+    void testGetSourcesToAddRef() {
+        DscGDVSceneConfig dscGDVSceneConfig = dscGDVSceneService.getGDVSceneConfig("4a961a2a-feec-46e3-bb90-2409f0c8c599");
+        GDVSceneSource lastSource1 = new GDVSceneSource();
+        lastSource1.setSourceId("6617d5c3e4b08fd2f78c5c24");
+        lastSource1.setSourceType("geojson");
+        lastSource1.setFileType(null);
+        GDVSceneSource lastSource2 = new GDVSceneSource();
+        lastSource2.setSourceId("3ea82d7d-f578-4b5d-83c3-4680d75833aa");
+        lastSource2.setSourceType("image");
+        lastSource2.setFileType("tif");
+        List<GDVSceneSource> lastSources = new ArrayList<>();
+        lastSources.add(lastSource1);
+        lastSources.add(lastSource2);
+        List<GDVSceneSource> emptyList = new ArrayList<>();
+        ServiceRefs sourcesToAddRef = dscGDVSceneService.getSourcesToAddRef(lastSources, dscGDVSceneConfig.getSources());
+//        System.out.println(dscGDVSceneConfig.getSources());
+//        System.out.println(Arrays.toString(sourcesToAddRef.getVectorRefs()));
+//        System.out.println(Arrays.toString(sourcesToAddRef.getRasterRefs()));
+//        String[] sourcesToMinusRef = dscGDVSceneService.getSourcesToMinusRef(emptyList, dscGDVSceneConfig.getSources());
+//        System.out.println(Arrays.toString(sourcesToMinusRef));
+    }
+
+    @Test
+    void testGetSourcesToMinusRef() {
+        DscGDVSceneConfig dscGDVSceneConfig = dscGDVSceneService.getGDVSceneConfig("4a961a2a-feec-46e3-bb90-2409f0c8c599");
+        GDVSceneSource lastSource1 = new GDVSceneSource();
+        lastSource1.setSourceId("6617d5c3e4b08fd2f78c5c24");
+        lastSource1.setSourceType("geojson");
+        lastSource1.setFileType(null);
+        GDVSceneSource lastSource2 = new GDVSceneSource();
+        lastSource2.setSourceId("3ea82d7d-f578-4b5d-83c3-4680d75833aa");
+        lastSource2.setSourceType("image");
+        lastSource2.setFileType("tif");
+        List<GDVSceneSource> lastSources = new ArrayList<>();
+        lastSources.add(lastSource1);
+        lastSources.add(lastSource2);
+        ServiceRefs sourcesToMinusRef = dscGDVSceneService.getSourcesToMinusRef(lastSources, dscGDVSceneConfig.getSources(), true);
+//        System.out.println(dscGDVSceneConfig.getSources());
+//        System.out.println(Arrays.toString(sourcesToMinusRef));
+    }
+
+    @Test
+    void testFindAllRasterSByIds() {
+        List<String> ids = new ArrayList<>();
+        ids.add("3ea82d7d-f578-4b5d-83c3-4680d75833aa");
+        ids.add("e1360bc4-0d91-4289-a1a5-1b2aa81ed889");
+        ids.add("01b49984-62aa-4175-aecb-1793622d5615");
+        List<DscRasterService> dscRasterServices = dscRasterSDAO.findAllByIds(ids);
+        System.out.println(dscRasterServices);
+    }
+
+    @Test
+    void testSaveAllRasterS() {
+        List<String> ids = new ArrayList<>();
+        ids.add("3ea82d7d-f578-4b5d-83c3-4680d75833aa");
+        ids.add("e1360bc4-0d91-4289-a1a5-1b2aa81ed889");
+        ids.add("01b49984-62aa-4175-aecb-1793622d5615");
+        List<DscRasterService> dscRasterServices = dscRasterSDAO.findAllByIds(ids);
+        for (DscRasterService dscRasterService : dscRasterServices) {
+            dscRasterService.setOwnerCount(dscRasterService.getOwnerCount() - 1);
+        }
+        List<DscRasterService> savedServices = dscRasterSDAO.saveAll(dscRasterServices);
+        System.out.println(savedServices);
+    }
+
+    @Autowired
+    private DscVectorSDAO dscVectorSDAO;
+
+    @Test
+    void testServiceCountMinus() {
+        Optional<DscVectorServiceInfo> byId = dscVectorSDAO.findById("65f3b320e4b0d760656a832c");
+        if (!byId.isPresent()) return;
+        DscVectorServiceInfo dscVectorServiceInfo = byId.get();
+//        System.out.println(dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount()-1));
+        dscVectorSDAO.save(dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount() - 1));
     }
 }

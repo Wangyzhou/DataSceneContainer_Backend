@@ -122,18 +122,26 @@ public class DscTifServiceIml implements DscTifService {
             return CommonResult.failed("未找到该服务！");
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(renderTifDTO.getRasterSId());
-        //  查找对应的png文件
-        Optional<DscFileInfo> byId = dscFileDAO.findById(dscRasterService.getFileId());
-        if (!byId.isPresent()) {
-            return CommonResult.failed("未找到服务引用的文件！");
+        //  查找对应场景的png副本文件
+        DscFileInfo pngFileInfo = null;
+        List<RasterSRef> refs = dscRasterService.getReferences();
+        Iterator<RasterSRef> iterator = refs.iterator();
+        while (iterator.hasNext()) {
+            RasterSRef rasterSRef = iterator.next();
+            if (rasterSRef.getSceneId().equals(renderTifDTO.getSceneId())) {
+                Optional<DscFileInfo> byId = dscFileDAO.findById(rasterSRef.getFileId());
+                if (!byId.isPresent()) {
+                    return CommonResult.failed("未找到服务引用的文件！");
+                }
+                pngFileInfo = byId.get();
+                break;
+            }
         }
         //  查找对应的tif文件
         Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscRasterService.getOriFileId());
-        if (!byId.isPresent()) {
+        if (!byId1.isPresent()) {
             return CommonResult.failed("未找到服务源文件！");
         }
-
-        DscFileInfo pngFileInfo = byId.get();
         DscFileInfo tifFileInfo = byId1.get();
         String filePath = rootPath + pngFileInfo.getBucketName() + File.separator + pngFileInfo.getObjectKey();
         String tiffPath = rootPath + tifFileInfo.getBucketName() + File.separator + tifFileInfo.getObjectKey();
@@ -157,18 +165,26 @@ public class DscTifServiceIml implements DscTifService {
             return CommonResult.failed("未找到该服务！");
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(falseColorCompositeDTO.getRasterSId());
-        //  查找对应的png文件
-        Optional<DscFileInfo> byId = dscFileDAO.findById(dscRasterService.getFileId());
-        if (!byId.isPresent()) {
-            return CommonResult.failed("未找到服务引用的文件！");
+        //  查找对应场景的png副本文件
+        DscFileInfo pngFileInfo = null;
+        List<RasterSRef> refs = dscRasterService.getReferences();
+        Iterator<RasterSRef> iterator = refs.iterator();
+        while (iterator.hasNext()) {
+            RasterSRef rasterSRef = iterator.next();
+            if (rasterSRef.getSceneId().equals(falseColorCompositeDTO.getSceneId())) {
+                Optional<DscFileInfo> byId = dscFileDAO.findById(rasterSRef.getFileId());
+                if (!byId.isPresent()) {
+                    return CommonResult.failed("未找到服务引用的文件！");
+                }
+                pngFileInfo = byId.get();
+                break;
+            }
         }
         //  查找对应的tif文件
         Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscRasterService.getOriFileId());
-        if (!byId.isPresent()) {
+        if (!byId1.isPresent()) {
             return CommonResult.failed("未找到服务源文件！");
         }
-
-        DscFileInfo pngFileInfo = byId.get();
         DscFileInfo tifFileInfo = byId1.get();
         String filePath = rootPath + pngFileInfo.getBucketName() + File.separator + pngFileInfo.getObjectKey();
         String tiffPath = rootPath + tifFileInfo.getBucketName() + File.separator + tifFileInfo.getObjectKey();

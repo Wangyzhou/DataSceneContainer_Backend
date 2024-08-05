@@ -25,4 +25,12 @@ public interface DscVectorSService {
     CommonResult<String> publishGeoJSON2VectorS(PublishGeoJSONDTO publishGeoJSONDTO);
 
     CommonResult<List<DscVectorServiceInfo>> getVectorServiceListByFileId(String fileId);
+
+    /**
+     * 批量更新矢量服务的ownerCount,+1或-1
+     *
+     * @param vectorSIds
+     * @param isPlus
+     */
+    void updateOwnerCount(List<String> vectorSIds, boolean isPlus);
 }

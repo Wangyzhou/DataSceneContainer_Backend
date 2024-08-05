@@ -20,6 +20,8 @@ public class RenderTifDTO {
 
     private String rasterSId;
 
+    private String sceneId;
+
     private int band;
 
     private String colorMap;

@@ -223,29 +223,29 @@ public class DscFileServiceIml implements DscFileService {
             return CommonResult.failed("文件不存在！");
         }
         DscFileInfo dscFileInfo = byId.get();
-        // 服务资源删除
-        log.info("当前文件服务资源数量：" + dscFileInfo.getPublishCount().toString());
-        // dscFileInfo.getOwnerCount() == 1代表文件真正被删除（场景中可能也引用）
-        if (dscFileInfo.getPublishCount() > 0 && dscFileInfo.getOwnerCount() == 1) {
-            log.info("服务资源删除");
-            // 矢量（shp暂不考虑）
-            if (dscFileInfo.getFileSuffix().equals("geojson")) {
-                List<DscVectorServiceInfo> vectorSList = dscVectorSDAO.findAllByFileId(fileId);
-                Iterator<DscVectorServiceInfo> vecIterator = vectorSList.iterator();
-                while (vecIterator.hasNext()) {
-                    DscVectorServiceInfo vectorS = vecIterator.next();
-                    log.info(dscVectorSService.deleteVectorService(deleteFileDTO.getUserId(), vectorS.getId()).getMessage());
-                }
-            } else {
-                List<DscRasterService> rasterSList = dscRasterSDAO.findAllByFileIdOrOriFileId(fileId);
-                Iterator<DscRasterService> rasterIterator = rasterSList.iterator();
-                while (rasterIterator.hasNext()) {
-                    DscRasterService rasterS = rasterIterator.next();
-                    log.info(dscRasterSService.deleteRasterService(deleteFileDTO.getUserId(), rasterS.getId()).getMessage());
-                }
-            }
-            dscFileInfo.setPublishCount(0L); //发布次数置0
-        }
+        // 服务资源删除（删除文件时不再删除服务资源）
+//        log.info("当前文件服务资源数量：" + dscFileInfo.getPublishCount().toString());
+//        // dscFileInfo.getOwnerCount() == 1代表文件真正被删除（场景中可能也引用）
+//        if (dscFileInfo.getPublishCount() > 0 && dscFileInfo.getOwnerCount() == 1) {
+//            log.info("服务资源删除");
+//            // 矢量（shp暂不考虑）
+//            if (dscFileInfo.getFileSuffix().equals("geojson")) {
+//                List<DscVectorServiceInfo> vectorSList = dscVectorSDAO.findAllByFileId(fileId);
+//                Iterator<DscVectorServiceInfo> vecIterator = vectorSList.iterator();
+//                while (vecIterator.hasNext()) {
+//                    DscVectorServiceInfo vectorS = vecIterator.next();
+//                    log.info(dscVectorSService.deleteVectorService(deleteFileDTO.getUserId(), vectorS.getId()).getMessage());
+//                }
+//            } else {
+//                List<DscRasterService> rasterSList = dscRasterSDAO.findAllByFileIdOrOriFileId(fileId);
+//                Iterator<DscRasterService> rasterIterator = rasterSList.iterator();
+//                while (rasterIterator.hasNext()) {
+//                    DscRasterService rasterS = rasterIterator.next();
+//                    log.info(dscRasterSService.deleteRasterService(deleteFileDTO.getUserId(), rasterS.getId()).getMessage());
+//                }
+//            }
+//            dscFileInfo.setPublishCount(0L); //发布次数置0
+//        }
         if (dscFileInfo.getOwnerCount() == 1) {
             dscFileInfo.setDownloadCount(0L).setPreviewCount(0L);
         }

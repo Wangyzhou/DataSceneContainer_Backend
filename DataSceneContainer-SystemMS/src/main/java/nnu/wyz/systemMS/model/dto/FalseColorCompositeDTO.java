@@ -18,6 +18,8 @@ public class FalseColorCompositeDTO {
 
     private String userId;
 
+    private String sceneId;
+
     private String rasterSId;
 
     private List<Integer> bandList;

@@ -1,10 +1,7 @@
 package nnu.wyz.systemMS.service;
 
 import nnu.wyz.domain.CommonResult;
-import nnu.wyz.systemMS.model.dto.PageableDTO;
-import nnu.wyz.systemMS.model.dto.PublishImageDTO;
-import nnu.wyz.systemMS.model.dto.PublishTiff2ImageDTO;
-import nnu.wyz.systemMS.model.dto.PublishTiff2TMSDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 
@@ -27,4 +24,17 @@ public interface DscRasterSService {
     CommonResult<List<DscRasterService>> getRasterServiceListByFileId(String fileId);
 
     void getRasterTiles(Integer z, Integer x, Integer y, String userId, String rasterSId, HttpServletResponse response);
+
+    CommonResult<String> addRasterSCopy(GetRasterSCopyDTO getRasterSCopyDTO);
+
+    CommonResult<String> deleteRasterSCopy(String sceneId, String rasterSId);
+
+    /**
+     * 批量更新栅格服务的ownerCount,+1或-1
+     *
+     * @param rasterSIds
+     * @param isPlus
+     */
+    void updateOwnerCount(List<String> rasterSIds, boolean isPlus);
+
 }

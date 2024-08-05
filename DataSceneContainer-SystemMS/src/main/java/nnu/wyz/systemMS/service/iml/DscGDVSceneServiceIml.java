@@ -14,10 +14,10 @@ import nnu.wyz.systemMS.dao.DscGDVSceneConfigDAO;
 import nnu.wyz.systemMS.dao.DscSceneDAO;
 import nnu.wyz.systemMS.dao.DscUserSceneDAO;
 import nnu.wyz.systemMS.model.dto.SaveGDVSceneDTO;
-import nnu.wyz.systemMS.model.entity.DscGDVSceneConfig;
-import nnu.wyz.systemMS.model.entity.DscScene;
-import nnu.wyz.systemMS.model.entity.DscUserScene;
+import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
+import nnu.wyz.systemMS.service.DscRasterSService;
+import nnu.wyz.systemMS.service.DscVectorSService;
 import nnu.wyz.systemMS.utils.ImageUtil;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.text.MessageFormat;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @description:
@@ -60,10 +58,17 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
     @Autowired
     private DscGDVSceneConfigDAO dscGDVSceneConfigDAO;
 
+    @Autowired
+    private DscVectorSService dscVectorSService;
+
+    @Autowired
+    private DscRasterSService dscRasterSService;
+
     @Value("${fileTempPath}")
     private String fileTempPath;
 
     private final static String SCENE_TYPE = "GDV";
+
     @Override
     public CommonResult<DscScene> saveGDVScene(SaveGDVSceneDTO saveGDVSceneDTO) {
         String userId = saveGDVSceneDTO.getUserId();
@@ -72,12 +77,12 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
         String contentType = thumbnail.getContentType();
         String ext = MimeTypesUtil.getDefaultExt(contentType);
         DscUserScene isExist = dscUserSceneDAO.findByUserIdAndSceneName(userId, saveGDVSceneDTO.getName());
-        if(!Objects.isNull(isExist) && !isExist.getSceneId().equals(sceneId)) {
+        if (!Objects.isNull(isExist) && !isExist.getSceneId().equals(sceneId)) {
             return CommonResult.failed("与现有场景名重复，请修改名称后重新创建！");
         }
         // 图片暂存磁盘
         File thumbnailDir = new File(fileTempPath);
-        if(!thumbnailDir.exists()) {
+        if (!thumbnailDir.exists()) {
             thumbnailDir.mkdirs();
         }
         File thumbnailDisk = new File(fileTempPath + File.separator + IdUtil.fastSimpleUUID() + "." + ext);
@@ -97,7 +102,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             objectMetadata.setContentLength(thumbnailAfterCompress.getSize());
             String objectKey = MessageFormat.format("{0}/{1}.{2}", userId, sceneId, ext);
             boolean isThumbnailExist = amazonS3.doesObjectExist(minioConfig.getSceneThumbnailsBucket(), objectKey);
-            if(isThumbnailExist) {
+            if (isThumbnailExist) {
                 amazonS3.deleteObject(minioConfig.getSceneThumbnailsBucket(), objectKey);
             }
             PutObjectRequest putObjectRequest = new PutObjectRequest(minioConfig.getSceneThumbnailsBucket(), objectKey, thumbnailAfterCompress.getInputStream(), objectMetadata);
@@ -105,8 +110,8 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             String createdTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
             Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
             DscScene dscScene;
-            if(!byId.isPresent()) {
-                dscScene = new DscScene(sceneId, saveGDVSceneDTO.getName(),SCENE_TYPE, MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), objectKey),userId, 1L, createdTime,createdTime,false, 16);
+            if (!byId.isPresent()) {
+                dscScene = new DscScene(sceneId, saveGDVSceneDTO.getName(), SCENE_TYPE, MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), objectKey), userId, 1L, createdTime, createdTime, false, 16);
             } else {
                 dscScene = byId.get();
                 dscScene.setName(saveGDVSceneDTO.getName());
@@ -123,6 +128,23 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
                     .setSceneId(sceneId);
             dscUserSceneDAO.save(dscUserScene);
             DscGDVSceneConfig gdvSceneConfig = dscGDVSceneConfigDAO.findBySceneId(sceneId);
+
+            // 更新场景源的引用（根据当前场景源列表对比上一次，将新增的源添加引用，删除的源删除引用）
+            List<GDVSceneSource> lastSources = Objects.isNull(gdvSceneConfig) ? new ArrayList<>() : gdvSceneConfig.getSources();
+            ServiceRefs addRefs = getSourcesToAddRef(lastSources, saveGDVSceneDTO.getSources());
+            log.info("新增引用的矢量服务：" + addRefs.getVectorRefs());
+            log.info("新增引用的栅格服务：" + addRefs.getRasterRefs());
+            if (!addRefs.getVectorRefs().isEmpty()) dscVectorSService.updateOwnerCount(addRefs.getVectorRefs(), true);
+            if (!addRefs.getRasterRefs().isEmpty()) dscRasterSService.updateOwnerCount(addRefs.getRasterRefs(), true);
+            ServiceRefs minusRefs = getSourcesToMinusRef(lastSources, saveGDVSceneDTO.getSources(),true);
+            log.info("删除引用的矢量服务：" + minusRefs.getVectorRefs());
+            log.info("删除引用的栅格服务：" + minusRefs.getRasterRefs());
+            if (!minusRefs.getVectorRefs().isEmpty())
+                dscVectorSService.updateOwnerCount(minusRefs.getVectorRefs(), false);
+            if (!minusRefs.getRasterRefs().isEmpty())
+                dscRasterSService.updateOwnerCount(minusRefs.getRasterRefs(), false);
+
+
             String configId = Objects.isNull(gdvSceneConfig) ? IdUtil.objectId() : gdvSceneConfig.getId();
             DscGDVSceneConfig dscGDVSceneConfig = new DscGDVSceneConfig();
             dscGDVSceneConfig.setId(configId)
@@ -132,7 +154,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
                     .setPos(saveGDVSceneDTO.getPos())
                     .setMapParams(saveGDVSceneDTO.getMapParams());
             dscGDVSceneConfigDAO.save(dscGDVSceneConfig);
-            return CommonResult.success(dscScene,"场景保存成功！");
+            return CommonResult.success(dscScene, "场景保存成功！");
         } catch (IOException e) {
             e.printStackTrace();
             return CommonResult.success("场景保存失败！");
@@ -140,8 +162,87 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             thumbnailDisk.delete();
         }
     }
+
     @Override
     public DscGDVSceneConfig getGDVSceneConfig(String sceneId) {
         return dscGDVSceneConfigDAO.findBySceneId(sceneId);
     }
+
+    /**
+     * 比较两次场景配置中源列表的变化，获取新增的源
+     *
+     * @param lastSources
+     * @param currentSources
+     * @return
+     */
+    @Override
+    public ServiceRefs getSourcesToAddRef(List<GDVSceneSource> lastSources, List<GDVSceneSource> currentSources) {
+        List<String> addVecRefList = new ArrayList<>();
+        List<String> addRasRefList = new ArrayList<>();
+        for (GDVSceneSource currentSource : currentSources) {
+            // 跳过tif栅格服务，因为这类服务会在添加源和删除源时单独更新
+            if ("image".equals(currentSource.getSourceType()) && "tif".equals(currentSource.getFileType())) {
+                continue;
+            }
+            // 跳过聚合源，因为这类源实际上是去掉_cluster之后的id的源的同一引用
+            if (currentSource.getSourceId().endsWith("_cluster")) continue;
+            boolean existInLast = false;
+            for (GDVSceneSource lastSource : lastSources) {
+                if (currentSource.getSourceId().equals(lastSource.getSourceId())) {
+                    existInLast = true;
+                    break;
+                }
+            }
+            if (!existInLast) {
+                if ("vector".equals(currentSource.getSourceType()) || "geojson".equals(currentSource.getSourceType())) {
+                    addVecRefList.add(currentSource.getSourceId());
+                } else {
+                    addRasRefList.add(currentSource.getSourceId());
+                }
+            }
+        }
+        ServiceRefs serviceRefs = new ServiceRefs(addVecRefList, addRasRefList);
+        return serviceRefs;
+    }
+
+    /**
+     * 比较两次场景配置中源列表的变化，获取去除的源
+     *
+     * @param lastSources
+     * @param currentSources
+     * @param skipTif 当在场景内保存时，需要跳过tif栅格服务，因为这类服务会在添加源和删除源时单独更新；当场景外直接删除场景时，不能跳过tif栅格服务，因为源还没删
+     * @return
+     */
+
+    @Override
+    public ServiceRefs getSourcesToMinusRef(List<GDVSceneSource> lastSources, List<GDVSceneSource> currentSources, boolean skipTif) {
+        List<String> minusVecRefList = new ArrayList<>();
+        List<String> minusRasRefList = new ArrayList<>();
+        for (GDVSceneSource lastSource : lastSources) {
+            // 跳过tif栅格服务，因为这类服务会在添加源和删除源时单独更新
+            if (skipTif && "image".equals(lastSource.getSourceType()) && "tif".equals(lastSource.getFileType())) {
+                continue;
+            }
+            // 跳过聚合源，因为这类源实际上是去掉_cluster之后的id的源的同一引用
+            if (lastSource.getSourceId().endsWith("_cluster")) continue;
+            boolean existInCurrent = false;
+            for (GDVSceneSource currentSource : currentSources) {
+                if (currentSource.getSourceId().equals(lastSource.getSourceId())) {
+                    existInCurrent = true;
+                    break;
+                }
+            }
+            if (!existInCurrent) {
+                if ("vector".equals(lastSource.getSourceType()) || "geojson".equals(lastSource.getSourceType())) {
+                    minusVecRefList.add(lastSource.getSourceId());
+                } else {
+                    minusRasRefList.add(lastSource.getSourceId());
+                }
+
+            }
+        }
+        ServiceRefs serviceRefs = new ServiceRefs(minusVecRefList, minusRasRefList);
+        return serviceRefs;
+    }
+
 }

@@ -33,6 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,6 +60,9 @@ public class DscRasterSServiceIml implements DscRasterSService {
 
     @Autowired
     private DscCatalogDAO dscCatalogDAO;
+
+    @Autowired
+    private DscUserSceneDAO dscUserSceneDAO;
 
     @Autowired
     private PythonDockerConfig pythonDockerConfig;
@@ -97,7 +103,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
     public void init() {
         dscComputeContainerImageDAO.findByIdentifier(TOOL_CATEGORY).ifPresent(dscComputeContainerImage -> {
             List<DscComputeContainerInstance> allByImageId = dscComputeContainerInstanceDAO.findAllByImageId(dscComputeContainerImage.getId());
-            if(allByImageId.size() > 0) {
+            if (allByImageId.size() > 0) {
                 GDAL_CONTAINER_ID = allByImageId.get(0).getContainerId();
             }
         });
@@ -201,7 +207,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             // 首次插入初始化文件信息，走一天内已上传的文件逻辑
             dscFileDAO.insert(pngFileInfo);
             System.out.println(pngFileInfo);
-            // 模拟上传任务，添加人任务及文件相关记录
+            // 模拟上传任务，添加任务及文件相关记录
             InitTaskParam initTaskParam = new InitTaskParam();
             initTaskParam.setIdentifier(md5);
             initTaskParam.setFileName(fileName);
@@ -300,7 +306,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             //  添加栅格服务记录
             String serviceUrl = tms_root_url + "/" + appName + "/dsc-raster-service/getRasterTiles" + "/" + userId + "/" + serviceId + "/{z}/{x}/{y}.png";
             List<Double> tiffBbox = GeoToolsUtil.getTiffBbox();
-            DscRasterService dscRasterService = new DscRasterService(serviceId, serviceName, "tiles", serviceUrl, tifFileId, tifFileId, tiffBbox, userId, 1L, DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+            DscRasterService dscRasterService = new DscRasterService(serviceId, serviceName, "tiles", serviceUrl, tifFileId, tifFileId, tiffBbox, userId, 1L, DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), null);
             dscRasterSDAO.insert(dscRasterService);
             DscUserRasterS userRasterS = new DscUserRasterS(IdUtil.randomUUID(), userId, serviceId, serviceName, "tiles");
             dscUserRasterSDAO.insert(userRasterS);
@@ -344,34 +350,36 @@ public class DscRasterSServiceIml implements DscRasterSService {
             return CommonResult.failed("未找到该服务");
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(rasterSId);
-        String fileId = dscRasterService.getFileId();
-        String tifId = dscRasterService.getOriFileId();
-        Optional<DscFileInfo> byId1 = dscFileDAO.findById(fileId);
-        if (!byId1.isPresent()) {
-            return CommonResult.failed("未找到该文件");
-        }
-        DscFileInfo dscFileInfo = byId1.get();
-        // 删除服务对应的spng快照及tif的发布记录
-        if(dscRasterService.getType().equals("image") && !Objects.isNull(tifId)){
-            Optional<DscFileInfo> byId2 = dscFileDAO.findById(tifId);
-            if (!byId2.isPresent()) {
-                return CommonResult.failed("未找到该文件的原始tif文件");
-            }
-            DscFileInfo dscTifInfo = byId2.get();
-            dscTifInfo.setPublishCount(dscTifInfo.getPublishCount()-1);
-            dscFileDAO.save(dscTifInfo);
-            dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);     //文件拥有者数 - 1
-            log.info("服务快照删除成功");
-        }else{
-            dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() - 1);
-        }
-        if(dscRasterService.getType().equals("tiles")){     //删除瓦片目录
-            String tilesDirPath = rootPath + minioConfig.getRasterTilesBucket() + File.separator + userId + File.separator + rasterSId;
-            FileUtils.deleteDirectory(tilesDirPath);
-        }
-        dscFileDAO.save(dscFileInfo);
+//        String fileId = dscRasterService.getFileId();
+//        String tifId = dscRasterService.getOriFileId();
+//        Optional<DscFileInfo> byId1 = dscFileDAO.findById(fileId);
+//        if (!byId1.isPresent()) {
+//            return CommonResult.failed("未找到该文件");
+//        }
+//        DscFileInfo dscFileInfo = byId1.get();
+        // 不再删除服务对应的spng快照及修改tif的发布记录，迁移至定时任务
+//        if (dscRasterService.getType().equals("image") && !Objects.isNull(tifId)) {
+//            Optional<DscFileInfo> byId2 = dscFileDAO.findById(tifId);
+//            if (!byId2.isPresent()) {
+//                return CommonResult.failed("未找到该文件的原始tif文件");
+//            }
+//            DscFileInfo dscTifInfo = byId2.get();
+//            dscTifInfo.setPublishCount(dscTifInfo.getPublishCount() - 1);
+//            dscFileDAO.save(dscTifInfo);
+//            dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);     //文件拥有者数 - 1
+//            log.info("服务快照删除成功");
+//        } else {
+//            dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() - 1);
+//        }
+//        if (dscRasterService.getType().equals("tiles")) {     //删除瓦片目录
+//            String tilesDirPath = rootPath + minioConfig.getRasterTilesBucket() + File.separator + userId + File.separator + rasterSId;
+//            FileUtils.deleteDirectory(tilesDirPath);
+//        }
+//        dscFileDAO.save(dscFileInfo);
+//        dscRasterSDAO.deleteById(rasterSId);
+        dscRasterService.setOwnerCount(dscRasterService.getOwnerCount()-1);
+        dscRasterSDAO.save(dscRasterService);
         dscUserRasterSDAO.delete(dscUserRasterS);
-        dscRasterSDAO.deleteById(rasterSId);
         return CommonResult.success("删除成功!");
     }
 
@@ -414,5 +422,111 @@ public class DscRasterSServiceIml implements DscRasterSService {
         } catch (IOException ignored) {
 
         }
+    }
+
+    @Override
+    public CommonResult<String> addRasterSCopy(GetRasterSCopyDTO getRasterSCopyDTO) {
+        DscUserScene byUserIdAndSceneId = dscUserSceneDAO.findByUserIdAndSceneId(getRasterSCopyDTO.getUserId(), getRasterSCopyDTO.getSceneId());
+        if (Objects.isNull(byUserIdAndSceneId)) {
+            return CommonResult.failed("场景不存在！");
+        }
+        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(getRasterSCopyDTO.getUserId(), getRasterSCopyDTO.getRasterSId());
+        if (Objects.isNull(dscUserRasterS)) {
+            return CommonResult.failed("未找到该服务");
+        }
+        DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(getRasterSCopyDTO.getRasterSId());
+        Optional<DscFileInfo> byId1 = dscFileDAO.findById(dscRasterService.getFileId());
+        if (!byId1.isPresent()) {
+            return CommonResult.failed("未找到服务文件");
+        }
+        DscFileInfo dscFileInfo = byId1.get();
+        Path filePath = Paths.get(rootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey());
+        String outputDirPath = rootPath + minioConfig.getBucketName() + File.separator + getRasterSCopyDTO.getUserId();
+        String filePhysicalName = IdUtil.randomUUID() + ".png";
+        String copyFilePath = outputDirPath + File.separator + filePhysicalName;
+        // 创建副本文件
+        try {
+            Files.copy(filePath, Paths.get(copyFilePath), StandardCopyOption.REPLACE_EXISTING);
+            // 添加副本png的文件信息
+            // 只更改必要信息，其他信息沿用源png
+            File copyFile = new File(copyFilePath);
+            if (!copyFile.exists()) {
+                return CommonResult.failed("获取失败，创建副本出错！");
+            }
+            FileInputStream fileInputStream = new FileInputStream(copyFile);
+            String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
+            dscFileInfo.setId(IdUtil.objectId()).
+                    setCreatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
+                    .setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
+                    .setMd5(md5).setSize(copyFile.length()).setObjectKey(getRasterSCopyDTO.getUserId() + File.separator + copyFile.getName());
+            // 首次插入初始化文件信息，走一天内已上传的文件逻辑
+            dscFileDAO.insert(dscFileInfo);
+            System.out.println(dscFileInfo);
+            // 模拟上传任务，添加任务及文件相关记录
+            InitTaskParam initTaskParam = new InitTaskParam();
+            initTaskParam.setIdentifier(md5).setFileName(dscFileInfo.getFileName())
+                    .setFileId(dscFileInfo.getId()).setUserId(getRasterSCopyDTO.getUserId())
+                    .setTotalSize(copyFile.length()).setChunkSize(copyFile.length())
+                    .setObjectName(dscFileInfo.getFileName().substring(0, dscFileInfo.getFileName().lastIndexOf(".")));
+            TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
+            // spng不增加catalog记录
+            UploadFileDTO uploadFileDTO = new UploadFileDTO(getRasterSCopyDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), null);
+            log.info(dscFileService.create(uploadFileDTO).getMessage());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        //  添加栅格服务的副本记录
+        String rasterSUrl = minioConfig.getEndpoint() + File.separator + minioConfig.getBucketName() + File.separator + dscFileInfo.getObjectKey();
+        RasterSRef rasterSRef = new RasterSRef(getRasterSCopyDTO.getSceneId(), dscFileInfo.getId(), rasterSUrl);
+        List<RasterSRef> references = dscRasterService.getReferences();
+        if (references == null) {
+            references = new ArrayList<>();
+        }
+        references.add(rasterSRef);
+        dscRasterService.setReferences(references);
+        // 服务引用次数+1
+        dscRasterService.setOwnerCount(dscRasterService.getOwnerCount() + 1);
+        dscRasterSDAO.save(dscRasterService);
+        return CommonResult.success(rasterSUrl, "添加副本成功");
+    }
+
+    @Override
+    public CommonResult<String> deleteRasterSCopy(String sceneId, String rasterSId) {
+        DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(rasterSId);
+        if (Objects.isNull(dscRasterService)) {
+            return CommonResult.failed("未找到该服务");
+        }
+        // 删除服务对应的场景子服务
+        List<RasterSRef> refs = dscRasterService.getReferences();
+        Iterator<RasterSRef> iterator = refs.iterator();
+        while (iterator.hasNext()) {
+            RasterSRef rasterSRef = iterator.next();
+            if (rasterSRef.getSceneId().equals(sceneId)) {
+                // 删除文件
+                Optional<DscFileInfo> byId = dscFileDAO.findById(rasterSRef.getFileId());
+                if (byId.isPresent()) {
+                    DscFileInfo dscFileInfo = byId.get();
+                    dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);
+                }
+                // 摘除子服务
+                iterator.remove();
+                break;
+            }
+        }
+        dscRasterService.setReferences(refs);
+        // 引用次数-1
+        dscRasterService.setOwnerCount(dscRasterService.getOwnerCount() - 1);
+        dscRasterSDAO.save(dscRasterService);
+        return CommonResult.success("删除副本成功");
+    }
+
+    @Override
+    public void updateOwnerCount(List<String> rasterSIds, boolean isPlus) {
+        int count = isPlus ? 1 : -1;
+        List<DscRasterService> dscRasterServices = dscRasterSDAO.findAllByIds(rasterSIds);
+        for (DscRasterService dscRasterService : dscRasterServices) {
+            dscRasterService.setOwnerCount(dscRasterService.getOwnerCount() + count);
+        }
+        dscRasterSDAO.saveAll(dscRasterServices);
     }
 }

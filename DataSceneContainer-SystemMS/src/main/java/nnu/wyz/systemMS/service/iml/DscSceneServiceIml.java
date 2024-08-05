@@ -5,6 +5,7 @@ import cn.hutool.db.Page;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.MongoTransactional;
@@ -14,10 +15,7 @@ import nnu.wyz.systemMS.dao.DscSceneDAO;
 import nnu.wyz.systemMS.dao.DscUserSceneDAO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.entity.*;
-import nnu.wyz.systemMS.service.DscCatalogService;
-import nnu.wyz.systemMS.service.DscDASceneService;
-import nnu.wyz.systemMS.service.DscGDVSceneService;
-import nnu.wyz.systemMS.service.DscSceneService;
+import nnu.wyz.systemMS.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +29,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
+@Slf4j
 public class DscSceneServiceIml implements DscSceneService {
 
     @Autowired
@@ -53,6 +52,12 @@ public class DscSceneServiceIml implements DscSceneService {
 
     @Autowired
     private DscCatalogService dscCatalogService;
+
+    @Autowired
+    private DscVectorSService dscVectorSService;
+
+    @Autowired
+    private DscRasterSService dscRasterSService;
 
     @Autowired
     private MinioConfig minioConfig;
@@ -105,7 +110,18 @@ public class DscSceneServiceIml implements DscSceneService {
         dscSceneDAO.delete(dscScene);
         String sceneType = dscScene.getType();
         if (sceneType.equals("GDV")) {
-            dscGDVSceneConfigDAO.delete(dscGDVSceneConfigDAO.findBySceneId(sceneId));
+            DscGDVSceneConfig dscGDVSceneConfig = dscGDVSceneConfigDAO.findBySceneId(sceneId);
+            // 删除除tif栅格外的服务引用，ownerCount-1
+            //TODO:暂时只在删除制图场景时进行该操作，等分析场景保存功能完善后，增加该操作
+            ServiceRefs minusRefs = dscGDVSceneService.getSourcesToMinusRef(dscGDVSceneConfig.getSources(), new ArrayList<>(),false);
+            log.info("删除场景引用的矢量服务：" + minusRefs.getVectorRefs());
+            log.info("删除场景引用的栅格服务：" + minusRefs.getRasterRefs());
+            if (!minusRefs.getVectorRefs().isEmpty())
+                dscVectorSService.updateOwnerCount(minusRefs.getVectorRefs(), false);
+            if (!minusRefs.getRasterRefs().isEmpty())
+                dscRasterSService.updateOwnerCount(minusRefs.getRasterRefs(), false);
+
+            dscGDVSceneConfigDAO.delete(dscGDVSceneConfig);
         } else if (sceneType.equals("DAS")) {
             DscDASceneConfig dscDASceneConfig = dscDASceneConfigDAO.findBySceneId(sceneId);
             dscDASceneConfigDAO.delete(dscDASceneConfig);
