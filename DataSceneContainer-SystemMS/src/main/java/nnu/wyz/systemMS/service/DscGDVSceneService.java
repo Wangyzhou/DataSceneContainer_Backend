@@ -17,6 +17,6 @@ public interface DscGDVSceneService {
 
     ServiceRefs getSourcesToAddRef(List<GDVSceneSource> lastSources, List<GDVSceneSource> currentSources);
 
-    ServiceRefs getSourcesToMinusRef(List<GDVSceneSource> lastSources, List<GDVSceneSource> currentSources, boolean skipTif);
+    ServiceRefs getSourcesToMinusRef(List<GDVSceneSource> lastSources, List<GDVSceneSource> currentSources);
 
 }

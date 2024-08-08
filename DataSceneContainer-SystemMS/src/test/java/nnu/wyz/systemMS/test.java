@@ -633,7 +633,7 @@ public class test {
         int pageIndex = 1;
         int pageSize = 4;
         PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329", "", pageIndex, pageSize);
-        CommonResult<PageInfo<DscVectorServiceInfo>> vectorSList = dscVectorSService.getVectorServiceList(pageableDTO);
+        CommonResult<PageInfo<DscVectorServiceInfo>> vectorSList = dscVectorSService.getVectorServiceList(pageableDTO, false);
         System.out.println(vectorSList.getData());
     }
 
@@ -981,9 +981,9 @@ public class test {
         publishTiff2ImageDTO.setUserId("652a5e61e4b012905c858bea");
         publishTiff2ImageDTO.setFileId("65b211ffe4b08e2b13be0131");
         publishTiff2ImageDTO.setName("test");
-        publishTiff2ImageDTO.setOutputCatalogId("d4c1b985-cce4-48bc-925b-71a0d7ba0545");
-        publishTiff2ImageDTO.setMethod("scene");
-        dscRasterSService.publishTiff2RasterS(publishTiff2ImageDTO);
+//        publishTiff2ImageDTO.setOutputCatalogId("d4c1b985-cce4-48bc-925b-71a0d7ba0545");
+//        publishTiff2ImageDTO.setMethod("scene");
+        dscRasterSService.publishTiff2RasterS(publishTiff2ImageDTO, false);
     }
 
     @Test
@@ -1370,7 +1370,7 @@ public class test {
         List<GDVSceneSource> lastSources = new ArrayList<>();
         lastSources.add(lastSource1);
         lastSources.add(lastSource2);
-        ServiceRefs sourcesToMinusRef = dscGDVSceneService.getSourcesToMinusRef(lastSources, dscGDVSceneConfig.getSources(), true);
+        ServiceRefs sourcesToMinusRef = dscGDVSceneService.getSourcesToMinusRef(lastSources, dscGDVSceneConfig.getSources());
 //        System.out.println(dscGDVSceneConfig.getSources());
 //        System.out.println(Arrays.toString(sourcesToMinusRef));
     }

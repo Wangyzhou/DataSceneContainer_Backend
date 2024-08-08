@@ -27,10 +27,10 @@ public class DscUserRasterS {
     @ApiModelProperty(value = "栅格服务ID")
     private String rasterSId;
 
-    @ApiModelProperty(value = "矢量服务名称")
+    @ApiModelProperty(value = "栅格服务名称")
     private String rasterSName;
 
-    @ApiModelProperty(value = "矢量服务类型")
+    @ApiModelProperty(value = "栅格服务类型")
     private String rasterSType;
 
 }

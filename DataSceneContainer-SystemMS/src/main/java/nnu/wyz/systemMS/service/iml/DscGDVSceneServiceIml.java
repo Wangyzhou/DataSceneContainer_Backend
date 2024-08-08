@@ -136,7 +136,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             log.info("新增引用的栅格服务：" + addRefs.getRasterRefs());
             if (!addRefs.getVectorRefs().isEmpty()) dscVectorSService.updateOwnerCount(addRefs.getVectorRefs(), true);
             if (!addRefs.getRasterRefs().isEmpty()) dscRasterSService.updateOwnerCount(addRefs.getRasterRefs(), true);
-            ServiceRefs minusRefs = getSourcesToMinusRef(lastSources, saveGDVSceneDTO.getSources(),true);
+            ServiceRefs minusRefs = getSourcesToMinusRef(lastSources, saveGDVSceneDTO.getSources());
             log.info("删除引用的矢量服务：" + minusRefs.getVectorRefs());
             log.info("删除引用的栅格服务：" + minusRefs.getRasterRefs());
             if (!minusRefs.getVectorRefs().isEmpty())
@@ -210,17 +210,16 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
      *
      * @param lastSources
      * @param currentSources
-     * @param skipTif 当在场景内保存时，需要跳过tif栅格服务，因为这类服务会在添加源和删除源时单独更新；当场景外直接删除场景时，不能跳过tif栅格服务，因为源还没删
      * @return
      */
 
     @Override
-    public ServiceRefs getSourcesToMinusRef(List<GDVSceneSource> lastSources, List<GDVSceneSource> currentSources, boolean skipTif) {
+    public ServiceRefs getSourcesToMinusRef(List<GDVSceneSource> lastSources, List<GDVSceneSource> currentSources) {
         List<String> minusVecRefList = new ArrayList<>();
         List<String> minusRasRefList = new ArrayList<>();
         for (GDVSceneSource lastSource : lastSources) {
             // 跳过tif栅格服务，因为这类服务会在添加源和删除源时单独更新
-            if (skipTif && "image".equals(lastSource.getSourceType()) && "tif".equals(lastSource.getFileType())) {
+            if ("image".equals(lastSource.getSourceType()) && "tif".equals(lastSource.getFileType())) {
                 continue;
             }
             // 跳过聚合源，因为这类源实际上是去掉_cluster之后的id的源的同一引用

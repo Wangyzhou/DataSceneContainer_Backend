@@ -65,6 +65,9 @@ public class DscRasterSServiceIml implements DscRasterSService {
     private DscUserSceneDAO dscUserSceneDAO;
 
     @Autowired
+    private DscPublicServiceDAO dscPublicServiceDAO;
+
+    @Autowired
     private PythonDockerConfig pythonDockerConfig;
 
     @Autowired
@@ -148,16 +151,16 @@ public class DscRasterSServiceIml implements DscRasterSService {
     }
 
     @Override
-    public CommonResult<String> publishTiff2RasterS(PublishTiff2ImageDTO publishTiff2ImageDTO) {
+    public CommonResult<String> publishTiff2RasterS(PublishTiff2ImageDTO publishTiff2ImageDTO, boolean isPublic) {
         String pyPath = scriptPath + "tif2png.py";
         Optional<DscFileInfo> byId = dscFileDAO.findById(publishTiff2ImageDTO.getFileId());
         if (!byId.isPresent()) {
             return CommonResult.failed("未找到该文件!");
         }
-        Optional<DscCatalog> byCatalog = dscCatalogDAO.findById(publishTiff2ImageDTO.getOutputCatalogId());
-        if (!byCatalog.isPresent()) {
-            return CommonResult.failed("未找到载体目录!");
-        }
+//        Optional<DscCatalog> byCatalog = dscCatalogDAO.findById(publishTiff2ImageDTO.getOutputCatalogId());
+//        if (!byCatalog.isPresent()) {
+//            return CommonResult.failed("未找到载体目录!");
+//        }
         DscFileInfo dscFileInfo = byId.get();
         String tiffPath = rootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
         //  物理存储在dsc-files桶
@@ -220,7 +223,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             // UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), publishTiff2ImageDTO.getOutputCatalogId());
             // spng不增加catalog记录
             UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), null);
-            log.info(dscFileService.create(uploadFileDTO).getMessage());
+            log.info(dscFileService.create(uploadFileDTO, false).getMessage());
             //  添加栅格服务记录
             DscRasterService dscRasterService = new DscRasterService();
             String rasterId = IdUtil.randomUUID();
@@ -236,14 +239,25 @@ public class DscRasterSServiceIml implements DscRasterSService {
                     .setOwnerCount(1L)
                     .setUrl(rasterSUrl);
             dscRasterSDAO.insert(dscRasterService);
-            DscUserRasterS dscUserRasterS = new DscUserRasterS();
-            dscUserRasterS
-                    .setId(IdUtil.randomUUID())
-                    .setRasterSName(publishTiff2ImageDTO.getName())
-                    .setRasterSId(rasterId)
-                    .setUserId(publishTiff2ImageDTO.getUserId())
-                    .setRasterSType("image");
-            dscUserRasterSDAO.insert(dscUserRasterS);
+            // 区分公共和个人
+            if (isPublic) {
+                DscPublicService dscPublicService = new DscPublicService();
+                dscPublicService
+                        .setId(rasterId)
+                        .setServiceName(publishTiff2ImageDTO.getName())
+                        .setServiceType("image")
+                        .setPublisher(publishTiff2ImageDTO.getUserId());
+                dscPublicServiceDAO.insert(dscPublicService);
+            } else {
+                DscUserRasterS dscUserRasterS = new DscUserRasterS();
+                dscUserRasterS
+                        .setId(IdUtil.randomUUID())
+                        .setRasterSName(publishTiff2ImageDTO.getName())
+                        .setRasterSId(rasterId)
+                        .setUserId(publishTiff2ImageDTO.getUserId())
+                        .setRasterSType("image");
+                dscUserRasterSDAO.insert(dscUserRasterS);
+            }
             //增加文件发布记录（tif）
             dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() + 1);
             dscFileDAO.save(dscFileInfo);
@@ -320,14 +334,18 @@ public class DscRasterSServiceIml implements DscRasterSService {
     }
 
     @Override
-    public CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO) {
+    public CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO, boolean isPublic) {
         String userId = pageableDTO.getCriteria();
         String keyword = pageableDTO.getKeyword(); // 新增关键词参数
         Integer pageIndex = pageableDTO.getPageIndex();
         Integer pageSize = pageableDTO.getPageSize();
-        List<DscRasterService> rsListNoLimit = dscUserRasterSDAO.findAllByUserId(userId)
-                .stream()
-                .map(DscUserRasterS::getRasterSId)
+        List<String> rsIds;
+        if (isPublic) {
+            rsIds = dscPublicServiceDAO.findAllRasServices().stream().map(DscPublicService::getId).collect(Collectors.toList());
+        } else {
+            rsIds = dscUserRasterSDAO.findAllByUserId(userId).stream().map(DscUserRasterS::getRasterSId).collect(Collectors.toList());
+        }
+        List<DscRasterService> rsListNoLimit = rsIds.stream()
                 .map(dscRasterSDAO::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -377,7 +395,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
 //        }
 //        dscFileDAO.save(dscFileInfo);
 //        dscRasterSDAO.deleteById(rasterSId);
-        dscRasterService.setOwnerCount(dscRasterService.getOwnerCount()-1);
+        dscRasterService.setOwnerCount(dscRasterService.getOwnerCount() - 1);
         dscRasterSDAO.save(dscRasterService);
         dscUserRasterSDAO.delete(dscUserRasterS);
         return CommonResult.success("删除成功!");
@@ -458,7 +476,9 @@ public class DscRasterSServiceIml implements DscRasterSService {
             dscFileInfo.setId(IdUtil.objectId()).
                     setCreatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
                     .setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
-                    .setMd5(md5).setSize(copyFile.length()).setObjectKey(getRasterSCopyDTO.getUserId() + File.separator + copyFile.getName());
+                    .setMd5(md5).setSize(copyFile.length())
+                    .setObjectKey(getRasterSCopyDTO.getUserId() + File.separator + copyFile.getName())
+                    .setOwnerCount(0L);
             // 首次插入初始化文件信息，走一天内已上传的文件逻辑
             dscFileDAO.insert(dscFileInfo);
             System.out.println(dscFileInfo);
@@ -471,7 +491,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
             // spng不增加catalog记录
             UploadFileDTO uploadFileDTO = new UploadFileDTO(getRasterSCopyDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), null);
-            log.info(dscFileService.create(uploadFileDTO).getMessage());
+            log.info(dscFileService.create(uploadFileDTO, false).getMessage());
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -497,6 +517,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             return CommonResult.failed("未找到该服务");
         }
         // 删除服务对应的场景子服务
+        log.info("*****删除服务" + rasterSId + "对应的场景" + sceneId + "子服务*****");
         List<RasterSRef> refs = dscRasterService.getReferences();
         Iterator<RasterSRef> iterator = refs.iterator();
         while (iterator.hasNext()) {
@@ -505,10 +526,13 @@ public class DscRasterSServiceIml implements DscRasterSService {
                 // 删除文件
                 Optional<DscFileInfo> byId = dscFileDAO.findById(rasterSRef.getFileId());
                 if (byId.isPresent()) {
+                    log.info("删除子服务文件");
                     DscFileInfo dscFileInfo = byId.get();
                     dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);
+                    dscFileDAO.save(dscFileInfo);
                 }
                 // 摘除子服务
+                log.info("摘除子服务记录");
                 iterator.remove();
                 break;
             }

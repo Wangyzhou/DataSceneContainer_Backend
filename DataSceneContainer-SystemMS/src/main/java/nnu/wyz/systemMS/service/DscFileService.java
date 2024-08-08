@@ -8,7 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface DscFileService {
 
-    CommonResult<String> create(UploadFileDTO uploadFileDTO);
+    /**
+     * 文件上传
+     * @param uploadFileDTO
+     * @param isPublic 为true时代表上传公共文件，内部使用
+     * @return
+     */
+    CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic);
 
     CommonResult<String> delete(DeleteFileDTO deleteFileDTO);
 

@@ -152,7 +152,7 @@ public class DscGeoAnalysisSagaExecService {
                         initTaskParam.setObjectName(file.getName().substring(0, file.getName().lastIndexOf(".")));
                         TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
                         UploadFileDTO uploadFileDTO = new UploadFileDTO(dscGeoAnalysisExecTask.getExecutor().get("id").toString(), taskInfoDTO.getTaskRecord().getId(), dscGeoAnalysisExecTask.getParams().getWorkingDir());
-                        dscFileService.create(uploadFileDTO);
+                        dscFileService.create(uploadFileDTO, false);
                     }
                 }
             }
@@ -171,7 +171,7 @@ public class DscGeoAnalysisSagaExecService {
         List<String> commands = dscGeoAnalysisTool.getInvokeCmd();
         //格式化Input输入,目前只支持对场景文件的输入
         for (DscGeoAnalysisToolInnerParams input : dscGeoAnalysisTool.getParameters().getInputs()) {
-            if(input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getName())){
+            if (input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getName())) {
                 continue;
             }
             String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getName()).split(",");
@@ -199,7 +199,7 @@ public class DscGeoAnalysisSagaExecService {
         //格式化Options配置
         for (DscGeoAnalysisToolInnerParams option : dscGeoAnalysisTool.getParameters().getOptions()) {
             Map<String, Object> options = dscGeoAnalysisExecTask.getParams().getOptions();
-            if(!options.containsKey(option.getName())){
+            if (!options.containsKey(option.getName())) {
                 continue;
             }
             Object o = options.get(option.getName());
@@ -207,7 +207,7 @@ public class DscGeoAnalysisSagaExecService {
                 continue;
             }
             // 当类型为Value range时，前端传的值是一个数组，为saga做特殊处理
-            if(option.getType().equals("Value Range")) {
+            if (option.getType().equals("Value Range")) {
                 ArrayList<Double> valueRange = (ArrayList<Double>) o;
                 commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier() + "_MIN", valueRange.get(0)));
                 commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier() + "_MAX", valueRange.get(1)));

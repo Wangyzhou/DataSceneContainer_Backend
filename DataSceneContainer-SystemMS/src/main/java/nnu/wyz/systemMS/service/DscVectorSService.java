@@ -16,13 +16,25 @@ public interface DscVectorSService {
 
     void getMvt(int zoom, int x, int y, String tableName, HttpServletResponse response);
 
-    CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(PageableDTO pageableDTO);
+    /**
+     *
+     * @param pageableDTO
+     * @param isPublic 区分公共和个人
+     * @return
+     */
+    CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(PageableDTO pageableDTO, boolean isPublic);
 
     CommonResult<String> deleteVectorService(String userId, String vectorSId);
 
     CommonResult<List<DscVectorServiceInfo>> getVectorServicesByFileId(String fileId);
 
-    CommonResult<String> publishGeoJSON2VectorS(PublishGeoJSONDTO publishGeoJSONDTO);
+    /**
+     *
+     * @param publishGeoJSONDTO
+     * @param isPublic 区分公共和个人
+     * @return
+     */
+    CommonResult<String> publishGeoJSON2VectorS(PublishGeoJSONDTO publishGeoJSONDTO, boolean isPublic);
 
     CommonResult<List<DscVectorServiceInfo>> getVectorServiceListByFileId(String fileId);
 

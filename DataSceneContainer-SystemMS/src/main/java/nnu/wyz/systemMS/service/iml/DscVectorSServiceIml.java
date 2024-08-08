@@ -51,6 +51,9 @@ public class DscVectorSServiceIml implements DscVectorSService {
     private ShpProcessDAO shpProcessDAO;
 
     @Autowired
+    private DscPublicServiceDAO dscPublicServiceDAO;
+
+    @Autowired
     private MinioConfig minioConfig;
     @Value("${fileSavePath}")
     private String fileRootPath;
@@ -75,7 +78,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
 
     @Override
     public CommonResult<String> publishShp2VectorS(PublishShapefileDTO publishShapefileDTO) {
-        if(Pattern.matches("[0-9].*", publishShapefileDTO.getName())) {
+        if (Pattern.matches("[0-9].*", publishShapefileDTO.getName())) {
             return CommonResult.failed("服务名称不能以数字开头");
         }
         String userId = publishShapefileDTO.getUserId();
@@ -160,8 +163,8 @@ public class DscVectorSServiceIml implements DscVectorSService {
                 center.add((SLat + NLat) / 2);
                 DscVectorServiceInfo dscVectorServiceInfo = new DscVectorServiceInfo();
                 String mvtId = IdUtil.objectId();
-                if(mvtUrl.endsWith("/")){
-                    mvtUrl = mvtUrl.substring(0,mvtUrl.length()-1);
+                if (mvtUrl.endsWith("/")) {
+                    mvtUrl = mvtUrl.substring(0, mvtUrl.length() - 1);
                 }
                 dscVectorServiceInfo.setId(mvtId)
                         .setName(publishShapefileDTO.getName())
@@ -200,14 +203,19 @@ public class DscVectorSServiceIml implements DscVectorSService {
     }
 
     @Override
-    public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(PageableDTO pageableDTO) {
+    public CommonResult<PageInfo<DscVectorServiceInfo>> getVectorServiceList(PageableDTO pageableDTO, boolean isPublic) {
         String userId = pageableDTO.getCriteria();
         String keyword = pageableDTO.getKeyword(); // 新增关键词参数
         Integer pageIndex = pageableDTO.getPageIndex();
         Integer pageSize = pageableDTO.getPageSize();
-        List<DscVectorServiceInfo> vsListNoLimit = dscUserVectorSDAO.findAllByUserId(userId)
-                .stream()
-                .map(DscUserVectorS::getVectorSId)
+        List<String> vsIds;
+        // 区分公共和个人
+        if (isPublic) {
+            vsIds = dscPublicServiceDAO.findAllVecServices().stream().map(DscPublicService::getId).collect(Collectors.toList());
+        } else {
+            vsIds = dscUserVectorSDAO.findAllByUserId(userId).stream().map(DscUserVectorS::getVectorSId).collect(Collectors.toList());
+        }
+        List<DscVectorServiceInfo> vsListNoLimit = vsIds.stream()
                 .map(dscVectorSDAO::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -265,7 +273,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
     }
 
     @Override
-    public CommonResult<String> publishGeoJSON2VectorS(PublishGeoJSONDTO publishGeoJSONDTO) {
+    public CommonResult<String> publishGeoJSON2VectorS(PublishGeoJSONDTO publishGeoJSONDTO, boolean isPublic) {
         String userId = publishGeoJSONDTO.getUserId();
         String fileId = publishGeoJSONDTO.getFileId();
         String name = publishGeoJSONDTO.getName();
@@ -273,9 +281,18 @@ public class DscVectorSServiceIml implements DscVectorSService {
         if (!byId.isPresent()) {
             return CommonResult.failed("文件不存在！");
         }
-        DscUserVectorS isExist = dscUserVectorSDAO.findDscUserVectorSByUserIdAndVectorSNameAndVectorSType(userId, name, "geojson");
-        if (!Objects.isNull(isExist)) {
-            return CommonResult.failed("存在名称相同的GeoJSON服务，请更改发布服务的名称！");
+        if (isPublic) {
+            // 发布到公共资源
+            DscPublicService isExist = dscPublicServiceDAO.findDscPublicServiceByServiceNameAndServiceType(name, "geojson");
+            if (!Objects.isNull(isExist)) {
+                return CommonResult.failed("存在名称相同的GeoJSON服务，请更改发布服务的名称！");
+            }
+        } else {
+            // 个人发布时
+            DscUserVectorS isExist = dscUserVectorSDAO.findDscUserVectorSByUserIdAndVectorSNameAndVectorSType(userId, name, "geojson");
+            if (!Objects.isNull(isExist)) {
+                return CommonResult.failed("存在名称相同的GeoJSON服务，请更改发布服务的名称！");
+            }
         }
         DscFileInfo dscFileInfo = byId.get();
         //解析GeoJSON，判断是否可以发布
@@ -317,13 +334,24 @@ public class DscVectorSServiceIml implements DscVectorSService {
                 .setCenter(center)
                 .setPublishTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         dscVectorSDAO.insert(dscVectorServiceInfo);
-        DscUserVectorS dscUserVectorS = new DscUserVectorS();
-        dscUserVectorS.setId(IdUtil.objectId())
-                .setUserId(userId)
-                .setVectorSId(serviceId)
-                .setVectorSName(name)
-                .setVectorSType("geojson");
-        dscUserVectorSDAO.insert(dscUserVectorS);
+        if (isPublic) {
+            // 发布到公共资源
+            DscPublicService dscPublicService = new DscPublicService();
+            dscPublicService.setId(serviceId)
+                    .setServiceName(name)
+                    .setServiceType("geojson")
+                    .setPublisher(userId);
+            dscPublicServiceDAO.insert(dscPublicService);
+        } else {
+            // 个人发布时
+            DscUserVectorS dscUserVectorS = new DscUserVectorS();
+            dscUserVectorS.setId(IdUtil.objectId())
+                    .setUserId(userId)
+                    .setVectorSId(serviceId)
+                    .setVectorSName(name)
+                    .setVectorSType("geojson");
+            dscUserVectorSDAO.insert(dscUserVectorS);
+        }
         //增加文件发布记录
         dscFileInfo.setPublishCount(dscFileInfo.getPublishCount() + 1);
         dscFileDAO.save(dscFileInfo);

@@ -13,11 +13,22 @@ public interface DscRasterSService {
 
     CommonResult<String> publishImage2RasterS(PublishImageDTO publishImageDTO);
 
-    CommonResult<String> publishTiff2RasterS(PublishTiff2ImageDTO publishTiff2ImageDTO);
+    /**
+     * @param publishTiff2ImageDTO
+     * @param isPublic             区分公共和个人
+     * @return
+     */
+    CommonResult<String> publishTiff2RasterS(PublishTiff2ImageDTO publishTiff2ImageDTO, boolean isPublic);
 
     CommonResult<String> publishTiff2TMS(PublishTiff2TMSDTO publishTiff2TMSDTO);
 
-    CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO);
+    /**
+     *
+     * @param pageableDTO
+     * @param isPublic 区分公共和个人
+     * @return
+     */
+    CommonResult<PageInfo<DscRasterService>> getRasterServiceList(PageableDTO pageableDTO, boolean isPublic);
 
     CommonResult<String> deleteRasterService(String userId, String rasterSId);
 

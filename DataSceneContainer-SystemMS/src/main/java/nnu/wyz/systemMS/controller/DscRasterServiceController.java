@@ -22,21 +22,21 @@ import java.util.List;
 public class DscRasterServiceController {
 
     @Resource
-    private DscRasterSService dscRasterService;
+    private DscRasterSService dscRasterSService;
 
     @PostMapping(value = "/publishImage2RasterS")
     public CommonResult<String> publishImage2RasterS(@RequestBody PublishImageDTO publishImageDTO) {
-        return dscRasterService.publishImage2RasterS(publishImageDTO);
+        return dscRasterSService.publishImage2RasterS(publishImageDTO);
     }
 
     @PostMapping(value = "/publishTiff2ImgRasterS")
     public CommonResult<String> publishTiff2ImgRasterS(@RequestBody PublishTiff2ImageDTO publishTiff2ImageDTO) {
-        return dscRasterService.publishTiff2RasterS(publishTiff2ImageDTO);
+        return dscRasterSService.publishTiff2RasterS(publishTiff2ImageDTO, false);
     }
 
     @PostMapping(value = "/publishTiff2TMS")
     public CommonResult<String> publishTiff2TMS(@RequestBody PublishTiff2TMSDTO publishTiff2TMSDTO) {
-        return dscRasterService.publishTiff2TMS(publishTiff2TMSDTO);
+        return dscRasterSService.publishTiff2TMS(publishTiff2TMSDTO);
     }
 
     @GetMapping(value = "/getRasterSList/{userId}/{pageSize}/{pageIndex}")
@@ -45,18 +45,18 @@ public class DscRasterServiceController {
                                                                    @PathVariable(value = "pageSize") Integer pageSize,
                                                                    @PathVariable(value = "pageIndex") Integer pageIndex) {
         PageableDTO pageableDTO = new PageableDTO(userId, keyword, pageIndex, pageSize);
-        return dscRasterService.getRasterServiceList(pageableDTO);
+        return dscRasterSService.getRasterServiceList(pageableDTO, false);
     }
 
     @DeleteMapping(value = "/delete/{userId}/{rasterSId}")
     public CommonResult<String> deleteRasterS(@PathVariable(value = "userId") String userId,
                                               @PathVariable(value = "rasterSId") String rasterSId) {
-        return dscRasterService.deleteRasterService(userId, rasterSId);
+        return dscRasterSService.deleteRasterService(userId, rasterSId);
     }
 
     @GetMapping(value = "/getRasterSListByFileId/{fileId}")
     public CommonResult<List<DscRasterService>> getRasterSListByFileId(@PathVariable(value = "fileId") String fileId) {
-        return dscRasterService.getRasterServiceListByFileId(fileId);
+        return dscRasterSService.getRasterServiceListByFileId(fileId);
     }
 
     @GetMapping(value = "/getRasterTiles/{userId}/{rasterSId}/{z}/{x}/{y}.png")
@@ -66,7 +66,7 @@ public class DscRasterServiceController {
                                @PathVariable(value = "userId") String userId,
                                @PathVariable(value = "rasterSId") String rasterSId,
                                HttpServletResponse response) {
-        dscRasterService.getRasterTiles(z, x, y, userId, rasterSId, response);
+        dscRasterSService.getRasterTiles(z, x, y, userId, rasterSId, response);
     }
 
     /**
@@ -76,11 +76,11 @@ public class DscRasterServiceController {
      */
     @PostMapping(value = "/addRasterSCopy")
     public CommonResult<String> addRasterSCopy(@RequestBody GetRasterSCopyDTO getRasterSCopyDTO) {
-        return dscRasterService.addRasterSCopy(getRasterSCopyDTO);
+        return dscRasterSService.addRasterSCopy(getRasterSCopyDTO);
     }
 
     @DeleteMapping(value = "/deleteRasterSCopy/{sceneId}/{rasterSId}")
     public CommonResult<String> deleteRasterSCopy(@PathVariable String sceneId, @PathVariable String rasterSId) {
-        return dscRasterService.deleteRasterSCopy(sceneId, rasterSId);
+        return dscRasterSService.deleteRasterSCopy(sceneId, rasterSId);
     }
 }

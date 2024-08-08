@@ -100,7 +100,7 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
             initTaskParam.setObjectName(file.getName().substring(0, file.getName().lastIndexOf(".")));
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
             UploadFileDTO uploadFileDTO = new UploadFileDTO(convertSgrd2GeoTIFFDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), convertSgrd2GeoTIFFDTO.getOutputDir());
-            dscFileService.create(uploadFileDTO);
+            dscFileService.create(uploadFileDTO, false);
             return CommonResult.success("转换成功");
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -123,7 +123,7 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
             treeNode.put("label", entry.getKey());
             treeNode.put("isLeaf", false);
             ArrayList<JSONObject> children = new ArrayList<>();
-            for(DscGeoAnalysisTool dscGeoAnalysisTool : entry.getValue()) {
+            for (DscGeoAnalysisTool dscGeoAnalysisTool : entry.getValue()) {
                 JSONObject child = new JSONObject();
                 child.put("id", dscGeoAnalysisTool.getId());
                 child.put("label", dscGeoAnalysisTool.getName());

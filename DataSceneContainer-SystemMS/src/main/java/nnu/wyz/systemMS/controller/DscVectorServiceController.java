@@ -31,7 +31,7 @@ public class DscVectorServiceController {
 
     @PostMapping(value = "/publishGeoJSON2VectorS")
     public CommonResult<String> publishGeoJSON2VectorS(@RequestBody PublishGeoJSONDTO publishGeoJSONDTO) {
-        return dscVectorSService.publishGeoJSON2VectorS(publishGeoJSONDTO);
+        return dscVectorSService.publishGeoJSON2VectorS(publishGeoJSONDTO, false);
     }
 
     @GetMapping(value = "/getMvt/{tableName}/{zoom}/{x}/{y}.pbf")
@@ -45,7 +45,7 @@ public class DscVectorServiceController {
                                                                        @PathVariable Integer pageSize,
                                                                        @PathVariable Integer pageIndex) {
         PageableDTO pageableDTO = new PageableDTO(userId, keyword, pageIndex, pageSize);
-        return dscVectorSService.getVectorServiceList(pageableDTO);
+        return dscVectorSService.getVectorServiceList(pageableDTO, false);
     }
 
     @DeleteMapping(value = "/delete/{userId}/{vectorSId}")

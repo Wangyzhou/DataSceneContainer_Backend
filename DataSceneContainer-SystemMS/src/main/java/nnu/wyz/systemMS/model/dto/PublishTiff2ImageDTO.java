@@ -14,11 +14,11 @@ public class PublishTiff2ImageDTO {
 
     private String fileId;
 
-    private String outputCatalogId;
+//    private String outputCatalogId;
 
     private String name;
 
     // 发布的方式：1、从个人空间发布（user);2、从场景中发布（scene)
-    private String method;
+//    private String method;
 
 }

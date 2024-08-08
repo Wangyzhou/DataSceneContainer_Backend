@@ -48,7 +48,7 @@ public class DscSceneServiceIml implements DscSceneService {
     private DscGDVSceneService dscGDVSceneService;
 
     @Autowired
-    private  DscDASceneService dscDASceneService;
+    private DscDASceneService dscDASceneService;
 
     @Autowired
     private DscCatalogService dscCatalogService;
@@ -98,7 +98,7 @@ public class DscSceneServiceIml implements DscSceneService {
         DscScene dscScene = byId.get();
         String thumbnail = dscScene.getThumbnail();
         //如果缩略图存在
-        if (thumbnail != null && !thumbnail.isEmpty()){
+        if (thumbnail != null && !thumbnail.isEmpty()) {
             int oKBegin = thumbnail.indexOf(userId);
             String objectKey = thumbnail.substring(oKBegin);
             //删除缩略图
@@ -113,14 +113,23 @@ public class DscSceneServiceIml implements DscSceneService {
             DscGDVSceneConfig dscGDVSceneConfig = dscGDVSceneConfigDAO.findBySceneId(sceneId);
             // 删除除tif栅格外的服务引用，ownerCount-1
             //TODO:暂时只在删除制图场景时进行该操作，等分析场景保存功能完善后，增加该操作
-            ServiceRefs minusRefs = dscGDVSceneService.getSourcesToMinusRef(dscGDVSceneConfig.getSources(), new ArrayList<>(),false);
+            ServiceRefs minusRefs = dscGDVSceneService.getSourcesToMinusRef(dscGDVSceneConfig.getSources(), new ArrayList<>());
             log.info("删除场景引用的矢量服务：" + minusRefs.getVectorRefs());
-            log.info("删除场景引用的栅格服务：" + minusRefs.getRasterRefs());
+            log.info("删除场景引用的非tif栅格服务：" + minusRefs.getRasterRefs());
             if (!minusRefs.getVectorRefs().isEmpty())
                 dscVectorSService.updateOwnerCount(minusRefs.getVectorRefs(), false);
             if (!minusRefs.getRasterRefs().isEmpty())
+                // 更新非tif源的引用
                 dscRasterSService.updateOwnerCount(minusRefs.getRasterRefs(), false);
-
+            // 删除场景所有tif源副本
+            List<String> tifSourceIds = dscGDVSceneConfig.getSources()
+                    .stream()
+                    .filter(gdvSceneSource -> "image".equals(gdvSceneSource.getSourceType()) && "tif".equals(gdvSceneSource.getFileType()))
+                    .map(GDVSceneSource::getSourceId).collect(Collectors.toList());
+            tifSourceIds
+                    .stream()
+                    .forEach(id -> dscRasterSService.deleteRasterSCopy(sceneId, id));
+            log.info("删除场景引用的tif栅格服务：" + tifSourceIds);
             dscGDVSceneConfigDAO.delete(dscGDVSceneConfig);
         } else if (sceneType.equals("DAS")) {
             DscDASceneConfig dscDASceneConfig = dscDASceneConfigDAO.findBySceneId(sceneId);

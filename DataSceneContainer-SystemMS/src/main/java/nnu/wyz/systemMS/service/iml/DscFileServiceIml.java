@@ -62,16 +62,8 @@ public class DscFileServiceIml implements DscFileService {
     private DscUserDAO dscUserDAO;
 
     @Autowired
-    private DscVectorSDAO dscVectorSDAO;
+    private DscPublicFileDAO dscPublicFileDAO;
 
-    @Autowired
-    private DscRasterSDAO dscRasterSDAO;
-
-    @Autowired
-    private DscRasterSService dscRasterSService;
-
-    @Autowired
-    private DscVectorSService dscVectorSService;
     @Autowired
     private SysUploadTaskService sysUploadTaskService;
 
@@ -102,7 +94,7 @@ public class DscFileServiceIml implements DscFileService {
      */
     @Override
     @SneakyThrows
-    public CommonResult<String> create(UploadFileDTO uploadFileDTO) {
+    public CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic) {
         String userId = uploadFileDTO.getUserId();
         String taskId = uploadFileDTO.getTaskId();
         String catalogId = uploadFileDTO.getCatalogId();
@@ -151,6 +143,17 @@ public class DscFileServiceIml implements DscFileService {
                 dscCatalog.setUpdatedTime(dateTime);
                 dscCatalogDAO.save(dscCatalog);
             }
+            // 如果是公共资源
+            if (isPublic) {
+                DscPublicFile dscPublicFile = new DscPublicFile();
+                dscPublicFile.setId(fileId)
+                        .setName(fileName)
+                        .setType(dscFileInfo.getFileSuffix())
+                        .setSize(dscFileInfo.getSize())
+                        .setUpdatedTime(dateTime)
+                        .setCreatedUser(userId);
+                dscPublicFileDAO.insert(dscPublicFile);
+            }
             return CommonResult.success("文件：" + fileName + "上传成功！");
         }
         //若用户未上传过该文件，则创建该文件记录并更新目录
@@ -195,6 +198,17 @@ public class DscFileServiceIml implements DscFileService {
                 dscCatalog.setTotal(dscCatalog.getTotal() + 1);
                 dscCatalog.setUpdatedTime(dateTime);
                 dscCatalogDAO.save(dscCatalog);
+            }
+            // 如果是公共资源
+            if (isPublic) {
+                DscPublicFile dscPublicFile = new DscPublicFile();
+                dscPublicFile.setId(fileId)
+                        .setName(fileName)
+                        .setType(ext)
+                        .setSize(size)
+                        .setUpdatedTime(dateTime)
+                        .setCreatedUser(userId);
+                dscPublicFileDAO.insert(dscPublicFile);
             }
             return CommonResult.success("文件：" + fileName + "上传成功！");
         } catch (Exception e) {
@@ -479,7 +493,7 @@ public class DscFileServiceIml implements DscFileService {
                 uploadFileDTO.setUserId(userId)
                         .setTaskId(data.getTaskRecord().getId())
                         .setCatalogId(catalogId);
-                CommonResult<String> upload = this.create(uploadFileDTO);
+                CommonResult<String> upload = this.create(uploadFileDTO, false);
                 if (upload.getCode() == 200) {
                     successCount++;
                 }
