@@ -26,7 +26,7 @@ public interface DscUserService {
 
     CommonResult<List<ReturnUsersByEmailLikeDTO>> getUserByEmailLike(String keyWord);
 
-    CommonResult<DscUser> getUserInfo(String userId);
+    CommonResult<UserInfoDTO> getUserInfo(String userId);
 
     CommonResult<ReturnUserUpdateDTO> updateUserInfo(UserUpdateDTO userUpdateDTO);
 

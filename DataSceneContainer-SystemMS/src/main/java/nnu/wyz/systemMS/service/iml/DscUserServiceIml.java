@@ -407,10 +407,11 @@ public class DscUserServiceIml implements DscUserService {
     }
 
     @Override
-    public CommonResult<DscUser> getUserInfo(String userId) {
+    public CommonResult<UserInfoDTO> getUserInfo(String userId) {
         DscUser user = dscUserDAO.findDscUserById(userId);
-        System.out.println(user);
-        return CommonResult.success(user, "获取个人信息配置成功！");
+        UserInfoDTO userInfoDTO = new UserInfoDTO(user.getUserName(), user.getEmail(), user.getInstitution(), user.getAvatar());
+        System.out.println(userInfoDTO);
+        return CommonResult.success(userInfoDTO, "获取个人信息配置成功！");
     }
 
     @Override
@@ -425,7 +426,7 @@ public class DscUserServiceIml implements DscUserService {
         ReturnUserUpdateDTO newUserDTO = new ReturnUserUpdateDTO();
         newUserDTO.setUsername(user.getUserName());
         newUserDTO.setInstitution(user.getInstitution());
-        return CommonResult.success(newUserDTO,"修改个人信息成功!");
+        return CommonResult.success(newUserDTO, "修改个人信息成功!");
     }
 
     @Override
@@ -456,7 +457,7 @@ public class DscUserServiceIml implements DscUserService {
             amazonS3.putObject(putObjectRequest);
             user.setAvatar(MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getAvatarBucket(), objectKey));
             dscUserDAO.save(user);
-            return CommonResult.success(user.getAvatar(),"头像修改成功！");
+            return CommonResult.success(user.getAvatar(), "头像修改成功！");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

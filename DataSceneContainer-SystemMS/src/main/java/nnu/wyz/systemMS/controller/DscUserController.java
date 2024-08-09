@@ -84,13 +84,9 @@ public class DscUserController {
         return dscUserService.getUserByEmailLike(keyWord);
     }
 
-    /**
-     * 测试用接口
-     * @param userId
-     */
     @ApiOperation(value = "查询个人信息")
     @GetMapping(value = "/getUserInfo/{userId}")
-    public CommonResult<DscUser> getUserInfo(@PathVariable("userId") String userId) {
+    public CommonResult<UserInfoDTO> getUserInfo(@PathVariable("userId") String userId) {
         return dscUserService.getUserInfo(userId);
     }
 
