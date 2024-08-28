@@ -32,7 +32,12 @@ public class DscPublicFile {
     private String type;
 
     /**
-     * 最后更新时间，若为目录，则为目录中孩子节点的最新更新时间
+     * 创建时间
+     */
+    private String createdTime;
+
+    /**
+     * 最后更新时间
      */
     private String updatedTime;
 

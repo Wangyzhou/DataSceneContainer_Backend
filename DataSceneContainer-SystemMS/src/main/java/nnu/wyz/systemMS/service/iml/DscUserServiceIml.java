@@ -411,7 +411,15 @@ public class DscUserServiceIml implements DscUserService {
         DscUser user = dscUserDAO.findDscUserById(userId);
         UserInfoDTO userInfoDTO = new UserInfoDTO(user.getUserName(), user.getEmail(), user.getInstitution(), user.getAvatar());
         System.out.println(userInfoDTO);
-        return CommonResult.success(userInfoDTO, "获取个人信息配置成功！");
+        return CommonResult.success(userInfoDTO, "获取个人信息成功！");
+    }
+
+    @Override
+    public CommonResult<UserInfoDTO> getUserInfoByEmail(String email) {
+        DscUser user = dscUserDAO.findDscUserByEmail(email);
+        UserInfoDTO userInfoDTO = new UserInfoDTO(user.getUserName(), user.getEmail(), user.getInstitution(), user.getAvatar());
+        System.out.println(userInfoDTO);
+        return CommonResult.success(userInfoDTO, "获取个人信息成功！");
     }
 
     @Override

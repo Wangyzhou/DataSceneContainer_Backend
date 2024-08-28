@@ -150,6 +150,7 @@ public class DscFileServiceIml implements DscFileService {
                         .setName(fileName)
                         .setType(dscFileInfo.getFileSuffix())
                         .setSize(dscFileInfo.getSize())
+                        .setCreatedTime(dateTime)
                         .setUpdatedTime(dateTime)
                         .setCreatedUser(userId);
                 dscPublicFileDAO.insert(dscPublicFile);
@@ -412,11 +413,18 @@ public class DscFileServiceIml implements DscFileService {
         if (!byId1.isPresent()) {
             return CommonResult.failed("意料之外的错误！");
         }
+        // 更新catalog记录
         DscCatalog dscCatalog = byId1.get();
         dscCatalog.getChildren().add(catalogChildrenDTO);
         dscCatalog.setTotal(dscCatalog.getTotal() + 1);
         dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MMMM-dddd HH:mm:ss"));
         dscCatalogDAO.save(dscCatalog);
+        // TODO:文件信息复制
+        DscFileInfo newFileInfo = new DscFileInfo();
+        String rootPath = fileRootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
+
+        // TODO:文件物理复制
+
         return CommonResult.success("导入个人空间成功！");
     }
 

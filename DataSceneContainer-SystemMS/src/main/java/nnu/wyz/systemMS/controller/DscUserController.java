@@ -90,6 +90,12 @@ public class DscUserController {
         return dscUserService.getUserInfo(userId);
     }
 
+    @ApiOperation(value = "根据邮箱查询个人信息")
+    @GetMapping(value = "/getUserInfoByEmail/{email}")
+    public CommonResult<UserInfoDTO> getUserInfoByEmail(@PathVariable("email") String email) {
+        return dscUserService.getUserInfoByEmail(email);
+    }
+
     @ApiOperation(value = "修改用户信息")
     @PostMapping(value = "/updateUserInfo")
     public CommonResult<ReturnUserUpdateDTO> updateUserInfo(@RequestBody UserUpdateDTO userUpdateDTO) {

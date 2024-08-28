@@ -28,6 +28,8 @@ public interface DscUserService {
 
     CommonResult<UserInfoDTO> getUserInfo(String userId);
 
+    CommonResult<UserInfoDTO> getUserInfoByEmail(String email);
+
     CommonResult<ReturnUserUpdateDTO> updateUserInfo(UserUpdateDTO userUpdateDTO);
 
     CommonResult<String> updateUserAvatar(String userId, MultipartFile avatar);
