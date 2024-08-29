@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class FileShareImportDTO {
 
+    private String userId;
+
     private String fileId;
 
     private String catalogId;

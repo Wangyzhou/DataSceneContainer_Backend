@@ -218,7 +218,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             initTaskParam.setUserId(publishTiff2ImageDTO.getUserId());
             initTaskParam.setTotalSize(pngFile.length());
             initTaskParam.setChunkSize(pngFile.length());
-            initTaskParam.setObjectName(fileName.substring(0, fileName.lastIndexOf(".")));
+            initTaskParam.setObjectName(pngFile.getName());
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
             // UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), publishTiff2ImageDTO.getOutputCatalogId());
             // spng不增加catalog记录
@@ -487,7 +487,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             initTaskParam.setIdentifier(md5).setFileName(dscFileInfo.getFileName())
                     .setFileId(dscFileInfo.getId()).setUserId(getRasterSCopyDTO.getUserId())
                     .setTotalSize(copyFile.length()).setChunkSize(copyFile.length())
-                    .setObjectName(dscFileInfo.getFileName().substring(0, dscFileInfo.getFileName().lastIndexOf(".")));
+                    .setObjectName(copyFile.getName());
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
             // spng不增加catalog记录
             UploadFileDTO uploadFileDTO = new UploadFileDTO(getRasterSCopyDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), null);

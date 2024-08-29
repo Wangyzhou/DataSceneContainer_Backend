@@ -33,7 +33,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -207,6 +209,7 @@ public class DscFileServiceIml implements DscFileService {
                         .setName(fileName)
                         .setType(ext)
                         .setSize(size)
+                        .setCreatedTime(dateTime)
                         .setUpdatedTime(dateTime)
                         .setCreatedUser(userId);
                 dscPublicFileDAO.insert(dscPublicFile);
@@ -394,6 +397,7 @@ public class DscFileServiceIml implements DscFileService {
 
     @Override
     public CommonResult<String> importResource(FileShareImportDTO fileShareImportDTO) {
+        String userId = fileShareImportDTO.getUserId();
         String fileId = fileShareImportDTO.getFileId();
         String catalogId = fileShareImportDTO.getCatalogId();
         Optional<DscFileInfo> byId = dscFileDAO.findById(fileId);
@@ -401,30 +405,64 @@ public class DscFileServiceIml implements DscFileService {
             return CommonResult.failed("意料之外的错误！");
         }
         DscFileInfo dscFileInfo = byId.get();
-        dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1);
-        dscFileDAO.save(dscFileInfo);
-        CatalogChildrenDTO catalogChildrenDTO = new CatalogChildrenDTO();
-        catalogChildrenDTO.setId(dscFileInfo.getId())
-                .setName(dscFileInfo.getFileName())
-                .setType(dscFileInfo.getFileSuffix())
-                .setSize(dscFileInfo.getSize())
-                .setUpdatedTime(dscFileInfo.getUpdatedTime());
-        Optional<DscCatalog> byId1 = dscCatalogDAO.findById(catalogId);
-        if (!byId1.isPresent()) {
-            return CommonResult.failed("意料之外的错误！");
+        // 上传create方法中已有catalog相关验证，但需要在执行复制和入库之前屏蔽错误，保持数据一致性
+        Optional<DscCatalog> byCatalogId = dscCatalogDAO.findById(catalogId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed("未找到载体目录!");
         }
-        // 更新catalog记录
-        DscCatalog dscCatalog = byId1.get();
-        dscCatalog.getChildren().add(catalogChildrenDTO);
-        dscCatalog.setTotal(dscCatalog.getTotal() + 1);
-        dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MMMM-dddd HH:mm:ss"));
-        dscCatalogDAO.save(dscCatalog);
-        // TODO:文件信息复制
-        DscFileInfo newFileInfo = new DscFileInfo();
-        String rootPath = fileRootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
-
-        // TODO:文件物理复制
-
+        DscCatalog dscCatalog = byCatalogId.get();
+        List<CatalogChildrenDTO> children = dscCatalog.getChildren();
+        for (CatalogChildrenDTO next : children) {  //判断该目录下是否有同名文件或相同文件，即判断上传环境
+            //孩子节点不为folder且文件名出现冲突
+            if (!next.getType().equals("folder") && next.getName().equals(dscFileInfo.getFileName())) {
+                return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在同名文件，请更改文件名或更换文件夹进行上传！");
+            }
+            if (next.getId().equals(fileId)) {
+                return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在相同文件，请更换文件夹进行上传！");
+            }
+        }
+        // 不需要再增加源文件引用数，现在直接增加新的文件信息和物理文件
+//        dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1);
+//        dscFileDAO.save(dscFileInfo);
+        Path originalFilePath = Paths.get(fileRootPath + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey());
+        String targetDirPath = fileRootPath + dscFileInfo.getBucketName() + File.separator + userId;
+        String filePhysicalName = IdUtil.randomUUID() + "." + dscFileInfo.getFileSuffix();
+        String targetFilePath = targetDirPath + File.separator + filePhysicalName;
+        // 物理复制文件
+        try {
+            Files.copy(originalFilePath, Paths.get(targetFilePath), StandardCopyOption.REPLACE_EXISTING);
+            // 添加新文件的文件信息
+            // 只更改必要信息，其他信息沿用源文件
+            File copyFile = new File(targetFilePath);
+            if (!copyFile.exists()) {
+                return CommonResult.failed("导入文件出错，请重试！");
+            }
+            FileInputStream fileInputStream = new FileInputStream(copyFile);
+            String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
+            dscFileInfo.setId(IdUtil.objectId())
+                    .setCreatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
+                    .setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
+                    .setMd5(md5).setSize(copyFile.length())
+                    .setCreatedUser(userId)
+                    .setPreviewCount(0L).setPublishCount(0L)
+                    .setObjectKey(userId + File.separator + copyFile.getName())
+                    .setOwnerCount(0L);
+            // 首次插入初始化文件信息，走一天内已上传的文件逻辑
+            dscFileDAO.insert(dscFileInfo);
+            System.out.println(dscFileInfo);
+            // 模拟上传任务，添加任务及文件相关记录
+            InitTaskParam initTaskParam = new InitTaskParam();
+            initTaskParam.setIdentifier(md5).setFileName(dscFileInfo.getFileName())
+                    .setFileId(dscFileInfo.getId()).setUserId(userId)
+                    .setTotalSize(copyFile.length()).setChunkSize(copyFile.length())
+                    .setObjectName(copyFile.getName()); //物理文件名称
+            TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
+            UploadFileDTO uploadFileDTO = new UploadFileDTO(userId, taskInfoDTO.getTaskRecord().getId(), catalogId);
+            CommonResult<String> result = this.create(uploadFileDTO, false);
+            log.info(result.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return CommonResult.success("导入个人空间成功！");
     }
 

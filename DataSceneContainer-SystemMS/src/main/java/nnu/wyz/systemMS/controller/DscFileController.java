@@ -71,4 +71,9 @@ public class DscFileController {
     }
 
 
+    @ApiOperation(value = "文件导入")
+    @PostMapping(value = "/import")
+    public CommonResult<String> importResource(@RequestBody FileShareImportDTO fileShareImportDTO) {
+        return dscFileService.importResource(fileShareImportDTO);
+    }
 }
