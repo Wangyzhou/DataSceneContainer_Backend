@@ -545,6 +545,27 @@ public class DscRasterSServiceIml implements DscRasterSService {
     }
 
     @Override
+    public CommonResult<String> importRasterS(ServiceShareImportDTO serviceShareImportDTO) {
+        // 服务信息的引用次数+1
+        Optional<DscRasterService> byId = dscRasterSDAO.findById(serviceShareImportDTO.getServiceId());
+        if (!byId.isPresent()) {
+            return CommonResult.failed("导入出错：服务不存在！");
+        }
+        DscRasterService dscRasterService = byId.get();
+        dscRasterService.setOwnerCount(dscRasterService.getOwnerCount() + 1);
+        dscRasterSDAO.save(dscRasterService);
+        // 添加用户栅格服务记录
+        DscUserRasterS dscUserRasterS = new DscUserRasterS();
+        dscUserRasterS.setId(IdUtil.randomUUID())
+                .setUserId(serviceShareImportDTO.getUserId())
+                .setRasterSId(serviceShareImportDTO.getServiceId())
+                .setRasterSName(dscRasterService.getName())
+                .setRasterSType(dscRasterService.getType());
+        dscUserRasterSDAO.insert(dscUserRasterS);
+        return CommonResult.success("导入成功");
+    }
+
+    @Override
     public void updateOwnerCount(List<String> rasterSIds, boolean isPlus) {
         int count = isPlus ? 1 : -1;
         List<DscRasterService> dscRasterServices = dscRasterSDAO.findAllByIds(rasterSIds);

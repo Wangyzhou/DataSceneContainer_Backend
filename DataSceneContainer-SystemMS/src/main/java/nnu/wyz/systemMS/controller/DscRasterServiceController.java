@@ -1,5 +1,6 @@
 package nnu.wyz.systemMS.controller;
 
+import io.swagger.annotations.ApiOperation;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.DscRasterService;
@@ -82,5 +83,11 @@ public class DscRasterServiceController {
     @DeleteMapping(value = "/deleteRasterSCopy/{sceneId}/{rasterSId}")
     public CommonResult<String> deleteRasterSCopy(@PathVariable String sceneId, @PathVariable String rasterSId) {
         return dscRasterSService.deleteRasterSCopy(sceneId, rasterSId);
+    }
+
+    @ApiOperation(value = "栅格服务导入")
+    @PostMapping(value = "/import")
+    public CommonResult<String> importRasterS(@RequestBody ServiceShareImportDTO serviceShareImportDTO) {
+        return dscRasterSService.importRasterS(serviceShareImportDTO);
     }
 }

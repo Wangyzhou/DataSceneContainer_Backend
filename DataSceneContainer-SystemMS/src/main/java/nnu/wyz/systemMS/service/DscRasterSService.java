@@ -48,4 +48,5 @@ public interface DscRasterSService {
      */
     void updateOwnerCount(List<String> rasterSIds, boolean isPlus);
 
+    CommonResult<String> importRasterS(ServiceShareImportDTO serviceShareImportDTO);
 }

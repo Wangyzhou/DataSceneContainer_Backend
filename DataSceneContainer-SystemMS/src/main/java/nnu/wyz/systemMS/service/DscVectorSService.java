@@ -4,6 +4,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
 import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
+import nnu.wyz.systemMS.model.dto.ServiceShareImportDTO;
 import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 
@@ -45,4 +46,6 @@ public interface DscVectorSService {
      * @param isPlus
      */
     void updateOwnerCount(List<String> vectorSIds, boolean isPlus);
+
+    CommonResult<String> importVectorS(ServiceShareImportDTO serviceShareImportDTO);
 }

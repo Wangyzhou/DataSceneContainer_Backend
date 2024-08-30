@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.*;
-import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
-import nnu.wyz.systemMS.model.dto.PageableDTO;
-import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
-import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
+import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.service.DscMvtService;
 import nnu.wyz.systemMS.service.DscVectorSService;
@@ -362,6 +359,27 @@ public class DscVectorSServiceIml implements DscVectorSService {
     public CommonResult<List<DscVectorServiceInfo>> getVectorServiceListByFileId(String fileId) {
         List<DscVectorServiceInfo> allByFileId = dscVectorSDAO.findAllByFileId(fileId);
         return CommonResult.success(allByFileId, "获取成功!");
+    }
+
+    @Override
+    public CommonResult<String> importVectorS(ServiceShareImportDTO serviceShareImportDTO) {
+        // 服务信息的引用次数+1
+        Optional<DscVectorServiceInfo> byId = dscVectorSDAO.findById(serviceShareImportDTO.getServiceId());
+        if(!byId.isPresent()){
+            return CommonResult.failed("导入出错：服务不存在！");
+        }
+        DscVectorServiceInfo dscVectorServiceInfo = byId.get();
+        dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount() + 1);
+        dscVectorSDAO.save(dscVectorServiceInfo);
+        // 添加用户矢量服务记录
+        DscUserVectorS dscUserVectorS = new DscUserVectorS();
+        dscUserVectorS.setId(IdUtil.objectId())
+                .setUserId(serviceShareImportDTO.getUserId())
+                .setVectorSId(serviceShareImportDTO.getServiceId())
+                .setVectorSName(dscVectorServiceInfo.getName())
+                .setVectorSType(dscVectorServiceInfo.getType());
+        dscUserVectorSDAO.insert(dscUserVectorS);
+        return CommonResult.success("导入成功！");
     }
 
     @Override

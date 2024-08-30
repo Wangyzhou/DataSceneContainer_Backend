@@ -1,9 +1,11 @@
 package nnu.wyz.systemMS.controller;
 
+import io.swagger.annotations.ApiOperation;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.dto.PublishGeoJSONDTO;
 import nnu.wyz.systemMS.model.dto.PublishShapefileDTO;
+import nnu.wyz.systemMS.model.dto.ServiceShareImportDTO;
 import nnu.wyz.systemMS.model.entity.DscVectorServiceInfo;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscVectorSService;
@@ -56,5 +58,11 @@ public class DscVectorServiceController {
     @GetMapping(value = "/getVectorSListByFileId/{fileId}")
     public CommonResult<List<DscVectorServiceInfo>> getVectorSListByFileId(@PathVariable String fileId) {
         return dscVectorSService.getVectorServiceListByFileId(fileId);
+    }
+
+    @ApiOperation(value = "矢量服务导入")
+    @PostMapping(value = "/import")
+    public CommonResult<String> importVectorS(@RequestBody ServiceShareImportDTO serviceShareImportDTO) {
+        return dscVectorSService.importVectorS(serviceShareImportDTO);
     }
 }
