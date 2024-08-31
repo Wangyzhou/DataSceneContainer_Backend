@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 
@@ -16,6 +17,7 @@ import org.springframework.data.annotation.Id;
 @Accessors(chain = true)
 @ApiModel(value = "场景实体")
 @AllArgsConstructor
+@NoArgsConstructor
 public class DscScene {
 
     @Id

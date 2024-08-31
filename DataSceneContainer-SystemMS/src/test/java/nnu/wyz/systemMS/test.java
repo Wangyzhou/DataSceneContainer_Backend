@@ -650,7 +650,7 @@ public class test {
         int pageIndex = 1;
         int pageSize = 6;
         PageableDTO pageableDTO = new PageableDTO("65f3b12ae4b0d760656a8329", "", pageIndex, pageSize);
-        CommonResult<PageInfo<DscScene>> sceneList = dscSceneService.getSceneList(pageableDTO);
+        CommonResult<PageInfo<DscScene>> sceneList = dscSceneService.getSceneList(pageableDTO, false);
         System.out.println("sceneList = " + sceneList);
         System.out.println(sceneList.getData());
 //        List<DscScene> collect = dscUserSceneDAO.findAllByUserId("652a5e61e4b012905c858bea")

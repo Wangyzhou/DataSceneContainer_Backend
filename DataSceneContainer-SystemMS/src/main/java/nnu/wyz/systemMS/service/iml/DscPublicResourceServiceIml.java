@@ -99,4 +99,5 @@ public class DscPublicResourceServiceIml implements DscPublicResourceService {
         dscPublicServiceDAO.delete(byId.get());
         return CommonResult.success("删除成功！");
     }
+
 }

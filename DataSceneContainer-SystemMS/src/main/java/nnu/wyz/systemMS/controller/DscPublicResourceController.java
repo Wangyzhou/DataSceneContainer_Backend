@@ -4,10 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
-import nnu.wyz.systemMS.service.DscFileService;
-import nnu.wyz.systemMS.service.DscPublicResourceService;
-import nnu.wyz.systemMS.service.DscRasterSService;
-import nnu.wyz.systemMS.service.DscVectorSService;
+import nnu.wyz.systemMS.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +21,9 @@ public class DscPublicResourceController {
 
     @Autowired
     DscFileService dscFileService;
+
+    @Autowired
+    DscSceneService dscSceneService;
 
     @Autowired
     DscPublicResourceService dscPublicResourceService;
@@ -100,6 +100,28 @@ public class DscPublicResourceController {
     @DeleteMapping(value = "/service/{serviceId}")
     public CommonResult<String> deleteService(@PathVariable("serviceId") String serviceId) {
         return dscPublicResourceService.deleteService(serviceId);
+    }
+
+    /**
+     * @description:场景资源相关接口
+     * @prefix: /scene
+     */
+
+    @ApiOperation(value = "分页获取公共场景资源列表")
+    @GetMapping(value = "/scene/getSceneList/{pageSize}/{pageIndex}")
+    public CommonResult<PageInfo<DscScene>> getSceneList(@RequestParam String keyword,
+                                                         @PathVariable Integer pageSize,
+                                                         @PathVariable Integer pageIndex) {
+        PageableDTO pageableDTO = new PageableDTO(null, keyword, pageIndex, pageSize);
+        return dscSceneService.getSceneList(pageableDTO, true);
+    }
+
+    @ApiOperation(value = "删除公共场景资源")
+    @DeleteMapping(value = "/scene/{userId}/{sceneId}")
+    public CommonResult<String> deleteScene(@PathVariable("userId") String userId,
+                                            @PathVariable("sceneId") String sceneId) {
+        // 这里需要userId是需要作为参数，但该userId只能是内部管理员账号，这里暂未做限制
+        return dscSceneService.deleteScene(userId, sceneId, true);
     }
 
 }
