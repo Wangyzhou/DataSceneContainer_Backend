@@ -25,5 +25,5 @@ public interface DscSceneService {
 
     CommonResult<String> publish2Public(PublishScene2PublicDTO publishScene2PublicDTO);
 
-    CommonResult<String> importScene(SceneShareImportDTO sceneShareImportDTO);
+    CommonResult<DscScene> importScene(SceneShareImportDTO sceneShareImportDTO);
 }

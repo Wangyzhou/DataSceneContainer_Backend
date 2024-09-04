@@ -2,6 +2,7 @@ package nnu.wyz.systemMS.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Desription：
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class GetRasterSCopyDTO {
 
     private String userId;

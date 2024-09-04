@@ -59,7 +59,7 @@ public class DscSceneController {
 
     @ApiOperation(value = "导入公共场景资源")
     @PostMapping(value = "/import")
-    public CommonResult<String> importScene(@RequestBody SceneShareImportDTO sceneShareImportDTO) {
+    public CommonResult<DscScene> importScene(@RequestBody SceneShareImportDTO sceneShareImportDTO) {
         return dscSceneService.importScene(sceneShareImportDTO);
     }
 }

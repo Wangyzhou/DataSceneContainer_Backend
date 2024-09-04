@@ -201,6 +201,10 @@ public class DscSceneServiceIml implements DscSceneService {
         }
         Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
         DscScene dscScene = byId.get();
+        DscPublicScene isExist = dscPublicSceneDAO.findByName(dscScene.getName());
+        if (!Objects.isNull(isExist)) {
+            return CommonResult.failed("与现有公共场景名重复，请修改名称后重新发布！");
+        }
         String type = dscScene.getType();
         if (!type.equals("GDV")) {
             return CommonResult.failed("暂不支持发布该类场景");
@@ -241,7 +245,7 @@ public class DscSceneServiceIml implements DscSceneService {
     }
 
     @Override
-    public CommonResult<String> importScene(SceneShareImportDTO sceneShareImportDTO) {
+    public CommonResult<DscScene> importScene(SceneShareImportDTO sceneShareImportDTO) {
         String sceneId = sceneShareImportDTO.getSceneId();
         String userId = sceneShareImportDTO.getUserId();
         Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
@@ -249,6 +253,10 @@ public class DscSceneServiceIml implements DscSceneService {
             return CommonResult.failed("导入出错：场景信息不存在");
         }
         DscScene dscScene = byId.get();
+        DscUserScene isExist = dscUserSceneDAO.findByUserIdAndSceneName(userId, dscScene.getName());
+        if (!Objects.isNull(isExist)) {
+            return CommonResult.failed("与现有场景名重复，请修改名称后重新导入！");
+        }
         String type = dscScene.getType();
         // 暂时只支持GDV
         if (!type.equals("GDV")) {
@@ -286,14 +294,14 @@ public class DscSceneServiceIml implements DscSceneService {
                 this.copyGDVSceneConfig(userId, sceneId, newSceneId);
                 break;
         }
-        return CommonResult.success("导入成功");
+        return CommonResult.success(dscScene,"导入成功");
     }
 
     /**
-     * @Description: 复制GDV场景配置给目标场景（包括场景源引用）
-     * @param userId 目标场景受享用户
+     * @param userId          目标场景受享用户
      * @param originalSceneId 源场景
-     * @param targetSceneId 目标场景
+     * @param targetSceneId   目标场景
+     * @Description: 复制GDV场景配置给目标场景（包括场景源引用）
      */
     public void copyGDVSceneConfig(String userId, String originalSceneId, String targetSceneId) {
         // 复制场景配置

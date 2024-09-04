@@ -9,4 +9,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @Date：2024/8/30 11:16
  */
 public interface DscPublicSceneDAO extends MongoRepository<DscPublicScene, String> {
+
+    DscPublicScene findByName(String name);
 }
