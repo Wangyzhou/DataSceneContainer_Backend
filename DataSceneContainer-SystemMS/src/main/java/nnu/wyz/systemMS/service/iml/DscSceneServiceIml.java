@@ -219,20 +219,25 @@ public class DscSceneServiceIml implements DscSceneService {
         dscPublicSceneDAO.insert(dscPublicScene);
         // 复制新的场景信息(只修改必要信息，其他信息沿用原场景信息）
         // 复制缩略图
-        String objectKey = userId + File.separator + sceneId + ".png";
-        Path thumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + objectKey);
-        String newObjectKey = userId + File.separator + publicSceneId + ".png";
-        Path newThumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + newObjectKey);
-        try {
-            Files.copy(thumbnailPath, newThumbnailPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            log.error("复制缩略图失败", e);
+        String thumbnail = dscScene.getThumbnail();
+        String newThumbnail = null;
+        if (!Objects.isNull(thumbnail)) {
+            String objectKey = userId + File.separator + sceneId + ".png";
+            Path thumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + objectKey);
+            String newObjectKey = userId + File.separator + publicSceneId + ".png";
+            Path newThumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + newObjectKey);
+            try {
+                Files.copy(thumbnailPath, newThumbnailPath, StandardCopyOption.REPLACE_EXISTING);
+                newThumbnail = MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), newObjectKey);
+            } catch (IOException e) {
+                log.error("复制缩略图失败", e);
+            }
         }
         String currentTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
         dscScene.setId(publicSceneId)
                 .setCreatedTime(currentTime)
                 .setUpdatedTime(currentTime)
-                .setThumbnail(MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), newObjectKey))
+                .setThumbnail(newThumbnail)
                 .setIsLocked(true)
                 .setEditCount(0L);
         dscSceneDAO.insert(dscScene);
@@ -271,21 +276,33 @@ public class DscSceneServiceIml implements DscSceneService {
                 .setUserId(userId);
         dscUserSceneDAO.insert(dscUserScene);
         // 复制新的场景信息(只修改必要信息，其他信息沿用原场景信息）
-        // 复制缩略图
-        String objectKey = userId + File.separator + sceneId + ".png";
-        Path thumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + objectKey);
-        String newObjectKey = userId + File.separator + newSceneId + ".png";
-        Path newThumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + newObjectKey);
-        try {
-            Files.copy(thumbnailPath, newThumbnailPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            log.error("复制缩略图失败", e);
+        String thumbnail = dscScene.getThumbnail();
+        String newThumbnail = null;
+        if (!Objects.isNull(thumbnail)) {
+            // 复制缩略图
+            String objectKey = dscScene.getThumbnail().substring(minioConfig.getEndpoint().length() + 1);
+            Path thumbnailPath = Paths.get(rootPath + objectKey);
+            String newObjectKey = userId + File.separator + newSceneId + ".png";
+            Path newThumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + newObjectKey);
+            try {
+                // 创建场景缩略图目录（如果不存在）
+                Path targetDir = newThumbnailPath.getParent();
+                if (targetDir != null && !Files.exists(targetDir)) {
+                    Files.createDirectories(targetDir);
+                    log.info("场景缩略图目录已创建: " + targetDir);
+                }
+                Files.copy(thumbnailPath, newThumbnailPath, StandardCopyOption.REPLACE_EXISTING);
+                newThumbnail = MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), newObjectKey);
+            } catch (IOException e) {
+                log.error("复制缩略图失败", e);
+            }
         }
         String currentTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
         dscScene.setId(newSceneId)
+                .setCreatedUser(userId)
                 .setCreatedTime(currentTime)
                 .setUpdatedTime(currentTime)
-                .setThumbnail(MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), newObjectKey))
+                .setThumbnail(newThumbnail)
                 .setIsLocked(false)
                 .setEditCount(0L);
         dscSceneDAO.insert(dscScene);
@@ -294,7 +311,7 @@ public class DscSceneServiceIml implements DscSceneService {
                 this.copyGDVSceneConfig(userId, sceneId, newSceneId);
                 break;
         }
-        return CommonResult.success(dscScene,"导入成功");
+        return CommonResult.success(dscScene, "导入成功");
     }
 
     /**
@@ -308,10 +325,10 @@ public class DscSceneServiceIml implements DscSceneService {
         DscGDVSceneConfig sceneConfig = dscGDVSceneConfigDAO.findBySceneId(originalSceneId);
         sceneConfig.setId(IdUtil.objectId())
                 .setSceneId(targetSceneId);
-        dscGDVSceneConfigDAO.insert(sceneConfig);
+//        dscGDVSceneConfigDAO.insert(sceneConfig);
         // 增加场景所有源引用
         // 增加除tif栅格外的服务引用，ownerCount+1
-        ServiceRefs addRefs = dscGDVSceneService.getSourcesToAddRef(sceneConfig.getSources(), new ArrayList<>());
+        ServiceRefs addRefs = dscGDVSceneService.getSourcesToAddRef(new ArrayList<>(),sceneConfig.getSources());
         log.info("添加场景引用的矢量服务：" + addRefs.getVectorRefs());
         log.info("添加场景引用的非tif栅格服务：" + addRefs.getRasterRefs());
         if (!addRefs.getVectorRefs().isEmpty())
@@ -319,14 +336,26 @@ public class DscSceneServiceIml implements DscSceneService {
         if (!addRefs.getRasterRefs().isEmpty())
             // 更新非tif源的引用
             dscRasterSService.updateOwnerCount(addRefs.getRasterRefs(), true);
-        // 增加tif栅格服务引用，ownerCount+1
-        List<String> tifSourceIds = sceneConfig.getSources()
-                .stream()
-                .filter(gdvSceneSource -> "image".equals(gdvSceneSource.getSourceType()) && "tif".equals(gdvSceneSource.getFileType()))
-                .map(GDVSceneSource::getSourceId).collect(Collectors.toList());
-        tifSourceIds
-                .stream()
-                .forEach(id -> dscRasterSService.addRasterSCopy(new GetRasterSCopyDTO(userId, targetSceneId, id)));
-        log.info("添加场景引用的tif栅格服务：" + tifSourceIds);
+        // 增加tif栅格服务引用，ownerCount+1，将新增的栅格副本url替换
+        log.info("####添加场景引用的tif栅格服务####");
+        List<GDVSceneSource> updatedSources = sceneConfig.getSources().stream()
+                .map(gdvSceneSource -> {
+                    // 过滤tif栅格服务
+                    if ("image".equals(gdvSceneSource.getSourceType()) && "tif".equals(gdvSceneSource.getFileType())) {
+                        // 执行 addRasterSCopy 方法并更新 URL
+                        String id = gdvSceneSource.getSourceId();
+                        log.info("正在添加tif栅格服务副本：" + id);
+                        // 执行方法并获取结果
+                        CommonResult<String> result = dscRasterSService.addRasterSCopy(new GetRasterSCopyDTO(userId, targetSceneId, id));
+                        log.info("添加tif栅格服务副本结果：" + result.getMessage());
+                        // 更新 URL 属性
+                        gdvSceneSource.setUrl(result.getData());
+                    }
+                    // 返回更新后的或未更新的source
+                    return gdvSceneSource;
+                })
+                .collect(Collectors.toList());
+        sceneConfig.setSources(updatedSources);
+        dscGDVSceneConfigDAO.insert(sceneConfig);
     }
 }

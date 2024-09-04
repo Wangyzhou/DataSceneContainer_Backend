@@ -65,6 +65,9 @@ public class DscRasterSServiceIml implements DscRasterSService {
     private DscUserSceneDAO dscUserSceneDAO;
 
     @Autowired
+    private DscSceneDAO dscSceneDAO;
+
+    @Autowired
     private DscPublicServiceDAO dscPublicServiceDAO;
 
     @Autowired
@@ -444,12 +447,21 @@ public class DscRasterSServiceIml implements DscRasterSService {
 
     @Override
     public CommonResult<String> addRasterSCopy(GetRasterSCopyDTO getRasterSCopyDTO) {
-        DscUserScene byUserIdAndSceneId = dscUserSceneDAO.findByUserIdAndSceneId(getRasterSCopyDTO.getUserId(), getRasterSCopyDTO.getSceneId());
-        if (Objects.isNull(byUserIdAndSceneId)) {
+//        DscUserScene byUserIdAndSceneId = dscUserSceneDAO.findByUserIdAndSceneId(getRasterSCopyDTO.getUserId(), getRasterSCopyDTO.getSceneId());
+//        if (Objects.isNull(byUserIdAndSceneId)) {
+//            return CommonResult.failed("场景不存在！");
+//        }
+        Optional<DscScene> byId2 = dscSceneDAO.findById(getRasterSCopyDTO.getSceneId());
+        if (!byId2.isPresent()) {
             return CommonResult.failed("场景不存在！");
         }
-        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(getRasterSCopyDTO.getUserId(), getRasterSCopyDTO.getRasterSId());
-        if (Objects.isNull(dscUserRasterS)) {
+        // 不局限于用户内部使用，例如（分享，公共导入），以用户服务检查会被拦截
+//        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(getRasterSCopyDTO.getUserId(), getRasterSCopyDTO.getRasterSId());
+//        if (Objects.isNull(dscUserRasterS)) {
+//            return CommonResult.failed("未找到该服务");
+//        }
+        Optional<DscRasterService> byId = dscRasterSDAO.findById(getRasterSCopyDTO.getRasterSId());
+        if (!byId.isPresent()) {
             return CommonResult.failed("未找到该服务");
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(getRasterSCopyDTO.getRasterSId());
@@ -546,11 +558,15 @@ public class DscRasterSServiceIml implements DscRasterSService {
 
     @Override
     public CommonResult<String> importRasterS(ServiceShareImportDTO serviceShareImportDTO) {
-        // 服务信息的引用次数+1
         Optional<DscRasterService> byId = dscRasterSDAO.findById(serviceShareImportDTO.getServiceId());
         if (!byId.isPresent()) {
             return CommonResult.failed("导入出错：服务不存在！");
         }
+        DscUserRasterS byUserIdAndRasterSId = dscUserRasterSDAO.findByUserIdAndRasterSId(serviceShareImportDTO.getUserId(), serviceShareImportDTO.getServiceId());
+        if (!Objects.isNull(byUserIdAndRasterSId)) {
+            return CommonResult.failed("您已经导入过该服务，请勿重复导入！");
+        }
+        // 服务信息的引用次数+1
         DscRasterService dscRasterService = byId.get();
         dscRasterService.setOwnerCount(dscRasterService.getOwnerCount() + 1);
         dscRasterSDAO.save(dscRasterService);

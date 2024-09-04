@@ -446,7 +446,8 @@ public class DscFileServiceIml implements DscFileService {
                     .setCreatedUser(userId)
                     .setPreviewCount(0L).setPublishCount(0L)
                     .setObjectKey(userId + File.separator + copyFile.getName())
-                    .setOwnerCount(0L);
+                    .setOwnerCount(0L)
+                    .setDownloadCount(0L);
             // 首次插入初始化文件信息，走一天内已上传的文件逻辑
             dscFileDAO.insert(dscFileInfo);
             System.out.println(dscFileInfo);

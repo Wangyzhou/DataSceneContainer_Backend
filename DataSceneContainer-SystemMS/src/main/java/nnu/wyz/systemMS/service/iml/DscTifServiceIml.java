@@ -71,9 +71,13 @@ public class DscTifServiceIml implements DscTifService {
 
     @Override
     public CommonResult<Integer> getBandCount(String userId, String rasterSId) {
-        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(userId, rasterSId);
-        if (Objects.isNull(dscUserRasterS)) {
-            return CommonResult.failed("未找到该服务！");
+//        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(userId, rasterSId);
+//        if (Objects.isNull(dscUserRasterS)) {
+//            return CommonResult.failed("未找到该服务！");
+//        }
+        Optional<DscRasterService> byId1 = dscRasterSDAO.findById(rasterSId);
+        if (!byId1.isPresent()) {
+            return CommonResult.failed("未找到该服务!");
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(rasterSId);
         Optional<DscFileInfo> byId = dscFileDAO.findById(dscRasterService.getOriFileId());
@@ -117,11 +121,15 @@ public class DscTifServiceIml implements DscTifService {
 
     @Override
     public CommonResult<String> changeColorMap(RenderTifDTO renderTifDTO) {
-        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(renderTifDTO.getUserId(), renderTifDTO.getRasterSId());
-        if (Objects.isNull(dscUserRasterS)) {
-            return CommonResult.failed("未找到该服务！");
+//        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(renderTifDTO.getUserId(), renderTifDTO.getRasterSId());
+//        if (Objects.isNull(dscUserRasterS)) {
+//            return CommonResult.failed("未找到该服务！");
+//        }
+        Optional<DscRasterService> byId2 = dscRasterSDAO.findById(renderTifDTO.getRasterSId());
+        if (!byId2.isPresent()) {
+            return CommonResult.failed("未找到该服务!");
         }
-        DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(renderTifDTO.getRasterSId());
+        DscRasterService dscRasterService = byId2.get();
         //  查找对应场景的png副本文件
         DscFileInfo pngFileInfo = null;
         List<RasterSRef> refs = dscRasterService.getReferences();
@@ -160,9 +168,13 @@ public class DscTifServiceIml implements DscTifService {
 
     @Override
     public CommonResult<String> falseColorComposite(FalseColorCompositeDTO falseColorCompositeDTO) {
-        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(falseColorCompositeDTO.getUserId(), falseColorCompositeDTO.getRasterSId());
-        if (Objects.isNull(dscUserRasterS)) {
-            return CommonResult.failed("未找到该服务！");
+//        DscUserRasterS dscUserRasterS = dscUserRasterSDAO.findByUserIdAndRasterSId(falseColorCompositeDTO.getUserId(), falseColorCompositeDTO.getRasterSId());
+//        if (Objects.isNull(dscUserRasterS)) {
+//            return CommonResult.failed("未找到该服务！");
+//        }
+        Optional<DscRasterService> byId2 = dscRasterSDAO.findById(falseColorCompositeDTO.getRasterSId());
+        if (!byId2.isPresent()) {
+            return CommonResult.failed("未找到该服务!");
         }
         DscRasterService dscRasterService = dscRasterSDAO.findDscRasterServiceById(falseColorCompositeDTO.getRasterSId());
         //  查找对应场景的png副本文件

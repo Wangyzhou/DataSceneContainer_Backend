@@ -363,11 +363,15 @@ public class DscVectorSServiceIml implements DscVectorSService {
 
     @Override
     public CommonResult<String> importVectorS(ServiceShareImportDTO serviceShareImportDTO) {
-        // 服务信息的引用次数+1
         Optional<DscVectorServiceInfo> byId = dscVectorSDAO.findById(serviceShareImportDTO.getServiceId());
         if(!byId.isPresent()){
             return CommonResult.failed("导入出错：服务不存在！");
         }
+        DscUserVectorS byUserIdAndVectorSId = dscUserVectorSDAO.findByUserIdAndVectorSId(serviceShareImportDTO.getUserId(), serviceShareImportDTO.getServiceId());
+        if(!Objects.isNull(byUserIdAndVectorSId)){
+            return CommonResult.failed("您已经导入过该服务，请勿重复导入！");
+        }
+        // 服务信息的引用次数+1
         DscVectorServiceInfo dscVectorServiceInfo = byId.get();
         dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount() + 1);
         dscVectorSDAO.save(dscVectorServiceInfo);
