@@ -2,6 +2,7 @@ package nnu.wyz.systemMS.service.iml;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.domain.ResultCode;
 import nnu.wyz.systemMS.config.MinioConfig;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
  * @time: 2023/8/29 10:55
  */
 @Service
+@Slf4j
 public class DscCatalogServiceIml implements DscCatalogService {
 
     private final static String COLLECTION_NAME = "dscCatalog";
@@ -81,7 +83,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
         Integer preLevel = parentCatalog.getLevel();
         String catalogName = createCatalogDTO.getCatalogName();
         String userId = createCatalogDTO.getUserId();
-        DscCatalog conflictCatalog = dscCatalogDAO.findDscCatalogByNameAndUserIdAndLevel(catalogName, userId, preLevel + 1);
+        DscCatalog conflictCatalog = dscCatalogDAO.findDscCatalogByNameAndUserIdAndParent(catalogName, userId, parentCatalogId);
         if (!Objects.isNull(conflictCatalog)) {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED, "创建目录失败！存在同名目录，请确保同级目录名唯一！");
         }
@@ -180,6 +182,11 @@ public class DscCatalogServiceIml implements DscCatalogService {
     }
 
     public void deleteEmptyCatalog(String catalogId, String parentCatalogId) {
+        // 根目录
+        if (parentCatalogId.equals("-1")) {
+            log.info("清除全部数据成功");
+            return;
+        }
         Optional<DscCatalog> byId = dscCatalogDAO.findById(parentCatalogId);
         DscCatalog parentCatalog = byId.get();
         List<CatalogChildrenDTO> children = parentCatalog.getChildren();
@@ -369,6 +376,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
         }
         return null;
     }
+
     String dfs(String catalog, String targetId) {
         DscCatalog dscCatalog = dscCatalogDAO.findDscCatalogById(catalog);
         for (CatalogChildrenDTO childrenDTO : dscCatalog.getChildren()) {

@@ -11,10 +11,10 @@ public interface DscCatalogDAO extends MongoRepository<DscCatalog, String> {
      * 同一级的目录名不能重复，保险起见，加上userId作为查询条件
      *
      * @param catalogName
-     * @param level
+     * @param parent
      * @return
      */
-    DscCatalog findDscCatalogByNameAndUserIdAndLevel(String catalogName, String userId, Integer level);
+    DscCatalog findDscCatalogByNameAndUserIdAndParent(String catalogName, String userId, String parent);
 
     /**
      * 根据目录Id和用户Id获取目录
