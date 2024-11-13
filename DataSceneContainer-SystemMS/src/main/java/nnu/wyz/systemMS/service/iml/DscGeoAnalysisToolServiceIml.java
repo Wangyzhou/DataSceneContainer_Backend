@@ -129,6 +129,7 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
                 child.put("label", dscGeoAnalysisTool.getName());
                 child.put("isLeaf", true);
                 child.put("isEnabled", dscGeoAnalysisTool.getIsEnabled());
+                child.put("category", dscGeoAnalysisTool.getInvokeCmd().get(1));
                 children.add(child);
             }
             treeNode.put("children", children);

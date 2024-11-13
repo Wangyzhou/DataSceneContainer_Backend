@@ -262,6 +262,7 @@ public class DscCatalogServiceIml implements DscCatalogService {
 
     private List<JSONObject> recursionV2(String catalogId) {
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+        log.info("根目录是否存在：" + byId.isPresent());
         DscCatalog dscCatalog = byId.get();
         if (dscCatalog.getChildren().size() == 0) {
             return null;
