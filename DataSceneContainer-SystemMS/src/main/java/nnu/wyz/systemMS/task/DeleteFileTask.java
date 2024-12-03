@@ -52,8 +52,10 @@ public class DeleteFileTask {
         // 改为ownerCount和publishCount都为0时才可删除
         List<DscFileInfo> allByOwnerCount = dscFileDAO.findAllByOwnerCountAndPublishCount(0L,0L);
         dscFileDAO.deleteAll(allByOwnerCount);
+        // 这里其实可以删，现在逻辑改为在个人空间里删除文件时，也删除对应上传任务，但暂时保留，防止有遗留的上传任务未清除
         List<SysUploadTask> collect = allByOwnerCount.stream().map(dscFileInfo -> sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId())).filter(Objects::nonNull).collect(Collectors.toList());
         sysUploadTaskDAO.deleteAll(collect);
+
         List<DeleteObject> objects = allByOwnerCount.stream().map(dscFileInfo -> new DeleteObject(dscFileInfo.getObjectKey())).collect(Collectors.toList());
         Iterable<Result<DeleteError>> results =
                 minioClient.removeObjects(

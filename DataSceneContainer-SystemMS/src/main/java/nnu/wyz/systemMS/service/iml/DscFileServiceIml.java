@@ -126,6 +126,7 @@ public class DscFileServiceIml implements DscFileService {
             }
         }
         String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        /** 这段逻辑不再需要，不再缓存一天内已上传的文件
         if (fileId != null) {  //说明用户一天内上传过该文件
             Optional<DscFileInfo> dscFileDAOById = dscFileDAO.findById(fileId);
             DscFileInfo dscFileInfo = dscFileDAOById.get();
@@ -159,6 +160,7 @@ public class DscFileServiceIml implements DscFileService {
             }
             return CommonResult.success("文件：" + fileName + "上传成功！");
         }
+         **/
         //若用户未上传过该文件，则创建该文件记录并更新目录
         GetObjectRequest getObjectRequest = new GetObjectRequest(task.getBucketName(), task.getObjectKey());
         S3Object s3Object = null;
@@ -283,6 +285,9 @@ public class DscFileServiceIml implements DscFileService {
         dscCatalog.setTotal(dscCatalog.getTotal() - 1);
         dscCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         dscCatalogDAO.save(dscCatalog);
+        //删除文件对应的上传任务，不再缓存一天内已上传的文件（逻辑已更改）
+        SysUploadTask sysUploadTaskByFileId = sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId());
+        sysUploadTaskDAO.delete(sysUploadTaskByFileId);
         return CommonResult.success("删除成功!");
     }
 
@@ -464,7 +469,7 @@ public class DscFileServiceIml implements DscFileService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return CommonResult.success("导入个人空间成功！");
+        return CommonResult.success(dscFileInfo.getId(),"导入个人空间成功！");
     }
 
     @Override
