@@ -126,41 +126,43 @@ public class DscFileServiceIml implements DscFileService {
             }
         }
         String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        /** 这段逻辑不再需要，不再缓存一天内已上传的文件
+        // 这段逻辑只在内部调用时使用，如工具输出、栅格渲染复制副本等，以便共用文件信息，但不再在正常上传文件时使用，不再缓存一天内已上传的文件（为了解决同一文件多次上传导致的bug)
         if (fileId != null) {  //说明用户一天内上传过该文件
             Optional<DscFileInfo> dscFileDAOById = dscFileDAO.findById(fileId);
             DscFileInfo dscFileInfo = dscFileDAOById.get();
-            String fileName = dscFileInfo.getFileName();
-            dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1).setUpdatedTime(dateTime);
-            dscFileDAO.save(dscFileInfo);
-            // 正常上传时插入catalog记录
-            if (!Objects.isNull(catalogId)) {
-                CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
-                childrenDTO.setId(fileId)
-                        .setName(fileName)
-                        .setType(dscFileInfo.getFileSuffix())
-                        .setSize(dscFileInfo.getSize())
-                        .setUpdatedTime(dateTime);
-                dscCatalog.getChildren().add(childrenDTO);
-                dscCatalog.setTotal(dscCatalog.getTotal() + 1);
-                dscCatalog.setUpdatedTime(dateTime);
-                dscCatalogDAO.save(dscCatalog);
+            Boolean isUsedInSystem = dscFileInfo.getFileSuffix().equals("spng") || dscFileInfo.getBucketName().equals("dsc-ga-output");
+            if(isUsedInSystem){
+                String fileName = dscFileInfo.getFileName();
+                dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1).setUpdatedTime(dateTime);
+                dscFileDAO.save(dscFileInfo);
+                // 正常上传时插入catalog记录
+                if (!Objects.isNull(catalogId)) {
+                    CatalogChildrenDTO childrenDTO = new CatalogChildrenDTO();
+                    childrenDTO.setId(fileId)
+                            .setName(fileName)
+                            .setType(dscFileInfo.getFileSuffix())
+                            .setSize(dscFileInfo.getSize())
+                            .setUpdatedTime(dateTime);
+                    dscCatalog.getChildren().add(childrenDTO);
+                    dscCatalog.setTotal(dscCatalog.getTotal() + 1);
+                    dscCatalog.setUpdatedTime(dateTime);
+                    dscCatalogDAO.save(dscCatalog);
+                }
+                // 如果是公共资源
+                if (isPublic) {
+                    DscPublicFile dscPublicFile = new DscPublicFile();
+                    dscPublicFile.setId(fileId)
+                            .setName(fileName)
+                            .setType(dscFileInfo.getFileSuffix())
+                            .setSize(dscFileInfo.getSize())
+                            .setCreatedTime(dateTime)
+                            .setUpdatedTime(dateTime)
+                            .setCreatedUser(userId);
+                    dscPublicFileDAO.insert(dscPublicFile);
+                }
+                return CommonResult.success("文件：" + fileName + "上传成功！");
             }
-            // 如果是公共资源
-            if (isPublic) {
-                DscPublicFile dscPublicFile = new DscPublicFile();
-                dscPublicFile.setId(fileId)
-                        .setName(fileName)
-                        .setType(dscFileInfo.getFileSuffix())
-                        .setSize(dscFileInfo.getSize())
-                        .setCreatedTime(dateTime)
-                        .setUpdatedTime(dateTime)
-                        .setCreatedUser(userId);
-                dscPublicFileDAO.insert(dscPublicFile);
-            }
-            return CommonResult.success("文件：" + fileName + "上传成功！");
         }
-         **/
         //若用户未上传过该文件，则创建该文件记录并更新目录
         GetObjectRequest getObjectRequest = new GetObjectRequest(task.getBucketName(), task.getObjectKey());
         S3Object s3Object = null;
