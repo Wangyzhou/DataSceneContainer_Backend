@@ -75,7 +75,9 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
         DscFileInfo dscFileInfo = byId.get();
         String sgrdFilePath = root + dscFileInfo.getBucketName() + "/" + dscFileInfo.getObjectKey();
         String geoTiffId = IdUtil.randomUUID();
-        String geoTiffFilePath = root + minioConfig.getBucketName() + "/" + convertSgrd2GeoTIFFDTO.getUserId() + "/" + geoTiffId + ".tif";
+        // 物理存储到sgrd文件同目录下
+        String catalogPath = dscFileInfo.getObjectKey().substring(0, dscFileInfo.getObjectKey().lastIndexOf("/"));
+        String geoTiffFilePath = root + dscFileInfo.getBucketName() + "/" + catalogPath + "/" + geoTiffId + ".tif";
         boolean isConvert = sagaOtherToolUtil.ConvertSgrd2GeoTIFF(sgrdFilePath, geoTiffFilePath);
         if (!isConvert) {
             return CommonResult.failed("转换失败");
@@ -88,7 +90,7 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
             String suffix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
             String fileName = dscFileInfo.getFileName().substring(0, dscFileInfo.getFileName().lastIndexOf(".")) + ".tif";
             String fileId = IdUtil.objectId();
-            DscFileInfo geoTiffInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, convertSgrd2GeoTIFFDTO.getUserId(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 0L, minioConfig.getBucketName(), convertSgrd2GeoTIFFDTO.getUserId() + "/" + file.getName(), 32);
+            DscFileInfo geoTiffInfo = new DscFileInfo(fileId, md5, fileName, suffix, false, convertSgrd2GeoTIFFDTO.getUserId(), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), file.length(), 0L, 0L, 0L, 0L, minioConfig.getGaOutputBucket(), catalogPath + "/" + file.getName(), 32);
             dscFileDAO.insert(geoTiffInfo);
             InitTaskParam initTaskParam = new InitTaskParam();
             initTaskParam.setIdentifier(md5);
