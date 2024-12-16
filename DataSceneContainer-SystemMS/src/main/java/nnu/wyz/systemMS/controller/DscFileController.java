@@ -30,7 +30,7 @@ public class DscFileController {
     @ApiOperation(value = "文件上传(创建文件记录、开通用户权限)")
     @PostMapping
     public CommonResult<String> upload(@RequestBody UploadFileDTO uploadFileDTO) {
-        return dscFileService.create(uploadFileDTO, false);
+        return dscFileService.create(uploadFileDTO, false,true);
     }
 
     @ApiOperation(value = "文件删除")

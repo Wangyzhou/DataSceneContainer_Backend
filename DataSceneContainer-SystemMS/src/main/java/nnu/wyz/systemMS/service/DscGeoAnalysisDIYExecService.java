@@ -153,7 +153,7 @@ public class DscGeoAnalysisDIYExecService {
                         initTaskParam.setObjectName(file.getName().substring(0, file.getName().lastIndexOf(".")));
                         TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
                         UploadFileDTO uploadFileDTO = new UploadFileDTO(dscGeoAnalysisExecTask.getExecutor().get("id").toString(), taskInfoDTO.getTaskRecord().getId(), dscGeoAnalysisExecTask.getParams().getWorkingDir());
-                        dscFileService.create(uploadFileDTO, false);
+                        dscFileService.create(uploadFileDTO, false,false);
                     }
                 }
             }

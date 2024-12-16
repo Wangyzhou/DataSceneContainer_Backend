@@ -10,11 +10,12 @@ public interface DscFileService {
 
     /**
      * 文件上传
+     *
      * @param uploadFileDTO
-     * @param isPublic 为true时代表上传公共文件，内部使用
+     * @param isPublic      为true时代表上传公共文件，内部使用
      * @return
      */
-    CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic);
+    CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic, boolean isUpload);
 
     CommonResult<String> delete(DeleteFileDTO deleteFileDTO);
 
