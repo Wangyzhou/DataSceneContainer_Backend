@@ -1410,4 +1410,11 @@ public class test {
 //        System.out.println(dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount()-1));
         dscVectorSDAO.save(dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount() - 1));
     }
+
+    @Test
+    void testToolDataFromMongoDB(){
+            Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById("ab754e52-bc44-11ef-ba9b-10ffe01214a2");
+            System.out.println(byId.isPresent());
+
+    }
 }
