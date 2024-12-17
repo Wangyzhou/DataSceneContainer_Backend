@@ -6,6 +6,9 @@ import nnu.wyz.systemMS.model.entity.DscCodeFile;
 import nnu.wyz.systemMS.service.DscCodeFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,10 +32,27 @@ public class DscCodeFileServiceImpl implements DscCodeFileService {
 
         // 设置 UUID 和当前日期时间
         codeFileEntity.setId(id);
-        codeFileEntity.setUpdate_Date(currentDateTime);  // 假设你有 setUpdate_Date 方法
+        codeFileEntity.setUpdateDate(currentDateTime);  // 假设你有 setUpdate_Date 方法
 
         // 保存到数据库
         dscCodeFileDAO.save(codeFileEntity);
+    }
+
+    @Override
+    public List<DscCodeFile> getFileList(String userId){
+        return dscCodeFileDAO.findBycreatedUserID(userId);
+    }
+
+    @Override
+    public boolean deleteCodeFile(String id) {
+        // 检查文件是否存在
+        Optional<DscCodeFile> codeFileOptional = dscCodeFileDAO.findById(id);
+        if (codeFileOptional.isPresent()) {
+            // 删除文件
+            dscCodeFileDAO.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
 

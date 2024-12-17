@@ -1,6 +1,4 @@
 package nnu.wyz.systemMS.model.entity;
-
-import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,13 +18,15 @@ public class DscCodeFile {
     private String fileName;  // 存储文件名
     private String code;      // 存储文件内容
     private String description;
-    private String create_User;
-    private String update_Date;
+    private String createUser;
+    private String createdUserID;
+    private String updateDate;
     // 构造器
     public DscCodeFile(DscCodeFileDTO dscCodeFileDTO) {
         this.fileName = dscCodeFileDTO.getFileName();
         this.code = dscCodeFileDTO.getCode();
         this.description = dscCodeFileDTO.getDescription();
-        this.create_User = dscCodeFileDTO.getCreate_User();
+        this.createUser = dscCodeFileDTO.getCreateUser();
+        this.createdUserID = dscCodeFileDTO.getCreatedUserID();
     }
 }
