@@ -815,8 +815,8 @@ public class test {
 
     @Test
     void testPWD() {
-        CommonResult<String> pwd = dscCatalogService.pwd("8174f833-2a40-4cde-8fb5-20ac26f3174f");
-        System.out.println("pwd.getData() = " + pwd.getData());
+//        CommonResult<String> pwd = dscCatalogService.pwd("8174f833-2a40-4cde-8fb5-20ac26f3174f");
+//        System.out.println("pwd.getData() = " + pwd.getData());
     }
 
     static Object lock = new Object();

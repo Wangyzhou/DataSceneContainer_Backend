@@ -319,23 +319,43 @@ public class DscCatalogServiceIml implements DscCatalogService {
         return CommonResult.success(pageInfo, "获取第" + pageIndex + "页目录列表成功！");
     }
 
+//    @Override
+//    public CommonResult<String> pwd(String catalogId) {
+//        Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
+//        if (!byId.isPresent()) {
+//            return CommonResult.failed("不存在此目录");
+//        }
+//        DscCatalog dscCatalog = byId.get();
+//        StringBuilder path = new StringBuilder();
+//        while (true) {
+//            path.insert(0, "/" + dscCatalog.getName());
+//            Optional<DscCatalog> byId1 = dscCatalogDAO.findById(dscCatalog.getParent());
+//            if (!byId1.isPresent()) {
+//                break;
+//            }
+//            dscCatalog = byId1.get();
+//        }
+//        return CommonResult.success(path.toString(), "获取成功");
+//    }
+
     @Override
-    public CommonResult<String> pwd(String catalogId) {
+    public CommonResult<List<JSONObject>> pwd(String catalogId) {
         Optional<DscCatalog> byId = dscCatalogDAO.findById(catalogId);
         if (!byId.isPresent()) {
             return CommonResult.failed("不存在此目录");
         }
         DscCatalog dscCatalog = byId.get();
         StringBuilder path = new StringBuilder();
+        ArrayList<JSONObject> pathList = new ArrayList<>();
         while (true) {
-            path.insert(0, "/" + dscCatalog.getName());
+            pathList.add(0, new JSONObject().fluentPut("catalogId", dscCatalog.getId()).fluentPut("label", dscCatalog.getName()));
             Optional<DscCatalog> byId1 = dscCatalogDAO.findById(dscCatalog.getParent());
             if (!byId1.isPresent()) {
                 break;
             }
             dscCatalog = byId1.get();
         }
-        return CommonResult.success(path.toString(), "获取成功");
+        return CommonResult.success(pathList, "获取成功");
     }
 
     @Override

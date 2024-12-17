@@ -73,7 +73,7 @@ public class DscCatalogController {
 
     @ApiOperation(value = "获取当前文件夹路径（前端）")
     @GetMapping(value = "/pwd/{catalogId}")
-    public CommonResult<String> pwd(@PathVariable("catalogId") String catalogId) {
+    public CommonResult<List<JSONObject>> pwd(@PathVariable("catalogId") String catalogId) {
         return catalogService.pwd(catalogId);
     }
 
