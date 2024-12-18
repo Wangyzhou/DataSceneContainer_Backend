@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,7 @@ public class DscCodeFileController {
     private DscCodeFileService dscCodeFileService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveCodeFile(@RequestBody DscCodeFileDTO codeFileDTO) {
+    public ResponseEntity<String> saveCodeFile(@RequestBody @Valid DscCodeFileDTO codeFileDTO) {
         // 调用 Service 层保存文件
         dscCodeFileService.saveCodeFile(codeFileDTO);
         return ResponseEntity.ok("Code file saved successfully.");
