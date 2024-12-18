@@ -226,7 +226,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             // UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), publishTiff2ImageDTO.getOutputCatalogId());
             // spng不增加catalog记录
             UploadFileDTO uploadFileDTO = new UploadFileDTO(publishTiff2ImageDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), null);
-            log.info(dscFileService.create(uploadFileDTO, false).getMessage());
+            log.info(dscFileService.create(uploadFileDTO, false,false).getMessage());
             //  添加栅格服务记录
             DscRasterService dscRasterService = new DscRasterService();
             String rasterId = IdUtil.randomUUID();
@@ -503,7 +503,7 @@ public class DscRasterSServiceIml implements DscRasterSService {
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
             // spng不增加catalog记录
             UploadFileDTO uploadFileDTO = new UploadFileDTO(getRasterSCopyDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), null);
-            log.info(dscFileService.create(uploadFileDTO, false).getMessage());
+            log.info(dscFileService.create(uploadFileDTO, false,false).getMessage());
         } catch (IOException e) {
             log.error(e.getMessage());
         }

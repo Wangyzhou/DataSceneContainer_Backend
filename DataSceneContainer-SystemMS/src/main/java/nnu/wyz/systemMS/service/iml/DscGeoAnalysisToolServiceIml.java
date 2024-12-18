@@ -102,7 +102,7 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
             initTaskParam.setObjectName(file.getName().substring(0, file.getName().lastIndexOf(".")));
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
             UploadFileDTO uploadFileDTO = new UploadFileDTO(convertSgrd2GeoTIFFDTO.getUserId(), taskInfoDTO.getTaskRecord().getId(), convertSgrd2GeoTIFFDTO.getOutputDir());
-            dscFileService.create(uploadFileDTO, false);
+            dscFileService.create(uploadFileDTO, false,false);
             return CommonResult.success(fileId,"转换成功");
         } catch (IOException e) {
             log.error(e.getMessage());

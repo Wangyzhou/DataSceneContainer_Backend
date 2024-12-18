@@ -43,7 +43,7 @@ public class DscPublicResourceController {
     @PostMapping("/file")
     public CommonResult<String> upload(@RequestBody UploadFileDTO uploadFileDTO) {
         if (uploadFileDTO.getCatalogId() != null) uploadFileDTO.setCatalogId(null);
-        return dscFileService.create(uploadFileDTO, true);
+        return dscFileService.create(uploadFileDTO, true,true);
     }
 
     @ApiOperation(value = "文件删除")

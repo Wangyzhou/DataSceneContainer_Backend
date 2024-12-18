@@ -40,7 +40,7 @@ public interface DscCatalogService {
 
     CommonResult<PageInfo<CatalogChildrenDTO>> getChildrenByPageable(PageableDTO pageableDTO);
 
-    CommonResult<String> pwd(String catalogId);
+    CommonResult<List<JSONObject>> pwd(String catalogId);
 
     /**
      * 获取目录物理路径

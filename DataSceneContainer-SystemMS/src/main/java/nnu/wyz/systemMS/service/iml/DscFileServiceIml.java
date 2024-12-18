@@ -96,7 +96,7 @@ public class DscFileServiceIml implements DscFileService {
      */
     @Override
     @SneakyThrows
-    public CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic) {
+    public CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic, boolean isUpload) {
         String userId = uploadFileDTO.getUserId();
         String taskId = uploadFileDTO.getTaskId();
         String catalogId = uploadFileDTO.getCatalogId();
@@ -126,12 +126,12 @@ public class DscFileServiceIml implements DscFileService {
             }
         }
         String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        // 这段逻辑只在内部调用时使用，如工具输出、栅格渲染复制副本等，以便共用文件信息，但不再在正常上传文件时使用，不再缓存一天内已上传的文件（为了解决同一文件多次上传导致的bug)
+        // 这段逻辑只在内部调用(非正常上传）时使用，如解压、工具输出、栅格渲染复制副本等，以便共用文件信息，但不再在正常上传文件时使用，不再缓存一天内已上传的文件（为了解决同一文件多次上传导致的bug)
         if (fileId != null) {  //说明用户一天内上传过该文件
             Optional<DscFileInfo> dscFileDAOById = dscFileDAO.findById(fileId);
             DscFileInfo dscFileInfo = dscFileDAOById.get();
-            Boolean isUsedInSystem = dscFileInfo.getFileSuffix().equals("spng") || dscFileInfo.getBucketName().equals("dsc-ga-output");
-            if(isUsedInSystem){
+//            Boolean isUsedInSystem = dscFileInfo.getFileSuffix().equals("spng") || dscFileInfo.getBucketName().equals("dsc-ga-output");
+            if (!isUpload) {
                 String fileName = dscFileInfo.getFileName();
                 dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() + 1).setUpdatedTime(dateTime);
                 dscFileDAO.save(dscFileInfo);
@@ -466,12 +466,12 @@ public class DscFileServiceIml implements DscFileService {
                     .setObjectName(copyFile.getName()); //物理文件名称
             TaskInfoDTO taskInfoDTO = sysUploadTaskService.initTask(initTaskParam);
             UploadFileDTO uploadFileDTO = new UploadFileDTO(userId, taskInfoDTO.getTaskRecord().getId(), catalogId);
-            CommonResult<String> result = this.create(uploadFileDTO, false);
+            CommonResult<String> result = this.create(uploadFileDTO, false,false);
             log.info(result.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return CommonResult.success(dscFileInfo.getId(),"导入个人空间成功！");
+        return CommonResult.success(dscFileInfo.getId(), "导入个人空间成功！");
     }
 
     @Override
@@ -547,7 +547,7 @@ public class DscFileServiceIml implements DscFileService {
                 uploadFileDTO.setUserId(userId)
                         .setTaskId(data.getTaskRecord().getId())
                         .setCatalogId(catalogId);
-                CommonResult<String> upload = this.create(uploadFileDTO, false);
+                CommonResult<String> upload = this.create(uploadFileDTO, false,false);
                 if (upload.getCode() == 200) {
                     successCount++;
                 }

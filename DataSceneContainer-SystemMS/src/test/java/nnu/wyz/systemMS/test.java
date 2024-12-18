@@ -815,8 +815,8 @@ public class test {
 
     @Test
     void testPWD() {
-        CommonResult<String> pwd = dscCatalogService.pwd("8174f833-2a40-4cde-8fb5-20ac26f3174f");
-        System.out.println("pwd.getData() = " + pwd.getData());
+//        CommonResult<String> pwd = dscCatalogService.pwd("8174f833-2a40-4cde-8fb5-20ac26f3174f");
+//        System.out.println("pwd.getData() = " + pwd.getData());
     }
 
     static Object lock = new Object();
@@ -1409,5 +1409,12 @@ public class test {
         DscVectorServiceInfo dscVectorServiceInfo = byId.get();
 //        System.out.println(dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount()-1));
         dscVectorSDAO.save(dscVectorServiceInfo.setOwnerCount(dscVectorServiceInfo.getOwnerCount() - 1));
+    }
+
+    @Test
+    void testToolDataFromMongoDB(){
+            Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById("ab754e52-bc44-11ef-ba9b-10ffe01214a2");
+            System.out.println(byId.isPresent());
+
     }
 }

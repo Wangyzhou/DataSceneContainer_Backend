@@ -1,6 +1,7 @@
 package nnu.wyz.systemMS.model.DscGeoAnalysis;
 
 import lombok.Data;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -14,6 +15,6 @@ public class DscGeoAnalysisToolParamRelyOn {
 
     private String relyId;
 
-    private List<Integer> choices;
+    private List<JSONObject> config;
 
 }
