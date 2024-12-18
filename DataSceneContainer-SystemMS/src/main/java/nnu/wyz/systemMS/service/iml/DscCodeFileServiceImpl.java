@@ -32,7 +32,7 @@ public class DscCodeFileServiceImpl implements DscCodeFileService {
 
         // 设置 UUID 和当前日期时间
         codeFileEntity.setId(id);
-        codeFileEntity.setUpdateDate(currentDateTime);  // 假设你有 setUpdate_Date 方法
+        codeFileEntity.setUpdateDate(currentDateTime);
 
         // 保存到数据库
         dscCodeFileDAO.save(codeFileEntity);

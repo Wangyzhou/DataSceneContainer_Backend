@@ -8,7 +8,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DscCodeFileDTO {
 
-    private String id;
     private String fileName;  // 存储文件名
     private String code;      // 存储文件内容
     private String description;
