@@ -89,6 +89,7 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
         DscGARawParams dscGARawParams = new DscGARawParams();
         dscGARawParams.setWorkingDir(outputCatalog);
         dscGARawParams.setInput(params.getInput());
+        dscGARawParams.setOutput(params.getOutput());
         dscGARawParams.setOptions(params.getOptions());
         JSONObject targetTool = new JSONObject();
         targetTool.put("id", tool.getId());
@@ -120,11 +121,12 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
             return CommonResult.failed("工具不可用!");
         }
         tool = byId.get();
+        //(tjk12.18 modify) ************************************************************************* getName ==> getIdentifier
         for (DscGeoAnalysisToolInnerParams option : tool.getParameters().getOptions()) {
-            if (option.getConstraints().getMinimum() != null && Double.parseDouble((String) params.getOptions().get(option.getName())) < option.getConstraints().getMinimum()) {
+            if (option.getConstraints().getMinimum() != null && Double.parseDouble((String) params.getOptions().get(option.getIdentifier())) < option.getConstraints().getMinimum()) {
                 return CommonResult.failed(option.getName() + ": " + "value must be greater than " + option.getConstraints().getMinimum());
             }
-            if (option.getConstraints().getMaximum() != null && Double.parseDouble((String) params.getOptions().get(option.getName())) > option.getConstraints().getMaximum()) {
+            if (option.getConstraints().getMaximum() != null && Double.parseDouble((String) params.getOptions().get(option.getIdentifier())) > option.getConstraints().getMaximum()) {
                 return CommonResult.failed(option.getName() + ": " + "value must be less than " + option.getConstraints().getMaximum());
             }
         }

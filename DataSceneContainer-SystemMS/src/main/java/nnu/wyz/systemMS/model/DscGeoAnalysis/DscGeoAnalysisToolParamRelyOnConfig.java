@@ -11,6 +11,6 @@ public class DscGeoAnalysisToolParamRelyOnConfig {
 
     private List<Integer> ownership;
 
-    private boolean isRetract;
+    private boolean retract;
 
 }

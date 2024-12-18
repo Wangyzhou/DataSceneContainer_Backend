@@ -18,7 +18,7 @@ public class DscGARawParams {
 
     private Map<String, String> input;
 
-//    private List<DscGAInvokeInnerParams> output;
+    private Map<String, String> output;
 
     private Map<String, Object> options;
 

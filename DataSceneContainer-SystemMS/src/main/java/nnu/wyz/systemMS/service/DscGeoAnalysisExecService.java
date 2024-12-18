@@ -190,10 +190,11 @@ public class DscGeoAnalysisExecService {
         List<String> commands = dscGeoAnalysisTool.getInvokeCmd();
         //格式化Input输入,目前只支持对场景文件的输入
         for (DscGeoAnalysisToolInnerParams input : dscGeoAnalysisTool.getParameters().getInputs()) {
-            if (input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getName())) {
+            //(tjk12.18 modify) ************************************************************************* getName ==> getIdentifier
+            if (input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getIdentifier())) {
                 continue;
             }
-            String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getName()).split(",");
+            String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getIdentifier()).split(",");
             StringBuilder totalPath = new StringBuilder();
             for (String id : inputIds) {
                 Optional<DscFileInfo> byId1 = dscFileDAO.findById(id);
@@ -206,7 +207,11 @@ public class DscGeoAnalysisExecService {
         //格式化Output输出，记录
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
         String outputDir = root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor().get("id").toString() + catalogPath;
+        Map<String, String> outputs = dscGeoAnalysisExecTask.getParams().getOutput();
         for (DscGeoAnalysisToolInnerParams output : dscGeoAnalysisTool.getParameters().getOutputs()) {
+            if(!outputs.containsKey((output.getIdentifier()))) {
+                continue;
+            }
             String filePhysicalName = IdUtil.randomUUID();
             String filePath = outputDir + File.separator + filePhysicalName;
             if (output.getType().equals("Table, output") || output.getType().equals("Table, output, optional")) {
@@ -218,10 +223,10 @@ public class DscGeoAnalysisExecService {
         //格式化Options配置
         for (DscGeoAnalysisToolInnerParams option : dscGeoAnalysisTool.getParameters().getOptions()) {
             Map<String, Object> options = dscGeoAnalysisExecTask.getParams().getOptions();
-            if (!options.containsKey(option.getName())) {
+            if (!options.containsKey(option.getIdentifier())) {
                 continue;
             }
-            Object o = options.get(option.getName());
+            Object o = options.get(option.getIdentifier());
             if (o == null) {
                 continue;
             }
@@ -232,8 +237,16 @@ public class DscGeoAnalysisExecService {
                 commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier() + "_MAX", valueRange.get(1)));
                 continue;
             }
+            //当类型为Static table时，前端传递的是一个文件id
+            if(option.getType().equals("Static table")) {
+                Optional<DscFileInfo> byId1 = dscFileDAO.findById(o.toString());
+                DscFileInfo dscFileInfo = byId1.get();
+                String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
+                commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), filePath));
+            }
             commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), o));
         }
+        System.out.println(commands);
         return commands.toArray(new String[commands.size()]);
     }
 
