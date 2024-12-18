@@ -1,4 +1,4 @@
-deployIp: 172.21.213.86
+deployIp: 172.21.252.218
 frontendIp: localhost:8889/dsc-app
 sagaDockerServer: 119.45.181.127/dsc-wps/       #部署要改
 pythonDockerServer: 172.21.213.86        #部署要改
@@ -67,7 +67,7 @@ docker_local_host: ${DOCKER_LOCAL_HOST:172.21.213.86}
 docker_local_port: ${DOCKER_LOCAL_PORT:2375}
 
 docker:
-  docker_url: ${DOCKER_LOCAL_HOST:172.21.213.86}:${DOCKER_LOCAL_PORT:2375}
+  docker_url: ${DOCKER_LOCAL_HOST:172.21.252.218}:${DOCKER_LOCAL_PORT:2375}
   docker_tls_verify: ${DOCKER_TLS_VERIFY:no}
   docker_cert_path: ${DOCKER_CERT_PATH:D:\\docker-2375-cert\\}
   docker_api_version: ${DOCKER_API_VERSION:1.43}
@@ -75,7 +75,7 @@ docker:
 
 
 minio:
-  endpoint: http://124.70.17.22
+  endpoint: http://172.21.252.218
   accessKey: dsc
   secretKey: dsc123456
   bucketName: dsc-file

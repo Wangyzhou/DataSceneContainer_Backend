@@ -916,9 +916,9 @@ public class test {
     @Test
     void testExecute() {
         DscInvokeToolParams dscInvokeToolParams = new DscInvokeToolParams();
-        dscInvokeToolParams.setToolId("656dcc54ccc545e844ef6071");
-        dscInvokeToolParams.setUserId("652a48fde4b01213a180bb5a");
-        DscToolRawParams p1 = new DscToolRawParams("Input DEM", "657ab0bae4b0f9826e8f799b", null);
+        dscInvokeToolParams.setToolId("ff36aa5e-bc76-11ef-9883-10ffe01214a2");
+        dscInvokeToolParams.setUserId("66d67ae4e4b01ddf2834b66f");
+        DscToolRawParams p1 = new DscToolRawParams("DEM", "6756b663e4b030c6e9d1f95e", null);
         DscToolRawParams p2 = new DscToolRawParams("Output File", "aspect.tif", "4f81318a-172e-44d2-ba12-74779f0422f3");
         DscToolRawParams p3 = new DscToolRawParams("Z Conversion Factor", null, null);
         ArrayList<DscToolRawParams> dscToolRawParams = new ArrayList<>();
@@ -1413,8 +1413,9 @@ public class test {
 
     @Test
     void testToolDataFromMongoDB(){
-            Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById("ab754e52-bc44-11ef-ba9b-10ffe01214a2");
-            System.out.println(byId.isPresent());
-
+            Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById("ff41e308-bc4e-11ef-bf2d-10ffe01214a2");
+            System.out.println(byId.get());
     }
+
+
 }

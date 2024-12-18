@@ -15,6 +15,6 @@ public class DscGeoAnalysisToolParamRelyOn {
 
     private String relyId;
 
-    private List<JSONObject> config;
+    private DscGeoAnalysisToolParamRelyOnConfig config;
 
 }

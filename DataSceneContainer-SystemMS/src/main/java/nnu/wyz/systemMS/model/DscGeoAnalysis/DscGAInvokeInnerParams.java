@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DscGAInvokeInnerParams {
 
-    private String name;
+    private String identifier;
 
     private Object value;
 

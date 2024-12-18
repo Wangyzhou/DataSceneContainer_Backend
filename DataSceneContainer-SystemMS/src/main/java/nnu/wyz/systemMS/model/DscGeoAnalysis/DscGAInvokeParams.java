@@ -21,6 +21,8 @@ public class DscGAInvokeParams {
 
     private Map<String, String> input;
 
+    private Map<String, String> output;
+
     private Map<String, Object> options;
 
 
