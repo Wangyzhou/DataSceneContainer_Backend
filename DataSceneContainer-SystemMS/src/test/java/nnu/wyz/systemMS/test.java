@@ -26,6 +26,7 @@ import nnu.wyz.systemMS.config.DockerClientConfig;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.PythonDockerConfig;
 import nnu.wyz.systemMS.config.SagaDockerConfig;
+import nnu.wyz.systemMS.controller.DscTableController;
 import nnu.wyz.systemMS.dao.*;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisExecTask;
@@ -34,6 +35,7 @@ import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.model.param.*;
 import nnu.wyz.systemMS.service.*;
+import nnu.wyz.systemMS.service.iml.DscTableServiceIml;
 import nnu.wyz.systemMS.utils.*;
 import nnu.wyz.systemMS.websocket.WebSocketServer;
 import okhttp3.*;
@@ -45,6 +47,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,6 +93,10 @@ public class test {
     private RedisCache redisCache;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private DscTableServiceIml dscTableServiceIml;
+    @Autowired
+    private DscTableController dscTableController;
 
     @Test
     void test1() {
@@ -1416,6 +1423,19 @@ public class test {
             Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById("ff41e308-bc4e-11ef-bf2d-10ffe01214a2");
             System.out.println(byId.get());
     }
+
+    @Test
+    void testTableDataParse() {
+        ResponseEntity<CommonResult<DscTable>> byId = dscTableController.getDscTable("675bf8b9e4b030c6ca56c198");
+
+        CommonResult<DscTable> commonResult = byId.getBody();
+
+        // 打印具体字段内容
+        System.out.println("Code: " + commonResult.getCode());
+        System.out.println("Message: " + commonResult.getMessage());
+        System.out.println("Data: " + commonResult.getData());  // 你可以查看 DscTable 的数据
+    }
+
 
 
 }
