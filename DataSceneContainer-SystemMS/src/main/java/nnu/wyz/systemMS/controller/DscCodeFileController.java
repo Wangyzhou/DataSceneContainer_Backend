@@ -23,8 +23,8 @@ public class DscCodeFileController {
         return ResponseEntity.ok("Code file saved successfully.");
     }
 
-    @GetMapping("/getFileList")
-    public List<DscCodeFile> getFileList(@RequestBody String userId) {
+    @GetMapping("/getFileList/{userId}")
+    public List<DscCodeFile> getFileList(@PathVariable String userId) {
         return dscCodeFileService.getFileList(userId);
     }
 
