@@ -243,6 +243,7 @@ public class DscGeoAnalysisExecService {
                 DscFileInfo dscFileInfo = byId1.get();
                 String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
                 commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), filePath));
+                continue;
             }
             commands.add(MessageFormat.format("-{0}={1}", option.getIdentifier(), o));
         }
