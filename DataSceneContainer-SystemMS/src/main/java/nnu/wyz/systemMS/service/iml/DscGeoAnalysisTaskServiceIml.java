@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -121,8 +122,12 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
             return CommonResult.failed("工具不可用!");
         }
         tool = byId.get();
+        Map<String, Object> optionsInvoked = params.getOptions();
         //(tjk12.18 modify) ************************************************************************* getName ==> getIdentifier
         for (DscGeoAnalysisToolInnerParams option : tool.getParameters().getOptions()) {
+            if(!optionsInvoked.containsKey(option.getIdentifier())){
+                continue;
+            }
             if (option.getConstraints().getMinimum() != null && Double.parseDouble((String) params.getOptions().get(option.getIdentifier())) < option.getConstraints().getMinimum()) {
                 return CommonResult.failed(option.getName() + ": " + "value must be greater than " + option.getConstraints().getMinimum());
             }
