@@ -37,6 +37,9 @@ public class DscPublicResourceServiceIml implements DscPublicResourceService {
     @Autowired
     DscRasterSDAO dscRasterSDAO;
 
+    @Autowired
+    private SysUploadTaskDAO sysUploadTaskDAO;
+
     @Override
     public CommonResult<String> publishResource() {
         return null;
@@ -55,7 +58,11 @@ public class DscPublicResourceServiceIml implements DscPublicResourceService {
         DscPublicFile dscPublicFile = byId.get();
         DscFileInfo dscFileInfo = byId1.get();
         dscFileInfo.setOwnerCount(dscFileInfo.getOwnerCount() - 1);
+        dscFileDAO.save(dscFileInfo);
         dscPublicFileDAO.delete(dscPublicFile);
+        //删除文件对应的上传任务，不再缓存一天内已上传的文件（逻辑已更改）
+        SysUploadTask sysUploadTaskByFileId = sysUploadTaskDAO.findSysUploadTaskByFileId(dscFileInfo.getId());
+        sysUploadTaskDAO.delete(sysUploadTaskByFileId);
         return CommonResult.success("删除成功");
     }
 

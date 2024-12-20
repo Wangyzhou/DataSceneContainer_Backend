@@ -437,6 +437,13 @@ public class DscFileServiceIml implements DscFileService {
         String targetFilePath = targetDirPath + File.separator + filePhysicalName;
         // 物理复制文件
         try {
+            // 获取目标目录路径
+            Path targetDir = Paths.get(targetDirPath);
+
+            // 如果目标目录不存在，则创建目录
+            if (!Files.exists(targetDir)) {
+                Files.createDirectories(targetDir);
+            }
             Files.copy(originalFilePath, Paths.get(targetFilePath), StandardCopyOption.REPLACE_EXISTING);
             // 添加新文件的文件信息
             // 只更改必要信息，其他信息沿用源文件
