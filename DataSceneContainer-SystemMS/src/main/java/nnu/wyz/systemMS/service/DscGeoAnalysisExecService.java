@@ -134,7 +134,8 @@ public class DscGeoAnalysisExecService {
             String errMsg = baos.toString(utf8);
             if (!Objects.equals(errMsg, "")) {
                 log.error(errMsg);
-                if (outputRecords.size() == 0) {     //说明工具执行中出错，此时未输出文件，直接return
+                //说明工具执行中出错，此时未输出文件，直接return
+                if (outputRecords.size() == 0) {
                     stopTask(dscGeoAnalysisExecTask, errMsg);
                     return;
                 }
@@ -208,16 +209,37 @@ public class DscGeoAnalysisExecService {
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
         String outputDir = root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor().get("id").toString() + catalogPath;
         Map<String, String> outputs = dscGeoAnalysisExecTask.getParams().getOutput();
+        System.out.println("outputs="+outputs);
         for (DscGeoAnalysisToolInnerParams output : dscGeoAnalysisTool.getParameters().getOutputs()) {
             if(!outputs.containsKey((output.getIdentifier()))) {
                 continue;
             }
             String filePhysicalName = IdUtil.randomUUID();
             String filePath = outputDir + File.separator + filePhysicalName;
-            if (output.getType().equals("Table, output") || output.getType().equals("Table, output, optional")) {
-                filePath += ".csv";     //表格输出不指定类型为csv会导致输出文件无后缀名，默认输出为csv
+            //表格输出不指定类型为csv会导致输出文件无后缀名，默认输出为csv
+            if ("Table, output".equals(output.getType()) || "Table, output, optional".equals(output.getType())) {
+                filePath += ".csv";
             }
-            outputRecords.add(new GeoAnalysisOutputRecDTO(filePhysicalName, output.getName())); //记录输出的一系列文件
+            //指定栅格数据的格式为.tif，省略sgrd2tif的过程
+            if("Grid, output".equals(output.getType()) || "Grid, output, optional".equals(output.getType())) {
+                filePath += ".tif";
+            }
+            // 获取outputs中与output.getIdentifier()匹配的value
+            String outputFileName = outputs.get(output.getIdentifier());
+            //处理缺省情况
+            outputFileName = (outputFileName != null) ? outputFileName : output.getName();
+            System.out.println("outputFileName1="+outputFileName);
+            String type = output.getType();
+            // 判断 outputFileName 是否有后缀，如果有则删除对应后缀
+            if (("Grid, output".equals(type) || "Grid, output, optional".equals(type)) && outputFileName.endsWith(".tif")) {
+                outputFileName = outputFileName.substring(0, outputFileName.length() - 4);
+            } else if (("Shapes, output".equals(type) || "Shapes, output, optional".equals(type)) && !outputFileName.endsWith(".shp")) {
+                outputFileName = outputFileName.substring(0, outputFileName.length() - 4);
+            }
+            System.out.println("outputFileName2="+outputFileName);
+
+            //记录输出的一系列文件
+            outputRecords.add(new GeoAnalysisOutputRecDTO(filePhysicalName, outputFileName));
             commands.add(MessageFormat.format("-{0}={1}", output.getIdentifier(), filePath));
         }
         //格式化Options配置

@@ -167,7 +167,7 @@ public class DscTableServiceIml implements DscTableService {
             FileInputStream fileInputStream  = new FileInputStream(tableFile);
             String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
             String fileId = IdUtil.objectId();
-            System.out.println("fileName=" + tableFile.getName()+"."+tableFileDTO.getTableType());
+            System.out.println("fileName=" + tableFile.getName());
             String objectKey = tableFileDTO.getUserId()+File.separator+tableFile.getName();
             DscFileInfo dscFileInfo = new DscFileInfo(fileId,md5,tableFileDTO.getTableName(),fileSuffix,false,tableFileDTO.getUserId(),
                     DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"), DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"),

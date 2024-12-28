@@ -57,7 +57,7 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
     private DscUserDAO dscUserDAO;
 
     @Override
-    public CommonResult<DscGeoAnalysisExecTask> submitGATask(DscGAInvokeParams params) {
+    public CommonResult<DscGeoAnalysisExecTask>  submitGATask(DscGAInvokeParams params) {
         //TODO:参数校验
         CommonResult<String> examineParamRes = this.examineParams(params);
         if(examineParamRes.getCode() != 200){
@@ -71,11 +71,12 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
         //创建工具输出目录
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String formattedDateTime = dateFormat.format(new Date());
+        String catalogName = tool.getName()+"("+formattedDateTime+")";
         DscCatalog sceneCatalog = dscCatalogDAO.findDscCatalogById(params.getSceneCatalog());
         CreateCatalogDTO createCatalogDTO = new CreateCatalogDTO();
         createCatalogDTO.setUserId(executor);
         createCatalogDTO.setParentCatalogId(sceneCatalog.getId());
-        createCatalogDTO.setCatalogName(formattedDateTime);
+        createCatalogDTO.setCatalogName(catalogName);
         createCatalogDTO.setTaskId(taskId);
         CommonResult<String> createCatalogRes = dscCatalogService.create(createCatalogDTO);
         String outputCatalog = createCatalogRes.getData();
