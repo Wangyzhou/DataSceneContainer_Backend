@@ -38,4 +38,9 @@ public class DscTableController {
         return dscTableService.updateDscTable(id,tableFileDTO);
     }
 
+    @GetMapping("/getDscTableName/{id}")
+    public CommonResult<String> getDscTableName(@PathVariable String id) {
+        return dscTableService.getDscTableNameById(id);
+    }
+
 }

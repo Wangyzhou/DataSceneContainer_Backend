@@ -335,4 +335,12 @@ public class DscTableServiceIml implements DscTableService {
             return CommonResult.failed("处理文件失败：" + e.getMessage());
         }
     }
+
+    @Override
+    public CommonResult<String> getDscTableNameById(String id) {
+        Optional<DscFileInfo> byId = dscFileDAO.findById(id);
+        DscFileInfo dscFileInfo = byId.get();
+        System.out.println("dscFileInfo=" + dscFileInfo);
+        return CommonResult.success(dscFileInfo.getFileName(),"获取表格名成功");
+    }
 }

@@ -17,6 +17,7 @@ public interface DscTableService {
 
     CommonResult<String> updateDscTable(String id, CreateTableFileDTO tableFileDTO);
 
+    CommonResult<String> getDscTableNameById(String id);
 //    删除逻辑走DscFileController
 //    CommonResult<String> deleteDscTable(String id);
 }
