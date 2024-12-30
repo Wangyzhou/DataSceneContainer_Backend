@@ -187,23 +187,45 @@ public class DscGeoAnalysisExecService {
 
     String[] getExecCommand(DscGeoAnalysisExecTask dscGeoAnalysisExecTask, ArrayList<GeoAnalysisOutputRecDTO> outputRecords) {
         Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool().get("id").toString());
-        DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
+        DscGeoAnalysisTool dscGeoAnalysisTool = byId.orElseThrow(() -> new IllegalArgumentException("未找到对应执行工具！"));
         List<String> commands = dscGeoAnalysisTool.getInvokeCmd();
         //格式化Input输入,目前只支持对场景文件的输入
+        // 用于标记是否有有效的输入
+        boolean hasInput = false;
         for (DscGeoAnalysisToolInnerParams input : dscGeoAnalysisTool.getParameters().getInputs()) {
             //(tjk12.18 modify) ************************************************************************* getName ==> getIdentifier
             if (input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getIdentifier())) {
                 continue;
             }
-            String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getIdentifier()).split(",");
+            String inputValue = dscGeoAnalysisExecTask.getParams().getInput().get(input.getIdentifier());
+//            String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getIdentifier()).split(",");
+            if (inputValue == null || inputValue.isEmpty()) {
+                // 如果 inputIds 为空或为 null，跳过当前参数的处理
+                continue;
+            }
+
+            String[] inputIds = inputValue.split(",");
+
+            // 如果 inputIds 数组为空，跳过该参数
+            if (inputIds.length == 0) {
+                continue;
+            }
+
+            // 设置标记为 true，说明有有效的输入
+            hasInput = true;
             StringBuilder totalPath = new StringBuilder();
             for (String id : inputIds) {
                 Optional<DscFileInfo> byId1 = dscFileDAO.findById(id);
-                DscFileInfo dscFileInfo = byId1.get();
+                DscFileInfo dscFileInfo = byId1.orElseThrow(() -> new IllegalArgumentException("未找到对应输入文件！"));
                 String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
                 totalPath.append(filePath).append(";");
             }
             commands.add(MessageFormat.format("-{0}={1}", input.getIdentifier(), totalPath.substring(0, totalPath.length() - 1)));
+            // 如果没有有效的输入，抛出异常
+            if (!hasInput) {
+                throw new IllegalArgumentException("没有提供有效的输入文件！");
+            }
+            hasInput = false;
         }
         //格式化Output输出，记录
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
