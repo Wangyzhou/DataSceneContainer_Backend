@@ -3,14 +3,15 @@ package nnu.wyz.systemMS.service.iml;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.dao.DscWorkflowModelDAO;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelDTO;
-import nnu.wyz.systemMS.model.entity.DscWorkflowModel;
-import nnu.wyz.systemMS.service.DscTableService;
+import nnu.wyz.systemMS.model.dto.DscWorkflowModelListDTO;
+import nnu.wyz.systemMS.model.entity.DscModel;
 import nnu.wyz.systemMS.service.DscWorkflowModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,17 +26,18 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
     @Autowired
     private DscWorkflowModelDAO dscWorkflowModelDAO;
 
-//    @Autowired
-//    private DscWorkflowModelService dscWorkflowModelService;
 
     //DTO转Entity
-    public DscWorkflowModel convert2Model(DscWorkflowModelDTO dscWorkflowModelDTO) {
-        DscWorkflowModel dscWorkflowModel = new DscWorkflowModel();
-        dscWorkflowModel.setName(dscWorkflowModelDTO.getName());
-        dscWorkflowModel.setId(dscWorkflowModelDTO.getId());
-        dscWorkflowModel.setModelJson(dscWorkflowModelDTO.getModelJson());
-        dscWorkflowModel.setUserId(dscWorkflowModelDTO.getUserId());
-        return dscWorkflowModel;
+    public DscModel convert2Model(DscWorkflowModelDTO dscWorkflowModelDTO) {
+        DscModel dscModel = new DscModel();
+        dscModel.setName(dscWorkflowModelDTO.getName());
+        dscModel.setId(dscWorkflowModelDTO.getId());
+        dscModel.setDescription(dscWorkflowModelDTO.getDescription());
+        dscModel.setParams(dscWorkflowModelDTO.getParams());
+        dscModel.setModelJson(dscWorkflowModelDTO.getModelJson());
+        dscModel.setAuthor(dscWorkflowModelDTO.getAuthor());
+        dscModel.setOwnerId(dscWorkflowModelDTO.getOwnerId());
+        return dscModel;
     }
 
     @Override
@@ -47,13 +49,14 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
             // 获取当前时间，并格式化为指定格式
             String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             // 将DTO转换为实体
-            DscWorkflowModel dscWorkflowModel = convert2Model(dscWorkflowModelDTO);
+            DscModel dscModel = convert2Model(dscWorkflowModelDTO);
             // 设置ID和时间字段
-            dscWorkflowModel.setId(id);
-            dscWorkflowModel.setCreateTime(currentDateTime);
-            dscWorkflowModel.setUpdateTime(currentDateTime);
+            dscModel.setId(id);
+            dscModel.setCreateTime(currentDateTime);
+            dscModel.setUpdateTime(currentDateTime);
+            dscModel.setCategory("Workflow Model");
             // 保存实体到数据库
-            dscWorkflowModelDAO.save(dscWorkflowModel);
+            dscWorkflowModelDAO.save(dscModel);
             // 返回保存成功的响应
             return CommonResult.success("模型保存成功");
         } catch (Exception e) {
@@ -64,10 +67,10 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
     }
 
     @Override
-    public CommonResult<DscWorkflowModel> getDscWorkflowModel(String modelId) {
-        DscWorkflowModel dscWorkflowModel = dscWorkflowModelDAO.findDscWorkflowModelById(modelId);
-        if(dscWorkflowModel != null) {
-            return CommonResult.success(dscWorkflowModel,"加载成功！");
+    public CommonResult<DscModel> getDscWorkflowModel(String modelId) {
+        DscModel dscModel = dscWorkflowModelDAO.findDscWorkflowModelById(modelId);
+        if(dscModel != null) {
+            return CommonResult.success(dscModel,"加载成功！");
         }else{
             return CommonResult.failed("加载失败！");
         }
@@ -75,10 +78,10 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
 
     @Override
     public CommonResult<String> deleteDscWorkflowModel(String modelId) {
-        Optional<DscWorkflowModel> optional = Optional.ofNullable(dscWorkflowModelDAO.findDscWorkflowModelById(modelId));
+        Optional<DscModel> optional = Optional.ofNullable(dscWorkflowModelDAO.findDscWorkflowModelById(modelId));
         if (optional.isPresent()) {
-            DscWorkflowModel dscWorkflowModel = optional.get();
-            dscWorkflowModelDAO.delete(dscWorkflowModel);
+            DscModel dscModel = optional.get();
+            dscWorkflowModelDAO.delete(dscModel);
             return CommonResult.success("模型删除成功！");
         } else {
             return CommonResult.failed("模型删除失败，未找到指定模型！");
@@ -88,12 +91,12 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
     @Override
     public CommonResult<String> updateDscWorkflowModel(DscWorkflowModelDTO dscWorkflowModelDTO) {
         String id = dscWorkflowModelDTO.getId();
-        Optional<DscWorkflowModel> optional = Optional.ofNullable(dscWorkflowModelDAO.findDscWorkflowModelById(id));
+        Optional<DscModel> optional = Optional.ofNullable(dscWorkflowModelDAO.findDscWorkflowModelById(id));
         if (!optional.isPresent()) {
             return CommonResult.failed("模型不存在，请先保存该模型！");
         }
 
-        DscWorkflowModel existingModel = optional.get();
+        DscModel existingModel = optional.get();
         existingModel.setModelJson(dscWorkflowModelDTO.getModelJson());
 
         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -102,5 +105,13 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
         return CommonResult.success("模型更新成功！");
     }
 
-
+    @Override
+    public CommonResult<List<DscWorkflowModelListDTO>> getDscWorkflowModelList(String ownerId) {
+        List<DscWorkflowModelListDTO> workflowModelsByUserId = dscWorkflowModelDAO.findDscWorkflowModelsByOwnerId(ownerId);
+        if(workflowModelsByUserId != null) {
+            return CommonResult.success(workflowModelsByUserId,"用户所有模型获取成功！");
+        }else{
+            return CommonResult.failed("加载失败！");
+        }
+    }
 }

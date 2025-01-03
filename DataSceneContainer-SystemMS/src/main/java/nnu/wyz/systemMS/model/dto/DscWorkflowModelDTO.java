@@ -3,6 +3,9 @@ package nnu.wyz.systemMS.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nnu.wyz.systemMS.model.entity.DscModelParams;
+
+import java.util.List;
 
 /**
  * @author tjk
@@ -19,9 +22,18 @@ public class DscWorkflowModelDTO {
 
     private String name;
 
+    private String category;
+
+    private String description;
+
+    private DscModelParams params;
+
     private String modelJson;
 
-    private String userId;
+    private String author;
+
+//    private List<String> ownerId;
+    private String ownerId;
 
     private String createTime;
 

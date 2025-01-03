@@ -2,10 +2,13 @@ package nnu.wyz.systemMS.controller;
 
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelDTO;
-import nnu.wyz.systemMS.model.entity.DscWorkflowModel;
+import nnu.wyz.systemMS.model.dto.DscWorkflowModelListDTO;
+import nnu.wyz.systemMS.model.entity.DscModel;
 import nnu.wyz.systemMS.service.DscWorkflowModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author tjk
@@ -29,7 +32,7 @@ public class DscWorkflowController {
     }
 
     @GetMapping("/getWorkflowModel/{id}")
-    public CommonResult<DscWorkflowModel> getWorkflowModel(@PathVariable String id) {
+    public CommonResult<DscModel> getWorkflowModel(@PathVariable String id) {
         return dscWorkflowModelService.getDscWorkflowModel(id);
     }
 
@@ -41,5 +44,10 @@ public class DscWorkflowController {
     @PutMapping("/updateWorkflowModel")
     public CommonResult<String> updateWorkflowModel(@RequestBody DscWorkflowModelDTO workflowModelDTO) {
         return dscWorkflowModelService.updateDscWorkflowModel(workflowModelDTO);
+    }
+
+    @GetMapping("/getWorkflowModelList/{id}")
+    public CommonResult<List<DscWorkflowModelListDTO>> getWorkflowModelList(@PathVariable String id) {
+        return dscWorkflowModelService.getDscWorkflowModelList(id);
     }
 }
