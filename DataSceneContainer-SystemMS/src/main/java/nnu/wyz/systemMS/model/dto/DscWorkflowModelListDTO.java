@@ -17,4 +17,7 @@ public class DscWorkflowModelListDTO {
     private String id;
 
     private String name;
+
+    private String category;
+
 }

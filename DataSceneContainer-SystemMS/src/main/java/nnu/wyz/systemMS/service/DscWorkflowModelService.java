@@ -1,9 +1,11 @@
 package nnu.wyz.systemMS.service;
 
+import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelDTO;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelListDTO;
 import nnu.wyz.systemMS.model.entity.DscModel;
+
 
 import java.util.List;
 
@@ -22,5 +24,5 @@ public interface DscWorkflowModelService {
 
     CommonResult<String> updateDscWorkflowModel(DscWorkflowModelDTO workflowModel);
 
-    CommonResult<List<DscWorkflowModelListDTO>> getDscWorkflowModelList(String ownerId);
+    CommonResult<List<JSONObject>> getDscWorkflowModelList(String ownerId);
 }

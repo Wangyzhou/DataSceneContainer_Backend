@@ -1,5 +1,7 @@
 package nnu.wyz.systemMS.service.iml;
 
+import cn.hutool.json.JSON;
+import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.dao.DscWorkflowModelDAO;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelDTO;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -106,11 +109,28 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
     }
 
     @Override
-    public CommonResult<List<DscWorkflowModelListDTO>> getDscWorkflowModelList(String ownerId) {
-        List<DscWorkflowModelListDTO> workflowModelsByUserId = dscWorkflowModelDAO.findDscWorkflowModelsByOwnerId(ownerId);
-        if(workflowModelsByUserId != null) {
-            return CommonResult.success(workflowModelsByUserId,"用户所有模型获取成功！");
-        }else{
+    public CommonResult<List<JSONObject>> getDscWorkflowModelList(String ownerId) {
+        List<DscWorkflowModelListDTO> workflowModelsByOwnerId = dscWorkflowModelDAO.findDscWorkflowModelsByOwnerId(ownerId);
+        System.out.println("workflowModelByOwnerId="+workflowModelsByOwnerId);
+        ArrayList<JSONObject> treeData = new ArrayList<>();
+
+        if (workflowModelsByOwnerId != null && !workflowModelsByOwnerId.isEmpty()) {
+            // 遍历每个模型，将其转化为 JSON 格式
+            for (DscWorkflowModelListDTO model : workflowModelsByOwnerId) {
+                JSONObject modelData = new JSONObject();
+                modelData.put("id", model.getId());
+                modelData.put("label", model.getName());
+                modelData.put("category", model.getCategory());
+                modelData.put("isLeaf", true);
+
+                // 将每个模型添加到列表中
+                treeData.add(modelData);
+            }
+
+            // 返回成功结果，包含模型列表
+            return CommonResult.success(treeData, "用户所有模型获取成功！");
+        } else {
+            // 如果没有找到模型数据，返回加载失败结果
             return CommonResult.failed("加载失败！");
         }
     }

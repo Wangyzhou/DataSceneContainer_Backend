@@ -1,10 +1,12 @@
 package nnu.wyz.systemMS.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelDTO;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelListDTO;
 import nnu.wyz.systemMS.model.entity.DscModel;
 import nnu.wyz.systemMS.service.DscWorkflowModelService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +49,7 @@ public class DscWorkflowController {
     }
 
     @GetMapping("/getWorkflowModelList/{id}")
-    public CommonResult<List<DscWorkflowModelListDTO>> getWorkflowModelList(@PathVariable String id) {
+    public CommonResult<List<JSONObject>> getWorkflowModelList(@PathVariable String id) {
         return dscWorkflowModelService.getDscWorkflowModelList(id);
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface DscWorkflowModelDAO extends MongoRepository<DscModel,String> {
     //加载用户所有已经创建的模型
-    @Query(value = "{ 'userId' : ?0 }", fields = "{ 'name' : 1, 'id' : 1 }")
+    @Query(value = "{ 'ownerId' : ?0 }", fields = "{ 'name' : 1, 'id' : 1 ,'category' : 1}")
     List<DscWorkflowModelListDTO> findDscWorkflowModelsByOwnerId(String ownerId);
 
     //加载指定Id的模型
