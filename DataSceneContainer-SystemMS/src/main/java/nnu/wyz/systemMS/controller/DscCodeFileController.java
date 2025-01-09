@@ -40,5 +40,15 @@ public class DscCodeFileController {
         }
     }
 
+    @PostMapping("/rename")
+    public ResponseEntity<String> renameCodeFile(@RequestParam String id, @RequestParam String newFileName) {
+        boolean success = dscCodeFileService.renameFileName(id, newFileName);
+        if (success) {
+            return ResponseEntity.ok("File name updated successfully.");
+        } else {
+            return ResponseEntity.status(404).body("File not found or update failed.");
+        }
+    }
+
 }
 
