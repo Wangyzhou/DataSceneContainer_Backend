@@ -9,4 +9,5 @@ public interface DscCodeFileService {
     void saveCodeFile(DscCodeFileDTO codeFileDTO);
     List<DscCodeFile> getFileList(String userId);
     boolean deleteCodeFile(String id);
+    boolean renameFileName(String id, String newFileName);
 }

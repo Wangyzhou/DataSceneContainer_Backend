@@ -54,5 +54,17 @@ public class DscCodeFileServiceImpl implements DscCodeFileService {
         }
         return false;
     }
+
+    @Override
+    public boolean renameFileName(String id, String newFileName) {
+        Optional<DscCodeFile> optionalFile = dscCodeFileDAO.findById(id);
+        if (optionalFile.isPresent()) {
+            DscCodeFile file = optionalFile.get();
+            file.setFileName(newFileName); // 更新文件名
+            dscCodeFileDAO.save(file); // 保存更新后的实体
+            return true;
+        }
+        return false;
+    }
 }
 
