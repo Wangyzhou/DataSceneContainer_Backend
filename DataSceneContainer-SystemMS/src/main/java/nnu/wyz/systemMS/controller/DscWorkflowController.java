@@ -28,9 +28,9 @@ public class DscWorkflowController {
     }
 
 
-    @PostMapping("/saveWorkflowModel")
-    public CommonResult<String> saveWorkflowModel(@RequestBody DscWorkflowModelDTO workflowModelDTO) {
-        return dscWorkflowModelService.saveWorkflowModel(workflowModelDTO);
+    @PostMapping("/saveWorkflowModel/{userId}")
+    public CommonResult<String> saveWorkflowModel(@RequestBody DscWorkflowModelDTO workflowModelDTO,@PathVariable String userId) {
+        return dscWorkflowModelService.saveWorkflowModel(workflowModelDTO , userId);
     }
 
     @GetMapping("/getWorkflowModel/{id}")
@@ -52,4 +52,6 @@ public class DscWorkflowController {
     public CommonResult<List<JSONObject>> getWorkflowModelList(@PathVariable String id) {
         return dscWorkflowModelService.getDscWorkflowModelList(id);
     }
+
+
 }

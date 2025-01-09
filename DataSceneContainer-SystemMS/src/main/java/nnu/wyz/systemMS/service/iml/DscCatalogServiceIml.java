@@ -12,16 +12,13 @@ import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.dto.DeleteFileDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
 import nnu.wyz.systemMS.model.entity.DscCatalog;
+import nnu.wyz.systemMS.model.entity.DscModel;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscFileService;
-import nnu.wyz.systemMS.utils.CompareUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -64,7 +61,8 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 .setUserId(userId)
                 .setTotal(0)
                 .setLevel(0)
-                .setParent("-2")    //以区分普通数据的根文件夹
+                //以区分普通数据的根文件夹
+                .setParent("-2")
                 .setChildren(new ArrayList<>())
                 .setCreatedTime(dateTime)
                 .setUpdatedTime(dateTime)
@@ -129,6 +127,86 @@ public class DscCatalogServiceIml implements DscCatalogService {
                 .setCreatedTime(dateTime)
                 .setUpdatedTime(dateTime);
         dscCatalogDAO.insert(dscCatalog);
+    }
+
+    @Override
+    public void createWorkflowModelCatalog(String userId){
+        DscCatalog dscCatalog = new DscCatalog();
+        String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        dscCatalog.setId(UUID.randomUUID().toString())
+                .setName("Workflow Model")
+                .setUserId(userId)
+                .setTotal(0)
+                .setLevel(0)
+                //workflowModel为-3
+                .setParent("-3")
+                .setChildren(new ArrayList<>())
+                .setCreatedTime(dateTime)
+                .setUpdatedTime(dateTime);
+        dscCatalogDAO.insert(dscCatalog);
+    }
+
+    @Override
+    public void createCustomModelCatalog(String userId){
+        DscCatalog dscCatalog = new DscCatalog();
+        String dateTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        dscCatalog.setId(UUID.randomUUID().toString())
+                .setName("Custom Model")
+                .setUserId(userId)
+                .setTotal(0)
+                .setLevel(0)
+                //代码封装自定义模型为-4
+                .setParent("-4")
+                .setChildren(new ArrayList<>())
+                .setCreatedTime(dateTime)
+                .setUpdatedTime(dateTime);
+        dscCatalogDAO.insert(dscCatalog);
+    }
+
+    @Override
+    public void addModelAsChildren2WorkflowModelCatalog(DscModel dscModel ,String userId){
+        //暂规定-3为workflowModelCatalogId
+        String parentCatalogId = "-3";
+        Optional<DscCatalog> parentCatalogOptional = Optional.ofNullable(dscCatalogDAO.findDscWorkflowModelcatalogByUserIdAndParent(userId, parentCatalogId));
+        if (!parentCatalogOptional.isPresent()) {
+            CommonResult.failed(ResultCode.FAILED, "未找到载体目录！");
+            return;
+        }
+        DscCatalog parentCatalog = parentCatalogOptional.get();
+        System.out.println(("parentCatalog="+parentCatalog.getId()));
+        CatalogChildrenDTO catalogChildrenDTO = new CatalogChildrenDTO();
+        catalogChildrenDTO.setId(dscModel.getId())
+                .setName(dscModel.getName())
+                .setType("model")
+                .setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        parentCatalog.getChildren().add(catalogChildrenDTO);
+        parentCatalog.setUpdatedTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        parentCatalog.setTotal(parentCatalog.getTotal() + 1);
+        dscCatalogDAO.save(parentCatalog);
+        CommonResult.success("添加模型成功！");
+    }
+
+    @Override
+    public CommonResult<String> getWorkflowModelCatalogId(String userId){
+        String parentCatalogId = "-3";
+        Optional<DscCatalog> parentCatalogOptional = Optional.ofNullable(dscCatalogDAO.findDscWorkflowModelcatalogByUserIdAndParent(userId, parentCatalogId));
+        if (!parentCatalogOptional.isPresent()) {
+            return CommonResult.failed("未找到载体目录！");
+        }
+        else{
+            String catalogId = parentCatalogOptional.get().getId();
+            return CommonResult.success(catalogId);
+        }
+    }
+
+    @Override
+    public CommonResult<DscCatalog> getWorkflowModelCatalog(String catalogId){
+        Optional<DscCatalog> workflowModelOptional = dscCatalogDAO.findById(catalogId);
+        if(!workflowModelOptional.isPresent()) {
+            return CommonResult.failed("未找到目标载体目录！");
+        }
+        DscCatalog dscWorkflowModelCatalog = workflowModelOptional.get();
+        return CommonResult.success(dscWorkflowModelCatalog);
     }
 
     @Override

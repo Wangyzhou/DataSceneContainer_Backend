@@ -6,7 +6,9 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.dao.DscWorkflowModelDAO;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelDTO;
 import nnu.wyz.systemMS.model.dto.DscWorkflowModelListDTO;
+import nnu.wyz.systemMS.model.entity.DscCatalog;
 import nnu.wyz.systemMS.model.entity.DscModel;
+import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscWorkflowModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
     @Autowired
     private DscWorkflowModelDAO dscWorkflowModelDAO;
 
+    @Autowired
+    private DscCatalogService dscCatalogService;
+
 
     //DTO转Entity
     public DscModel convert2Model(DscWorkflowModelDTO dscWorkflowModelDTO) {
@@ -44,7 +49,7 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
     }
 
     @Override
-    public CommonResult<String> saveWorkflowModel(DscWorkflowModelDTO dscWorkflowModelDTO) {
+    public CommonResult<String> saveWorkflowModel(DscWorkflowModelDTO dscWorkflowModelDTO , String userId ) {
 
         try {
             // 生成UUID作为模型的ID
@@ -60,6 +65,8 @@ public class DscWorkflowServiceIml implements DscWorkflowModelService {
             dscModel.setCategory("Workflow Model");
             // 保存实体到数据库
             dscWorkflowModelDAO.save(dscModel);
+
+            dscCatalogService.addModelAsChildren2WorkflowModelCatalog(dscModel, userId);
             // 返回保存成功的响应
             return CommonResult.success("模型保存成功");
         } catch (Exception e) {

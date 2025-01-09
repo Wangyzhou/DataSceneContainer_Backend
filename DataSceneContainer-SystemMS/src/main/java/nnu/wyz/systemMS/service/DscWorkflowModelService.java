@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface DscWorkflowModelService {
 
-    CommonResult<String> saveWorkflowModel(DscWorkflowModelDTO workflowModel);
+    CommonResult<String> saveWorkflowModel(DscWorkflowModelDTO workflowModel,String userId);
 
     CommonResult<DscModel> getDscWorkflowModel(String modelId);
 
