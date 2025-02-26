@@ -1,9 +1,9 @@
 package nnu.wyz.systemMS.service.iml;
 
-import nnu.wyz.systemMS.dao.DscCodeFileDAO;
+import nnu.wyz.systemMS.dao.DscCode.DscCodeFileDAO;
 import nnu.wyz.systemMS.model.dto.DscCodeFileDTO;
-import nnu.wyz.systemMS.model.entity.DscCodeFile;
-import nnu.wyz.systemMS.service.DscCodeFileService;
+import nnu.wyz.systemMS.model.entity.codeModel.DscCodeFile;
+import nnu.wyz.systemMS.service.DscCode.DscCodeFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
