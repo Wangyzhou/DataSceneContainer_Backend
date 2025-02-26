@@ -1,4 +1,4 @@
-package nnu.wyz.systemMS.model.entity;
+package nnu.wyz.systemMS.model.entity.codeModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
