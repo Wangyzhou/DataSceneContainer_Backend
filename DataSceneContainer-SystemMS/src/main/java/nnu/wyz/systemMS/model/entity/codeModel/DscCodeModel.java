@@ -5,9 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nnu.wyz.systemMS.model.dto.DscCodeFileDTO;
 import nnu.wyz.systemMS.model.dto.DscCodeModelDTO;
-import nnu.wyz.systemMS.model.entity.DscModelParams;
+import nnu.wyz.systemMS.model.entity.codeModel.DscCodeModel;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
