@@ -255,7 +255,7 @@ public class DscGeoAnalysisExecService {
             // 判断 outputFileName 是否有后缀，如果有则删除对应后缀
             if (("Grid, output".equals(type) || "Grid, output, optional".equals(type)) && outputFileName.endsWith(".tif")) {
                 outputFileName = outputFileName.substring(0, outputFileName.length() - 4);
-            } else if (("Shapes, output".equals(type) || "Shapes, output, optional".equals(type)) && !outputFileName.endsWith(".shp")) {
+            } else if (("Shapes, output".equals(type) || "Shapes, output, optional".equals(type)) && outputFileName.endsWith(".shp")) {
                 outputFileName = outputFileName.substring(0, outputFileName.length() - 4);
             }
             System.out.println("outputFileName2="+outputFileName);
