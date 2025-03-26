@@ -22,7 +22,7 @@ public class DscCodeModelController {
     }
 
     @GetMapping("/getToolInfo/{toolId}")
-    private DscCodeModel getToolInfo(@PathVariable String toolId){
+    private CommonResult<DscCodeModel> getToolInfo(@PathVariable String toolId){
         return dscCodeModelService.getToolInfo(toolId);
     }
 

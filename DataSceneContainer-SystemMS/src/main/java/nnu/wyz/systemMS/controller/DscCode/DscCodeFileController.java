@@ -24,8 +24,8 @@ public class DscCodeFileController {
     }
 
     @GetMapping("/getFileList/{userId}")
-    public List<DscCodeFile> getFileList(@PathVariable String userId) {
-        return dscCodeFileService.getFileList(userId);
+    public CommonResult<List<DscCodeFile>> getFileList(@PathVariable String userId) {
+        return CommonResult.success(dscCodeFileService.getFileList(userId));
     }
 
     @DeleteMapping("/delete/{id}")

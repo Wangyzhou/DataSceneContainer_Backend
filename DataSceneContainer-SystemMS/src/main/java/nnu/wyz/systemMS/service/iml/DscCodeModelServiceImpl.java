@@ -44,11 +44,11 @@ public class DscCodeModelServiceImpl implements DscCodeModelService {
     }
 
     @Override
-    public DscCodeModel getToolInfo(String toolId){
+    public CommonResult<DscCodeModel> getToolInfo(String toolId){
         Optional<DscCodeModel> optionalTool = dscCodeModelDAO.findById(toolId);
         // 返回工具的内容，或者继续处理这个工具对象
         // 如果找不到该工具，返回null或者抛出异常
-        return optionalTool.orElse(null);
+        return CommonResult.success(optionalTool.orElse(null));
     }
 
     @Override

@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface DscCodeModelService {
     CommonResult<String> encapsulate(DscCodeModelDTO dscCodeModelDTO);
-    DscCodeModel getToolInfo(String toolId);
+    CommonResult<DscCodeModel> getToolInfo(String toolId);
     CommonResult<String> delete(String toolId);
 }
