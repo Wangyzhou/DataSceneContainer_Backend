@@ -5,6 +5,7 @@ pythonDockerServer: 172.21.213.86        #部署要改
 dockerCert: D:/docker-2375-cert
 deployHostname: ${DEPLOY_HOSTNAME:localhost}
 
+
 spring:
   web:
     resources:
@@ -65,6 +66,9 @@ docker_cert_path: ${DOCKER_CERT_PATH:D:/docker-2375-cert}
 ollama_container: ${OLLAMA_CONTAINER:dsc-ollama}
 docker_local_host: ${DOCKER_LOCAL_HOST:172.21.213.86}
 docker_local_port: ${DOCKER_LOCAL_PORT:2375}
+codeOutPutHub: /home/code/Excute_Output
+DIFY_API_BASE: http://223.2.37.45/v1
+DIFY_KB_API_KEY: app-uGnqzpt9jDNuAKBJTR7Bqxt6
 
 docker:
   docker_url: ${DOCKER_LOCAL_HOST:172.21.252.218}:${DOCKER_LOCAL_PORT:2375}

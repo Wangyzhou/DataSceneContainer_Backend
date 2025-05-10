@@ -99,6 +99,7 @@ public class DscFileServiceIml implements DscFileService {
     public CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic, boolean isUpload) {
         String userId = uploadFileDTO.getUserId();
         String taskId = uploadFileDTO.getTaskId();
+        System.out.println("上传任务id为："+taskId);
         String catalogId = uploadFileDTO.getCatalogId();
         Optional<SysUploadTask> sysUploadTaskDAOById = sysUploadTaskDAO.findById(taskId);
         if (!sysUploadTaskDAOById.isPresent()) {

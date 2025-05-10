@@ -2,8 +2,10 @@ package nnu.wyz.systemMS.controller.DscCode;
 
 import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
 import nnu.wyz.systemMS.model.dto.DscCodeModelDTO;
 import nnu.wyz.systemMS.model.entity.codeModel.DscCodeModel;
+import nnu.wyz.systemMS.model.param.code.CodeParams;
 import nnu.wyz.systemMS.service.DscCode.DscCodeModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +31,10 @@ public class DscCodeModelController {
     @PostMapping("/delete/{toolId}")
     private CommonResult<String> delete(@PathVariable String toolId){
         return dscCodeModelService.delete(toolId);
+    }
+
+    @PostMapping("/get-execute-output")
+    private CommonResult<?> getExecuteResult(@RequestBody CodeParams params){
+        return  dscCodeModelService.getExecuteResult(params);
     }
 }
