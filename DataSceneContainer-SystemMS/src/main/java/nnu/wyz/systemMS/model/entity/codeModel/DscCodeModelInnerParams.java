@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DscCodeModelInnerParams {
-    private String label;
+    private String name;
+    private String identifier;
     private String category;
     private String type;
+    private boolean isOptional;
     private ParamsConstrains constraints;
 }

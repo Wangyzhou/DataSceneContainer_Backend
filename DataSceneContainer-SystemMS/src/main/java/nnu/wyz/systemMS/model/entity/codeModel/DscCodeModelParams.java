@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DscCodeModelParams {
-    private List<DscCodeModelInnerParams> inputParams;
-    private List<DscCodeModelInnerParams> optionParams;
-    private List<DscCodeModelInnerParams> outputParams;
+    private List<DscCodeModelInnerParams> inputs;
+    private List<DscCodeModelInnerParams> options;
+    private List<DscCodeModelInnerParams> outputs;
 }

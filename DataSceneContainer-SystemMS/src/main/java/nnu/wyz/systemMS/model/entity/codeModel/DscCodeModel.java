@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "Model对象", description = "工作流集成模型与自定义封装描述对象")
-public class DscCodeModel {
+public class  DscCodeModel {
     @Id
     @ApiModelProperty(value = "模型ID")
     private String id;
@@ -39,10 +39,13 @@ public class DscCodeModel {
     private boolean isEnabled;
 
     @ApiModelProperty(value = "模型参数")
-    private DscCodeModelParams params;
+    private DscCodeModelParams parameters;
 
     @ApiModelProperty(value = "模型执行代码")
-    private String code;
+    private String script;
+
+    @ApiModelProperty(value = "模型参考文献")
+    private List<String> references;
 
     @ApiModelProperty(value = "模型作者")
     private String author;
@@ -56,12 +59,14 @@ public class DscCodeModel {
 
     public DscCodeModel(DscCodeModelDTO dscCodeModelDTO) {
         this.name = dscCodeModelDTO.getName();
-        this.code = dscCodeModelDTO.getCode();
+        this.script = dscCodeModelDTO.getScript();
         this.category = dscCodeModelDTO.getCategory();
-        this.params = dscCodeModelDTO.getParams();
+        this.parameters = dscCodeModelDTO.getParams();
         this.description = dscCodeModelDTO.getDescription();
         this.author = dscCodeModelDTO.getCreater();
         this.ownerId = dscCodeModelDTO.getCreaterId();
+        this.references = dscCodeModelDTO.getReference();
+        this.createDate = dscCodeModelDTO.getCreateDate();
     }
 
 }
