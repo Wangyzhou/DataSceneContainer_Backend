@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
 import nnu.wyz.systemMS.model.dto.DscCodeModelDTO;
+import nnu.wyz.systemMS.model.dto.DscCustomModelDTO;
 import nnu.wyz.systemMS.model.entity.codeModel.DscCodeModel;
 import nnu.wyz.systemMS.model.param.code.CodeParams;
 import nnu.wyz.systemMS.service.DscCode.DscCodeModelService;
@@ -36,5 +37,10 @@ public class DscCodeModelController {
     @PostMapping("/get-execute-output")
     private CommonResult<?> getExecuteResult(@RequestBody CodeParams params){
         return  dscCodeModelService.getExecuteResult(params);
+    }
+
+    @PostMapping("/execute-custom-model-script")
+    private CommonResult<?> executeCustomModelScript(@RequestBody DscCustomModelDTO dscCustomModelDTO){
+        return dscCodeModelService.generateCustomModelScript(dscCustomModelDTO);
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGAInvokeParams;
 import nnu.wyz.systemMS.model.dto.DscCodeModelDTO;
+import nnu.wyz.systemMS.model.dto.DscCustomModelDTO;
 import nnu.wyz.systemMS.model.entity.codeModel.DscCodeModel;
 import nnu.wyz.systemMS.model.param.code.CodeParams;
 
@@ -14,4 +15,5 @@ public interface DscCodeModelService {
     CommonResult<DscCodeModel> getToolInfo(String toolId);
     CommonResult<String> delete(String toolId);
     CommonResult<?> getExecuteResult(CodeParams params);
+    CommonResult<?> generateCustomModelScript(DscCustomModelDTO dscCustomModelDTO);
 }

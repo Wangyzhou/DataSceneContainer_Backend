@@ -29,8 +29,11 @@ public class  DscCodeModel {
     @ApiModelProperty(value = "模型名称")
     private String name;
 
-    @ApiModelProperty(value = "模型所属类别")
+    @ApiModelProperty(value = "模型所属大类")
     private String category;
+
+    @ApiModelProperty(value = "模型所属子类别")
+    private String subCategory;
 
     @ApiModelProperty(value = "模型描述")
     private String description;
@@ -67,6 +70,7 @@ public class  DscCodeModel {
         this.ownerId = dscCodeModelDTO.getCreaterId();
         this.references = dscCodeModelDTO.getReference();
         this.createDate = dscCodeModelDTO.getCreateDate();
+        this.subCategory = dscCodeModelDTO.getCategory();
     }
 
 }
