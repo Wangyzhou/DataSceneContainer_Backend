@@ -251,9 +251,9 @@ public class DscCodeModelServiceImpl implements DscCodeModelService {
         // 4. 替换模型脚本占位符
         String script = dscCustomModelDTO.getScript();
         try {
-            script = replaceInputPlaceholders(script, new ArrayList<>(inputUrls.values()), taskCatalog);
-            script = replaceOptionPlaceholders(script, new ArrayList<>(optionsMap.values()), taskCatalog);
-            script = replaceOutputPlaceholders(script, new ArrayList<>(outputNames.keySet()), taskId, executor, taskCatalog);
+            script = replaceInputPlaceholders(script, inputUrls, taskCatalog);
+            script = replaceOptionPlaceholders(script, optionsMap, taskCatalog);
+            script = replaceOutputPlaceholders(script, outputNames, taskId, executor, taskCatalog);
         } catch (IllegalArgumentException e) {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED, e.getMessage());
         }
@@ -445,55 +445,74 @@ public class DscCodeModelServiceImpl implements DscCodeModelService {
         dscCodeAnalysisExecTaskDAO.save(dscCodeAnalysisExecTask);
     }
 
-    private String replaceInputPlaceholders(String script, List<String> inputUrls, File taskCatalog) {
+    private String replaceInputPlaceholders(String script, Map<String, String> inputUrls, File taskCatalog) {
         return replacePlaceholders(script, inputUrls, "Dsc_Model_Script_Input_Param_", taskCatalog);
     }
 
-    private String replaceOptionPlaceholders(String script, List<String> optionValues, File taskCatalog) {
-        return replacePlaceholders(script, optionValues, "Dsc_Model_Script_Option_Param_", taskCatalog);
+    private String replaceOptionPlaceholders(String script, Map<String, String> option, File taskCatalog) {
+        return replacePlaceholders(script, option, "Dsc_Model_Script_Option_Param_", taskCatalog);
     }
 
-    private String replaceOutputPlaceholders(String script, List<String> outputKeys, String taskId, String executor, File taskCatalog) {
-        List<String> outputDirs = new ArrayList<>();
-        for (String outputKey : outputKeys) {
+    private String replaceOutputPlaceholders(String script, Map<String, String> output, String taskId, String executor, File taskCatalog) {
+        List<String> outputDirName = new ArrayList<>(output.keySet());
+        Map<String, String> newOutput = new HashMap<>();
+        for (String outputKey : outputDirName) {
             String fullPath = JupyterInnerOutPutHub + File.separator + executor + File.separator + taskId + File.separator + "output" + File.separator + outputKey;
-            outputDirs.add(fullPath);
+            newOutput.put(outputKey, fullPath);
         }
-        return replacePlaceholders(script, outputDirs, "Dsc_Model_Script_Output_Param_", taskCatalog);
+        return replacePlaceholders(script, newOutput, "Dsc_Model_Script_Output_Param_", taskCatalog);
     }
 
 
-    private String replacePlaceholders(String script, List<String> values, String placeholderPrefix, File taskCatalog) {
+    private String replacePlaceholders(String script, Map<String, String> param, String placeholderPrefix, File taskCatalog) {
         if (script == null) {
             taskCatalog.delete();
             throw new IllegalArgumentException("模型内容为空！请检查模型设置或联系管理员");
         }
-        String regex = "(['\"])" + escapeRegex(placeholderPrefix) + "\\d+\\1";
-        log.info("正则表达式为：{}", regex);
+
+        // 匹配占位符
+        String regex = "(['\"])"+ escapeRegex(placeholderPrefix) + "([^'\"]+)\\1";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(script);
 
-        List<String> placeholders = new ArrayList<>();
+        Set<String> matchedKeys = new HashSet<>();
+        StringBuffer result = new StringBuffer();
+
         while (matcher.find()) {
-            placeholders.add(matcher.group());
-        }
+            String quote = matcher.group(1); // 引号
+            String key = matcher.group(2);   // prefix后的key
 
-        if (placeholders.size() != values.size()) {
-            if(!taskCatalog.delete()){
-                log.error("未成功清理残留文件！");
-            }else {
-                log.info("成功清理残留文件！");
+            if (!param.containsKey(key)) {
+                cleanupAndThrow(taskCatalog, String.format("占位符参数 '%s' 未在提供的参数中找到！", key));
             }
-            throw new IllegalArgumentException(String.format(
-                    "模型参数数量(%d)与提供的数量(%d)不一致！【前缀: %s】", placeholders.size(), values.size(), placeholderPrefix));
+
+            String replacement = quote + param.get(key) + quote;
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
+            matchedKeys.add(key);
         }
 
-        for (int i = 0; i < placeholders.size(); i++) {
-            script = script.replace(placeholders.get(i), "'" +values.get(i)+ "'");
+        matcher.appendTail(result);
+
+        // 检查是否所有 param 中的键都被匹配到
+        if (matchedKeys.size() != param.size()) {
+            Set<String> unmatched = new HashSet<>(param.keySet());
+            unmatched.removeAll(matchedKeys);
+            cleanupAndThrow(taskCatalog, String.format(
+                    "参数数量与占位符数量不一致！未使用的参数: %s", unmatched));
         }
 
-        return script;
+        return result.toString();
     }
+
+    private void cleanupAndThrow(File taskCatalog, String message) {
+        if (!taskCatalog.delete()) {
+            log.error("未成功清理残留文件！");
+        } else {
+            log.info("成功清理残留文件！");
+        }
+        throw new IllegalArgumentException(message);
+    }
+
 
     //解决占位符有特殊字符转义问题
     private static String escapeRegex(String input) {

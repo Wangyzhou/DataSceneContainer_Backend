@@ -2,45 +2,53 @@ package nnu.wyz.systemMS.websocket;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 @ServerEndpoint("/webSocket/execute/{executeType}")
 @Component
 public class JupyterWebSocketServer {
 
-    @Value("${codeOutPutHub}")
-    private String codeOutPutHub;
-
-    @Value("${JupyterInnerOutPutHub}")
-    private String JupyterInnerOutPutHub;
-
     private static final ConcurrentHashMap<String, Session> frontendSessions = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, Session> jupyterSessions = new ConcurrentHashMap<>();
     private final Map<String, String> sessionKernelMap = new ConcurrentHashMap<>();
     private final Map<String, String> sessionTypeMap = new ConcurrentHashMap<>();
-    private final Map<String, File> sessionTempFiles = new ConcurrentHashMap<>();
+    private final Map<String, ScheduledFuture<?>> heartbeatTasks = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+
 
     @OnOpen
     public void onOpen(Session session, @PathParam("executeType") String executeType) {
         System.out.println("[INFO] WebSocket连接建立: " + session.getId() + " 类型: " + executeType);
         frontendSessions.put(session.getId(), session);
         sessionTypeMap.put(session.getId(), executeType); // 保存类型
+
+        // 启动心跳
+        ScheduledFuture<?> task = scheduler.scheduleAtFixedRate(() -> {
+            try {
+                if (session.isOpen()) {
+                    JsonObject ping = new JsonObject();
+                    ping.addProperty("type", "heartbeat");
+                    ping.addProperty("timestamp", System.currentTimeMillis());
+                    session.getBasicRemote().sendText(ping.toString());
+                    System.out.println("[HEARTBEAT] 已发送保活包给前端: " + session.getId());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 10, 10, TimeUnit.SECONDS); // 每 10 秒发送一次
+
+        heartbeatTasks.put(session.getId(), task);
     }
 
     @OnMessage
     public void onMessage(String message, Session frontendSession) {
-        System.out.println("[MESSAGE]: " + message +'\n' + "[FRONTEDSESSION]: " + frontendSession);
         try {
             JsonObject jsonMessage = JsonParser.parseString(message).getAsJsonObject();
             System.out.println("[RECEIVED] 前端消息: " + jsonMessage);
@@ -55,34 +63,7 @@ public class JupyterWebSocketServer {
                 String kernelId = sessionKernelMap.get(frontendSession.getId());
                 if (kernelId != null) {
                     String code = jsonMessage.get("code").getAsString();
-                    String executeMessage;
-
-                    if (code.length() > 10 * 1024) {
-                        // 长代码处理：写入临时 py 文件
-                        try {
-                            String uuid = java.util.UUID.randomUUID().toString().replace("-", "");
-                            File dir = new File(codeOutPutHub + "/tempScript/" + kernelId);
-                            if (!dir.exists()) dir.mkdirs();
-
-                            File tempScript = new File(dir, "temp_" + uuid + ".py");
-                            try (FileWriter writer = new FileWriter(tempScript)) {
-                                writer.write(code);
-                            }
-
-                            sessionTempFiles.put(frontendSession.getId(), tempScript);
-
-                            // 生成执行该文件的指令
-                            String execCode = "!python " + JupyterInnerOutPutHub + "/tempScript/" + kernelId + "/temp_" + uuid + ".py";
-                            executeMessage = buildExecutionMessage(execCode);
-
-                            System.out.println("[INFO] 长代码写入并准备执行");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                    } else {
-                        executeMessage = buildExecutionMessage(code);
-                    }
+                    String executeMessage = buildExecutionMessage(code);
 
                     Session jupyterSession = jupyterSessions.get(frontendSession.getId());
                     if (jupyterSession != null && jupyterSession.isOpen()) {
@@ -93,7 +74,6 @@ public class JupyterWebSocketServer {
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,6 +109,12 @@ public class JupyterWebSocketServer {
                         public void onMessage(String message) {
                             System.out.println("[RECEIVED] 来自 Jupyter Kernel (完整消息): " + message);
                             try {
+                                // 静默丢弃过长消息（避免前端卡顿）
+                                if (message.length() > 3000 || message.isEmpty()) {
+                                    System.out.println("[INFO] 消息非法（" + message.length() + " 字符），已静默处理");
+                                    return;
+                                }
+
                                 String type = sessionTypeMap.get(frontendSession.getId());
                                 if ("Inner".equalsIgnoreCase(type)) {
                                     JsonObject msgObj = JsonParser.parseString(message).getAsJsonObject();
@@ -195,16 +181,6 @@ public class JupyterWebSocketServer {
         System.out.println("[INFO] 前端 WebSocket 已关闭: " + session.getId());
         frontendSessions.remove(session.getId());
 
-        // 删除临时脚本文件
-        File temp = sessionTempFiles.remove(session.getId());
-        if (temp != null && temp.exists()) {
-            if (temp.delete()) {
-                System.out.println("[INFO] 已删除临时脚本: " + temp.getAbsolutePath());
-            } else {
-                System.err.println("[WARN] 临时脚本删除失败: " + temp.getAbsolutePath());
-            }
-        }
-
         Session jupyterSession = jupyterSessions.remove(session.getId());
         if (jupyterSession != null) {
             try {
@@ -216,9 +192,13 @@ public class JupyterWebSocketServer {
             }
         }
 
+        // 移除心跳任务
+        ScheduledFuture<?> task = heartbeatTasks.remove(session.getId());
+        if (task != null) {
+            task.cancel(true);
+        }
         sessionKernelMap.remove(session.getId());
     }
-
 
     @OnError
     public void onError(Session session, Throwable throwable) {
