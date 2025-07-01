@@ -29,4 +29,6 @@ public class MinioConfig {
     private String gaOutputBucket;
 
     private String rasterTilesBucket;
+
+    private String mapStyleBucket;
 }

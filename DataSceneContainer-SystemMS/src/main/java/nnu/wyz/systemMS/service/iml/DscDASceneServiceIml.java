@@ -57,7 +57,7 @@ public class DscDASceneServiceIml implements DscDASceneService {
             return CommonResult.failed("与现有场景名重复，请修改名称后重新创建！");
         }
         String createdTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
-        DscScene dscScene = new DscScene(sceneId, createDASceneDTO.getName(), SCENE_TYPE, null, createDASceneDTO.getUserId(), 1L, createdTime, createdTime, false, 16);
+        DscScene dscScene = new DscScene(sceneId, createDASceneDTO.getName(), SCENE_TYPE, null, createDASceneDTO.getUserId(), 1L, createdTime, createdTime, false, 16,null);
         dscSceneDAO.save(dscScene);
 
         // 创建场景的数据文件夹

@@ -43,4 +43,7 @@ public class SaveGDVSceneDTO {
 
     @ApiModelProperty(value = "场景地图参数")
     private MapParamsDTO mapParams;
+
+    @ApiModelProperty(value = "场景精灵图")
+    private String sprite;
 }

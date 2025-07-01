@@ -1,9 +1,11 @@
 package nnu.wyz.systemMS.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.MapParamsDTO;
+import nnu.wyz.systemMS.model.dto.MapPublishDTO;
 import nnu.wyz.systemMS.model.dto.SaveGDVSceneDTO;
 import nnu.wyz.systemMS.model.entity.DscScene;
 import nnu.wyz.systemMS.model.entity.GDVSceneSource;
@@ -35,14 +37,19 @@ public class DscGDVSceneController {
                                        @RequestParam("sources") String sources,
                                        @RequestParam("layers") String layers,
                                        @RequestParam("pos") String pos,
-                                       @RequestParam("mapParams") String mapParams) {
+                                       @RequestParam("mapParams") String mapParams,
+                                       @RequestParam("sprite") String sprite) {
         List<GDVSceneSource> sceneSources = JSONObject.parseArray(sources, GDVSceneSource.class);
         List<JSONObject> sceneLayers = JSONObject.parseArray(layers, JSONObject.class);
         JSONObject scenePosition = JSONObject.parseObject(pos, JSONObject.class);
         MapParamsDTO sceneMapParams = JSONObject.parseObject(mapParams, MapParamsDTO.class);
-        SaveGDVSceneDTO saveGDVSceneDTO = new SaveGDVSceneDTO(userId, sceneId, name, thumbnail, sceneSources, sceneLayers, scenePosition, sceneMapParams);
+        SaveGDVSceneDTO saveGDVSceneDTO = new SaveGDVSceneDTO(userId, sceneId, name, thumbnail, sceneSources, sceneLayers, scenePosition, sceneMapParams, sprite);
         return dscGDVSceneService.saveGDVScene(saveGDVSceneDTO);
     }
 
+    @PostMapping("/publishMap")
+    public CommonResult<String> publishMap(@RequestBody MapPublishDTO mapPublishDTO) {
+        return dscGDVSceneService.publishMap(mapPublishDTO);
+    }
 
 }

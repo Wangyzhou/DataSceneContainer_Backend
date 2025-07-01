@@ -51,4 +51,7 @@ public class DscScene {
     @ApiModelProperty(value = "权限范围")
     private Integer permissionRange;
 
+    @ApiModelProperty(value = "发布链接")
+    private String publishUrl;
+
 }

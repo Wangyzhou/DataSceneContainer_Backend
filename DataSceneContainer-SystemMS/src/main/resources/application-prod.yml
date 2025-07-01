@@ -87,3 +87,4 @@ minio:
   avatarBucket: avatar
   gaOutputBucket: dsc-ga-output
   rasterTilesBucket: raster-tiles
+  mapStyleBucket: map-style

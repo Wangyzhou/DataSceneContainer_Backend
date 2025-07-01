@@ -39,4 +39,7 @@ public class DscGDVSceneConfig {
 
     @ApiModelProperty(value = "地图相关参数")
     private MapParamsDTO mapParams;
+
+    @ApiModelProperty(value = "场景精灵图")
+    private String sprite;
 }
