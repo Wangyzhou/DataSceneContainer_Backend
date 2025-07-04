@@ -30,12 +30,14 @@ public class KernelGatewayController {
     }
 
     // 删除 kernel
-    @DeleteMapping("/kernels/{kernelId}")
+    @DeleteMapping("/stop/{kernelId}")
     public CommonResult<Mono<String>> deleteKernel(@PathVariable String kernelId) {
-        return CommonResult.success(webClient.delete()
-                .uri("/api/kernels/{kernelId}", kernelId)
+        String kernelResponse = webClient.post()
+                .uri("/api/kernels/{kernelId}/interrupt")
                 .retrieve()
-                .bodyToMono(String.class));
+                .bodyToMono(String.class)
+                .block();   // 阻塞拿到实际结果
+        return CommonResult.success(kernelResponse);
     }
 
 

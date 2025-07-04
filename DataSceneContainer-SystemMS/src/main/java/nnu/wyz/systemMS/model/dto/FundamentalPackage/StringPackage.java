@@ -1,4 +1,4 @@
-package nnu.wyz.systemMS.model.dto;
+package nnu.wyz.systemMS.model.dto.FundamentalPackage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

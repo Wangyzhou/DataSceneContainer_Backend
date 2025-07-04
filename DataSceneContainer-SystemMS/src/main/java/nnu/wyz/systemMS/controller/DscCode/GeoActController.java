@@ -5,7 +5,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActFileNode;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActFolderDTO;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActScriptDTO;
-import nnu.wyz.systemMS.model.dto.StringPackage;
+import nnu.wyz.systemMS.model.dto.FundamentalPackage.StringPackage;
 import nnu.wyz.systemMS.model.entity.codeModel.GeoActFolder;
 import nnu.wyz.systemMS.model.entity.codeModel.GeoActScriptFile;
 import nnu.wyz.systemMS.service.DscCode.GeoActService;
@@ -63,5 +63,10 @@ public class GeoActController {
     @GetMapping("/get-script-content/{id}")
     public CommonResult<?> getScriptContent(@PathVariable String id){
         return geoActService.getScriptContent(id);
+    }
+
+    @PostMapping("/submit-script-task")
+    public CommonResult<?> submitScriptTask(@RequestBody GeoActFileNode geoActFileNode){
+        return geoActService.submitGeoActTask(geoActFileNode);
     }
 }

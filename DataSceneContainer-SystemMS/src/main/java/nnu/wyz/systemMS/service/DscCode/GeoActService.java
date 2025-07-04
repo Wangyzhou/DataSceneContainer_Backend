@@ -4,7 +4,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActFileNode;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActFolderDTO;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActScriptDTO;
-import nnu.wyz.systemMS.model.dto.StringPackage;
+import nnu.wyz.systemMS.model.dto.FundamentalPackage.StringPackage;
 import nnu.wyz.systemMS.model.entity.codeModel.GeoActFolder;
 import nnu.wyz.systemMS.model.entity.codeModel.GeoActScriptFile;
 
@@ -17,4 +17,5 @@ public interface GeoActService {
     CommonResult<?> deleteFolder(String id);
     CommonResult<?> getScriptContent(String scriptId);
     CommonResult<?> renameNode(GeoActFileNode geoActFileNode);
+    CommonResult<?> submitGeoActTask(GeoActFileNode geoActFileNode);
 }

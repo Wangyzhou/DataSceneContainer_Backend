@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.dao.DscCode.GeoActScriptFileDAD;
 import nnu.wyz.systemMS.dao.DscCode.GeoActScriptFolderDAO;
+import nnu.wyz.systemMS.dao.DscCode.GeoActTaskDAO;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActFileNode;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActFolderDTO;
 import nnu.wyz.systemMS.model.dto.DscCode.GeoActScriptDTO;
-import nnu.wyz.systemMS.model.dto.StringPackage;
+import nnu.wyz.systemMS.model.dto.FundamentalPackage.StringPackage;
 import nnu.wyz.systemMS.model.entity.codeModel.GeoActFolder;
 import nnu.wyz.systemMS.model.entity.codeModel.GeoActScriptFile;
+import nnu.wyz.systemMS.model.entity.codeModel.GeoActTask;
 import nnu.wyz.systemMS.service.DscCode.GeoActService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,11 +32,17 @@ public class GeoActServiceImpl implements GeoActService {
     @Value("${codeOutPutHub}")
     private String codeOutPutHub;
 
+    @Value("${JupyterInnerOutPutHub}")
+    private String JupyterInnerOutPutHub;
+
     @Autowired
     private GeoActScriptFileDAD geoActScriptFileDao;
 
     @Autowired
     private GeoActScriptFolderDAO geoActScriptFolderDao;
+
+    @Autowired
+    private GeoActTaskDAO geoActTaskDao;
 
 
     @Override
@@ -72,8 +80,13 @@ public class GeoActServiceImpl implements GeoActService {
             String fullPath = buildPath(
                     geoActScriptDTO.getExecutor(),
                     geoActScriptDTO.getSceneId(),
-                    geoActScriptDTO.getParentId()
+                    geoActScriptDTO.getParentId(),
+                    "host"
             );
+
+            if(fullPath == null){
+                return CommonResult.failed("文件索引平台出错！");
+            }
 
             // 确保目录存在
             File dir = new File(fullPath);
@@ -104,7 +117,7 @@ public class GeoActServiceImpl implements GeoActService {
     /**
      * 构建文件的完整路径（基础路径 + GeoActProject/userId/sceneId/parent链）
      */
-    private String buildPath(String userId, String sceneId, String parentId) {
+    private String buildPath(String userId, String sceneId, String parentId, String platform) {
         List<String> folderNames = new ArrayList<>();
 
         // 从子到父逐层遍历构建路径
@@ -121,10 +134,20 @@ public class GeoActServiceImpl implements GeoActService {
 
         // 构建基础路径
         StringBuilder pathBuilder = new StringBuilder();
-        pathBuilder.append(codeOutPutHub)
-                .append(File.separator).append("GeoActProject")
-                .append(File.separator).append(userId)
-                .append(File.separator).append(sceneId);
+        if(Objects.equals(platform, "host")){
+            pathBuilder.append(codeOutPutHub)
+                    .append(File.separator).append("GeoActProject")
+                    .append(File.separator).append(userId)
+                    .append(File.separator).append(sceneId);
+        }else if(Objects.equals(platform, "jupyter")){
+            pathBuilder.append(JupyterInnerOutPutHub)
+                    .append(File.separator).append("GeoActProject")
+                    .append(File.separator).append(userId)
+                    .append(File.separator).append(sceneId);
+        }else {
+            return null;
+        }
+
 
         // 加入文件夹路径（注意逆序）
         for (int i = folderNames.size() - 1; i >= 0; i--) {
@@ -211,7 +234,10 @@ public class GeoActServiceImpl implements GeoActService {
             GeoActScriptFile file = fileOptional.get();
 
             // 2. 删除磁盘文件
-            String fullPath = buildPath(file.getExecutor(), file.getSceneId(), file.getParentId());
+            String fullPath = buildPath(file.getExecutor(), file.getSceneId(), file.getParentId(), "host");
+            if(fullPath == null){
+                return CommonResult.failed("文件索引平台出错！");
+            }
             File target = new File(fullPath, file.getId() + file.getType());
             if (target.exists()) {
                 if(!target.delete()){
@@ -243,7 +269,10 @@ public class GeoActServiceImpl implements GeoActService {
             return CommonResult.failed("文件不存在！");
         }else {
             GeoActScriptFile file = fileOptional.get();
-            String fullPath = buildPath(file.getExecutor(), file.getSceneId(), file.getParentId());
+            String fullPath = buildPath(file.getExecutor(), file.getSceneId(), file.getParentId(), "host");
+            if(fullPath == null){
+                return CommonResult.failed("文件索引平台出错！");
+            }
             File target = new File(fullPath, file.getId() + file.getType());
             if (!target.exists()) {
                 return CommonResult.failed("文件不存在！");
@@ -253,7 +282,7 @@ public class GeoActServiceImpl implements GeoActService {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                return CommonResult.success("文件修改成功！");
+                return CommonResult.success(true);
             }
         }
     }
@@ -274,7 +303,10 @@ public class GeoActServiceImpl implements GeoActService {
         }
 
         // 生成路径
-        String fullPath = buildPath(geoActFolder.getExecutor(), geoActFolder.getSceneId(), geoActFolder.getParentId());
+        String fullPath = buildPath(geoActFolder.getExecutor(), geoActFolder.getSceneId(), geoActFolder.getParentId(), "host");
+        if(fullPath == null){
+            return CommonResult.failed("文件索引平台出错！");
+        }
         File dir = new File(fullPath, geoActFolder.getId());
         if (!dir.exists()) {
             boolean success = dir.mkdirs();
@@ -312,7 +344,10 @@ public class GeoActServiceImpl implements GeoActService {
         GeoActFolder geoActFolder = folderOpt.get();
 
         // 删除磁盘文件夹（递归删除）
-        String fullPath = buildPath(geoActFolder.getExecutor(), geoActFolder.getSceneId(), geoActFolder.getParentId());
+        String fullPath = buildPath(geoActFolder.getExecutor(), geoActFolder.getSceneId(), geoActFolder.getParentId(), "host");
+        if(fullPath == null){
+            return CommonResult.failed("文件索引平台出错！");
+        }
         File dir = new File(fullPath, geoActFolder.getId());
         if (dir.exists()) {
             deleteRecursive(dir);
@@ -345,7 +380,10 @@ public class GeoActServiceImpl implements GeoActService {
             return CommonResult.failed("文件不存在！");
         }else {
             GeoActScriptFile file = fileOptional.get();
-            String fullParentPath = buildPath(file.getExecutor(), file.getSceneId(), file.getParentId());
+            String fullParentPath = buildPath(file.getExecutor(), file.getSceneId(), file.getParentId(), "host");
+            if(fullParentPath == null){
+                return CommonResult.failed("文件索引平台出错！");
+            }
             String fullFileName = file.getId() + file.getType();
             File fullPath = new File(fullParentPath, fullFileName);
             if (!fullPath.exists()) {
@@ -386,6 +424,31 @@ public class GeoActServiceImpl implements GeoActService {
             }else {
                 return CommonResult.failed("重命名文件失败，文件不存在！");
             }
+        }
+    }
+
+    @Override
+    public CommonResult<?> submitGeoActTask(GeoActFileNode geoActFileNode) {
+        Optional<GeoActScriptFile> fileOpt = geoActScriptFileDao.findById(geoActFileNode.getId());
+        if (fileOpt.isPresent()) {
+            GeoActScriptFile geoActScriptFile = fileOpt.get();
+            String parentId = geoActScriptFile.getParentId();
+            String executor = geoActScriptFile.getExecutor();
+            String sceneId = geoActScriptFile.getSceneId();
+            String fullParentPath = buildPath(executor, sceneId, parentId, "jupyter");
+            if(fullParentPath == null){
+                return CommonResult.failed("文件索引平台出错！");
+            }
+            GeoActTask geoActTask = new GeoActTask();
+            geoActTask.setTaskId(geoActFileNode.getId());
+            geoActTask.setParentPath(fullParentPath);
+            geoActTask.setFileName(geoActFileNode.getName());
+            geoActTask.setStartTime(new Date(System.currentTimeMillis()));
+            geoActTask.setStatus("started");
+            geoActTaskDao.save(geoActTask);
+            return CommonResult.success(new StringPackage(geoActTask.getTaskId()));
+        }else {
+            return CommonResult.failed("文件不存在!");
         }
     }
 
