@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  * @description:
@@ -42,5 +43,10 @@ public class TokenConfig {
                 new PathResource(jksPath), "ninja980903".toCharArray());
         return factory.getKeyPair(
                 "ninja-key", "ninja980903".toCharArray());
+    }
+
+    @Bean
+    public RSAPublicKey jwtPublicKey(KeyPair keyPair) {
+        return (RSAPublicKey) keyPair.getPublic();
     }
 }

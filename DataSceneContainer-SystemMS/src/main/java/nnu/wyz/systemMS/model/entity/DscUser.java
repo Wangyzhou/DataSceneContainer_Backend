@@ -41,5 +41,7 @@ public class DscUser implements Serializable {
 
     private String activeCode;
 
+    private String role;
+
 
 }
