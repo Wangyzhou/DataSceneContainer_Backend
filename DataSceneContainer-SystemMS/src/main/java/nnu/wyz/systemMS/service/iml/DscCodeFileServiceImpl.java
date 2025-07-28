@@ -1,9 +1,9 @@
 package nnu.wyz.systemMS.service.iml;
 
-import nnu.wyz.systemMS.dao.DscCodeFileDAO;
+import nnu.wyz.systemMS.dao.DscCode.DscCodeFileDAO;
 import nnu.wyz.systemMS.model.dto.DscCodeFileDTO;
-import nnu.wyz.systemMS.model.entity.DscCodeFile;
-import nnu.wyz.systemMS.service.DscCodeFileService;
+import nnu.wyz.systemMS.model.entity.codeModel.DscCodeFile;
+import nnu.wyz.systemMS.service.DscCode.DscCodeFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +50,18 @@ public class DscCodeFileServiceImpl implements DscCodeFileService {
         if (codeFileOptional.isPresent()) {
             // 删除文件
             dscCodeFileDAO.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean renameFileName(String id, String newFileName) {
+        Optional<DscCodeFile> optionalFile = dscCodeFileDAO.findById(id);
+        if (optionalFile.isPresent()) {
+            DscCodeFile file = optionalFile.get();
+            file.setFileName(newFileName); // 更新文件名
+            dscCodeFileDAO.save(file); // 保存更新后的实体
             return true;
         }
         return false;

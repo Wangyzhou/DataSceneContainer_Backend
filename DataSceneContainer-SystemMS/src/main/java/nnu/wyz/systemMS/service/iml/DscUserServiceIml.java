@@ -108,6 +108,22 @@ public class DscUserServiceIml implements DscUserService {
         dscUser.setUserName(userRegisterDTO.getUsername());
         dscUser.setInstitution(userRegisterDTO.getInstitution());
         dscUser.setRegisterDate(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        dscUser.setRole("user");
+        if(userRegisterDTO.getInstitution().equals("-1")){
+            dscUser.setEnabled(1);
+            dscUserDAO.insert(dscUser);
+            //TODO: 其他模块的开通工作
+            logger.info("用户：" + dscUser.getUserName() + "激活账户成功！");
+            dscCatalogService.createRootCatalog(dscUser.getId());
+            logger.info("用户：" + dscUser.getUserName() + "创建根目录。");
+            dscCatalogService.createSceneDataRootCatalog(dscUser.getId());
+            logger.info("用户：" + dscUser.getUserName() + "创建场景数据根目录。");
+            dscCatalogService.createWorkflowModelCatalog(dscUser.getId());
+            logger.info("用户：" + dscUser.getUserName() + "创建workflowModel根目录。");
+            dscCatalogService.createCustomModelCatalog(dscUser.getId());
+            logger.info("用户：" + dscUser.getUserName() + "创建customModel根目录。");
+            return CommonResult.success("用户激活成功！");
+        }
         dscUser.setEnabled(0);
         String activeCode = RandomUtil.randomString(5);
         dscUser.setActiveCode(activeCode);
@@ -271,6 +287,10 @@ public class DscUserServiceIml implements DscUserService {
         logger.info("用户：" + dscUser.getUserName() + "创建根目录。");
         dscCatalogService.createSceneDataRootCatalog(dscUser.getId());
         logger.info("用户：" + dscUser.getUserName() + "创建场景数据根目录。");
+        dscCatalogService.createWorkflowModelCatalog(dscUser.getId());
+        logger.info("用户：" + dscUser.getUserName() + "创建workflowModel根目录。");
+        dscCatalogService.createCustomModelCatalog(dscUser.getId());
+        logger.info("用户：" + dscUser.getUserName() + "创建customModel根目录。");
         return CommonResult.success("用户激活成功！");
     }
 

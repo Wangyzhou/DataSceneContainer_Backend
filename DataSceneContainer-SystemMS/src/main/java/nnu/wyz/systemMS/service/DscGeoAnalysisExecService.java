@@ -134,7 +134,8 @@ public class DscGeoAnalysisExecService {
             String errMsg = baos.toString(utf8);
             if (!Objects.equals(errMsg, "")) {
                 log.error(errMsg);
-                if (outputRecords.size() == 0) {     //说明工具执行中出错，此时未输出文件，直接return
+                //说明工具执行中出错，此时未输出文件，直接return
+                if (outputRecords.size() == 0) {
                     stopTask(dscGeoAnalysisExecTask, errMsg);
                     return;
                 }
@@ -186,38 +187,81 @@ public class DscGeoAnalysisExecService {
 
     String[] getExecCommand(DscGeoAnalysisExecTask dscGeoAnalysisExecTask, ArrayList<GeoAnalysisOutputRecDTO> outputRecords) {
         Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(dscGeoAnalysisExecTask.getTargetTool().get("id").toString());
-        DscGeoAnalysisTool dscGeoAnalysisTool = byId.get();
+        DscGeoAnalysisTool dscGeoAnalysisTool = byId.orElseThrow(() -> new IllegalArgumentException("未找到对应执行工具！"));
         List<String> commands = dscGeoAnalysisTool.getInvokeCmd();
         //格式化Input输入,目前只支持对场景文件的输入
+        // 用于标记是否有有效的输入
+        boolean hasInput = false;
         for (DscGeoAnalysisToolInnerParams input : dscGeoAnalysisTool.getParameters().getInputs()) {
             //(tjk12.18 modify) ************************************************************************* getName ==> getIdentifier
             if (input.getIsOptional() && !dscGeoAnalysisExecTask.getParams().getInput().containsKey(input.getIdentifier())) {
                 continue;
             }
-            String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getIdentifier()).split(",");
+            String inputValue = dscGeoAnalysisExecTask.getParams().getInput().get(input.getIdentifier());
+//            String[] inputIds = dscGeoAnalysisExecTask.getParams().getInput().get(input.getIdentifier()).split(",");
+            if (inputValue == null || inputValue.isEmpty()) {
+                // 如果 inputIds 为空或为 null，跳过当前参数的处理
+                continue;
+            }
+
+            String[] inputIds = inputValue.split(",");
+
+            // 如果 inputIds 数组为空，跳过该参数
+            if (inputIds.length == 0) {
+                continue;
+            }
+
+            // 设置标记为 true，说明有有效的输入
+            hasInput = true;
             StringBuilder totalPath = new StringBuilder();
             for (String id : inputIds) {
                 Optional<DscFileInfo> byId1 = dscFileDAO.findById(id);
-                DscFileInfo dscFileInfo = byId1.get();
+                DscFileInfo dscFileInfo = byId1.orElseThrow(() -> new IllegalArgumentException("未找到对应输入文件！"));
                 String filePath = root + dscFileInfo.getBucketName() + File.separator + dscFileInfo.getObjectKey();
                 totalPath.append(filePath).append(";");
             }
             commands.add(MessageFormat.format("-{0}={1}", input.getIdentifier(), totalPath.substring(0, totalPath.length() - 1)));
+            // 如果没有有效的输入，抛出异常
+            if (!hasInput) {
+                throw new IllegalArgumentException("没有提供有效的输入文件！");
+            }
+            hasInput = false;
         }
         //格式化Output输出，记录
         String catalogPath = dscCatalogService.getCatalogPath(dscGeoAnalysisExecTask.getParams().getWorkingDir());
         String outputDir = root + minioConfig.getGaOutputBucket() + File.separator + dscGeoAnalysisExecTask.getExecutor().get("id").toString() + catalogPath;
         Map<String, String> outputs = dscGeoAnalysisExecTask.getParams().getOutput();
+        System.out.println("outputs="+outputs);
         for (DscGeoAnalysisToolInnerParams output : dscGeoAnalysisTool.getParameters().getOutputs()) {
             if(!outputs.containsKey((output.getIdentifier()))) {
                 continue;
             }
             String filePhysicalName = IdUtil.randomUUID();
             String filePath = outputDir + File.separator + filePhysicalName;
-            if (output.getType().equals("Table, output") || output.getType().equals("Table, output, optional")) {
-                filePath += ".csv";     //表格输出不指定类型为csv会导致输出文件无后缀名，默认输出为csv
+            //表格输出不指定类型为csv会导致输出文件无后缀名，默认输出为csv
+            if ("Table, output".equals(output.getType()) || "Table, output, optional".equals(output.getType())) {
+                filePath += ".csv";
             }
-            outputRecords.add(new GeoAnalysisOutputRecDTO(filePhysicalName, output.getName())); //记录输出的一系列文件
+            //指定栅格数据的格式为.tif，省略sgrd2tif的过程
+            if("Grid, output".equals(output.getType()) || "Grid, output, optional".equals(output.getType())) {
+                filePath += ".tif";
+            }
+            // 获取outputs中与output.getIdentifier()匹配的value
+            String outputFileName = outputs.get(output.getIdentifier());
+            //处理缺省情况
+            outputFileName = (outputFileName != null) ? outputFileName : output.getName();
+            System.out.println("outputFileName1="+outputFileName);
+            String type = output.getType();
+            // 判断 outputFileName 是否有后缀，如果有则删除对应后缀
+            if (("Grid, output".equals(type) || "Grid, output, optional".equals(type)) && outputFileName.endsWith(".tif")) {
+                outputFileName = outputFileName.substring(0, outputFileName.length() - 4);
+            } else if (("Shapes, output".equals(type) || "Shapes, output, optional".equals(type)) && outputFileName.endsWith(".shp")) {
+                outputFileName = outputFileName.substring(0, outputFileName.length() - 4);
+            }
+            System.out.println("outputFileName2="+outputFileName);
+
+            //记录输出的一系列文件
+            outputRecords.add(new GeoAnalysisOutputRecDTO(filePhysicalName, outputFileName));
             commands.add(MessageFormat.format("-{0}={1}", output.getIdentifier(), filePath));
         }
         //格式化Options配置

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -56,7 +57,7 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
     private DscUserDAO dscUserDAO;
 
     @Override
-    public CommonResult<DscGeoAnalysisExecTask> submitGATask(DscGAInvokeParams params) {
+    public CommonResult<DscGeoAnalysisExecTask>  submitGATask(DscGAInvokeParams params) {
         //TODO:参数校验
         CommonResult<String> examineParamRes = this.examineParams(params);
         if(examineParamRes.getCode() != 200){
@@ -70,11 +71,12 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
         //创建工具输出目录
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String formattedDateTime = dateFormat.format(new Date());
+        String catalogName = tool.getName()+"("+formattedDateTime+")";
         DscCatalog sceneCatalog = dscCatalogDAO.findDscCatalogById(params.getSceneCatalog());
         CreateCatalogDTO createCatalogDTO = new CreateCatalogDTO();
         createCatalogDTO.setUserId(executor);
         createCatalogDTO.setParentCatalogId(sceneCatalog.getId());
-        createCatalogDTO.setCatalogName(formattedDateTime);
+        createCatalogDTO.setCatalogName(catalogName);
         createCatalogDTO.setTaskId(taskId);
         CommonResult<String> createCatalogRes = dscCatalogService.create(createCatalogDTO);
         String outputCatalog = createCatalogRes.getData();
@@ -121,8 +123,12 @@ public class DscGeoAnalysisTaskServiceIml implements DscGeoAnalysisTaskService {
             return CommonResult.failed("工具不可用!");
         }
         tool = byId.get();
+        Map<String, Object> optionsInvoked = params.getOptions();
         //(tjk12.18 modify) ************************************************************************* getName ==> getIdentifier
         for (DscGeoAnalysisToolInnerParams option : tool.getParameters().getOptions()) {
+            if(!optionsInvoked.containsKey(option.getIdentifier())){
+                continue;
+            }
             if (option.getConstraints().getMinimum() != null && Double.parseDouble((String) params.getOptions().get(option.getIdentifier())) < option.getConstraints().getMinimum()) {
                 return CommonResult.failed(option.getName() + ": " + "value must be greater than " + option.getConstraints().getMinimum());
             }

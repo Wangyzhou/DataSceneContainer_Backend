@@ -42,4 +42,13 @@ public interface DscCatalogDAO extends MongoRepository<DscCatalog, String> {
      */
     DscCatalog findDscCatalogByUserIdAndParentAndTaskId(String userId, String parentId, String taskId);
 
+    /**
+     * 根据user和父目录ID获取目录
+     *
+     * @param userId
+     * @param parentId
+     * @return
+     */
+    DscCatalog findDscWorkflowModelcatalogByUserIdAndParent(String userId, String parentId);
+
 }

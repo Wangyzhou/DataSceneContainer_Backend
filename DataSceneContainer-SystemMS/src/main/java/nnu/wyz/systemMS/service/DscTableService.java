@@ -1,6 +1,7 @@
 package nnu.wyz.systemMS.service;
 
 import nnu.wyz.domain.CommonResult;
+import nnu.wyz.systemMS.model.dto.CreateTableFileDTO;
 import nnu.wyz.systemMS.model.entity.DscTable;
 
 /**
@@ -12,6 +13,11 @@ public interface DscTableService {
     // 根据 ID 获取文件路径并读取数据
     CommonResult<DscTable> getDscTableById(String id);
 
+    CommonResult<String> addDscTable(CreateTableFileDTO tableFileDTO);
 
-//    DscTable getTableDataById(String id);
+    CommonResult<String> updateDscTable(String id, CreateTableFileDTO tableFileDTO);
+
+    CommonResult<String> getDscTableNameById(String id);
+//    删除逻辑走DscFileController
+//    CommonResult<String> deleteDscTable(String id);
 }

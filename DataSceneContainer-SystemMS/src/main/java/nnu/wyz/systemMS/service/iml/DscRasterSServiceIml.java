@@ -411,14 +411,22 @@ public class DscRasterSServiceIml implements DscRasterSService {
     }
 
     private static List<Double> parseBbox(String bboxString) {
-        bboxString = bboxString.replaceAll("\\[|\\]|\\n", ""); // 去掉方括号和换行符
+        bboxString = bboxString.replaceAll("\\[|\\]|\\n", "").trim(); // 去掉中括号和换行
         List<Double> bbox = new ArrayList<>();
-        String[] coordinates = bboxString.split(", ");
-        for (String coordinate : coordinates) {
-            bbox.add(Double.parseDouble(coordinate));
+        String[] coordinates = bboxString.split(",\\s*"); // 更通用的分割
+        try {
+            for (String coordinate : coordinates) {
+                if (!coordinate.trim().isEmpty()) {
+                    bbox.add(Double.parseDouble(coordinate.trim()));
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("解析 bbox 出错: " + e.getMessage());
+            e.printStackTrace();
         }
         return bbox;
     }
+
 
     @Override
     public void getRasterTiles(Integer z, Integer x, Integer y, String userId, String rasterSId, HttpServletResponse response) {

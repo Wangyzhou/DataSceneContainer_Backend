@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
+import nnu.wyz.systemMS.dao.DscCode.DscCodeModelDAO;
 import nnu.wyz.systemMS.dao.DscFileDAO;
 import nnu.wyz.systemMS.dao.DscGeoAnalysisDAO;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
@@ -13,6 +14,7 @@ import nnu.wyz.systemMS.model.dto.ConvertSgrd2GeoTIFFDTO;
 import nnu.wyz.systemMS.model.dto.TaskInfoDTO;
 import nnu.wyz.systemMS.model.dto.UploadFileDTO;
 import nnu.wyz.systemMS.model.entity.DscFileInfo;
+import nnu.wyz.systemMS.model.entity.codeModel.DscCodeModel;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscFileService;
@@ -56,6 +58,9 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
 
     @Autowired
     private SagaOtherToolUtil sagaOtherToolUtil;
+
+    @Autowired
+    private DscCodeModelDAO dscCodeModelDAO;
 
     @Value("${fileSavePath}")
     private String root;
@@ -113,10 +118,16 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
     @Override
     public CommonResult<List<JSONObject>> getGeoAnalysisToolList() {
         HashMap<String, List<DscGeoAnalysisTool>> map = new HashMap<>();
+        HashMap<String, List<DscCodeModel>> mapCode = new HashMap<>();
         dscGeoAnalysisDAO.findAll().forEach(dscGeoAnalysisTool -> {
             List<DscGeoAnalysisTool> orDefault = map.getOrDefault(dscGeoAnalysisTool.getCategory(), new ArrayList<>());
             orDefault.add(dscGeoAnalysisTool);
             map.put(dscGeoAnalysisTool.getCategory(), orDefault);
+        });
+        dscCodeModelDAO.findAll().forEach(dscCodeModel -> {
+            List<DscCodeModel> orDefault = mapCode.getOrDefault(dscCodeModel.getCategory(), new ArrayList<>());
+            orDefault.add(dscCodeModel);
+            mapCode.put(dscCodeModel.getCategory(), orDefault);
         });
         ArrayList<JSONObject> treeData = new ArrayList<>();
         for (Map.Entry<String, List<DscGeoAnalysisTool>> entry : map.entrySet()) {
@@ -132,6 +143,24 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
                 child.put("isLeaf", true);
                 child.put("isEnabled", dscGeoAnalysisTool.getIsEnabled());
                 child.put("category", dscGeoAnalysisTool.getInvokeCmd().get(1));
+                children.add(child);
+            }
+            treeNode.put("children", children);
+            treeData.add(treeNode);
+        }
+        for (Map.Entry<String, List<DscCodeModel>> entry : mapCode.entrySet()) {
+            JSONObject treeNode = new JSONObject();
+            treeNode.put("id", IdUtil.randomUUID());
+            treeNode.put("label", entry.getKey());
+            treeNode.put("isLeaf", false);
+            ArrayList<JSONObject> children = new ArrayList<>();
+            for (DscCodeModel dscCodeModel : entry.getValue()) {
+                JSONObject child = new JSONObject();
+                child.put("id", dscCodeModel.getId());
+                child.put("label", dscCodeModel.getName());
+                child.put("isLeaf", true);
+                child.put("isEnabled", dscCodeModel.isEnabled());
+                child.put("category", dscCodeModel.getSubCategory());
                 children.add(child);
             }
             treeNode.put("children", children);

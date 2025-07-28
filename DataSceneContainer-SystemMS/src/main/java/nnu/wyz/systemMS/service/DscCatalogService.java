@@ -5,6 +5,8 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
+import nnu.wyz.systemMS.model.entity.DscCatalog;
+import nnu.wyz.systemMS.model.entity.DscModel;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 
 import java.util.List;
@@ -13,6 +15,16 @@ public interface DscCatalogService {
     CommonResult<String> create(CreateCatalogDTO createCatalogDTO);
 
     void createRootCatalog(String userId);
+
+    void createWorkflowModelCatalog(String userId);
+
+    void createCustomModelCatalog(String userId);
+
+    void addModelAsChildren2WorkflowModelCatalog(DscModel dscModel, String userId);
+
+    CommonResult<DscCatalog> getWorkflowModelCatalog(String catalogId);
+
+    CommonResult<String> getWorkflowModelCatalogId(String userId);
 
     /**
      * 创建隐藏的场景数据根目录

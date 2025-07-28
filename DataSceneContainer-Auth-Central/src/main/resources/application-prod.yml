@@ -7,5 +7,10 @@ spring:
       database: dsc
       username: ${MONGO_INITDB_ROOT_USERNAME:dsc}
       password: ${MONGO_INITDB_ROOT_PASSWORD:dsc123}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://auth-central:9400/dsc-auth-central/rsa/publicKey'
 
 jks_path: ${JKS_PATH}

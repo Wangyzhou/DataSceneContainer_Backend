@@ -99,6 +99,7 @@ public class DscFileServiceIml implements DscFileService {
     public CommonResult<String> create(UploadFileDTO uploadFileDTO, boolean isPublic, boolean isUpload) {
         String userId = uploadFileDTO.getUserId();
         String taskId = uploadFileDTO.getTaskId();
+        System.out.println("上传任务id为："+taskId);
         String catalogId = uploadFileDTO.getCatalogId();
         Optional<SysUploadTask> sysUploadTaskDAOById = sysUploadTaskDAO.findById(taskId);
         if (!sysUploadTaskDAOById.isPresent()) {
@@ -117,7 +118,7 @@ public class DscFileServiceIml implements DscFileService {
             List<CatalogChildrenDTO> children = dscCatalog.getChildren();
             for (CatalogChildrenDTO next : children) {  //判断该目录下是否有同名文件或相同文件，即判断上传环境
                 //孩子节点不为folder且文件名出现冲突
-                if (!next.getType().equals("folder") && next.getName().equals(task.getFileName())) {
+                if (!"folder".equals(next.getType()) && next.getName().equals(task.getFileName())) {
                     return CommonResult.failed(ResultCode.VALIDATE_FAILED, "在该目录下存在同名文件，请更改文件名或更换文件夹进行上传！");
                 }
                 if (next.getId().equals(fileId)) {

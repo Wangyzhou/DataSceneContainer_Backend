@@ -7,6 +7,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.model.dto.CatalogChildrenDTO;
 import nnu.wyz.systemMS.model.dto.CreateCatalogDTO;
 import nnu.wyz.systemMS.model.dto.PageableDTO;
+import nnu.wyz.systemMS.model.entity.DscCatalog;
 import nnu.wyz.systemMS.model.entity.PageInfo;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,4 +84,24 @@ public class DscCatalogController {
         return catalogService.getCatalogIdByFileIdAndRoot(rootCatalog, fileId);
     }
 
+    //历史遗留问题，之前没有这个目录，现在的逻辑是在激活时自动新增。但是之前激活过的用户需要使用此接口手动新增
+    @PostMapping(value = "/createWorkflowModelCatalog/{userId}")
+    public void createWorkflowCatalog(@PathVariable("userId") String userId) {
+        catalogService.createWorkflowModelCatalog(userId);
+    }
+
+    @PostMapping(value="/createCustomModelCatalog/{userId}")
+    public void createCustomModelCatalog(@PathVariable("userId") String userId) {
+        catalogService.createCustomModelCatalog(userId);
+    }
+
+    @GetMapping(value="getWorkflowModelCatalogId/{userId}")
+    public CommonResult<String> getWorkflowModelCatalogId(@PathVariable("userId") String userId) {
+        return catalogService.getWorkflowModelCatalogId(userId);
+    }
+
+    @GetMapping(value="/getWorkflowModelCatalog/{catalogId}")
+    public CommonResult<DscCatalog> getWorkflowModelCatalog(@PathVariable("catalogId") String catalogId) {
+        return catalogService.getWorkflowModelCatalog(catalogId);
+    }
 }

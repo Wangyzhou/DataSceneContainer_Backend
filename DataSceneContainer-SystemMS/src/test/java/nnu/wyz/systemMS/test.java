@@ -1424,17 +1424,6 @@ public class test {
             System.out.println(byId.get());
     }
 
-    @Test
-    void testTableDataParse() {
-        ResponseEntity<CommonResult<DscTable>> byId = dscTableController.getDscTable("675bf8b9e4b030c6ca56c198");
-
-        CommonResult<DscTable> commonResult = byId.getBody();
-
-        // 打印具体字段内容
-        System.out.println("Code: " + commonResult.getCode());
-        System.out.println("Message: " + commonResult.getMessage());
-        System.out.println("Data: " + commonResult.getData());  // 你可以查看 DscTable 的数据
-    }
 
 
 
