@@ -14,6 +14,7 @@ import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.MongoTransactional;
 import nnu.wyz.systemMS.dao.DscGDVSceneConfigDAO;
+import nnu.wyz.systemMS.dao.DscMapDao;
 import nnu.wyz.systemMS.dao.DscSceneDAO;
 import nnu.wyz.systemMS.dao.DscUserSceneDAO;
 import nnu.wyz.systemMS.model.dto.MapPublishDTO;
@@ -32,6 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -55,6 +59,9 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
     private DscSceneDAO dscSceneDAO;
 
     @Autowired
+    private DscMapDao dscMapDao;
+
+    @Autowired
     private DscUserSceneDAO dscUserSceneDAO;
 
     @Autowired
@@ -68,6 +75,9 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
 
     @Value("${fileTempPath}")
     private String fileTempPath;
+
+    @Value("${fileSavePath}")
+    private String rootPath;
 
     private final static String SCENE_TYPE = "GDV";
 
@@ -172,9 +182,12 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
     }
 
     @Override
-    public CommonResult<String> publishMap(MapPublishDTO mapPublishDTO) {
+    public CommonResult<Map<String, String>> publishMap(MapPublishDTO mapPublishDTO) {
         String sceneId = mapPublishDTO.getSceneId();
+        String userId = mapPublishDTO.getUserId();
         JsonNode mapStyle = mapPublishDTO.getMapStyle();
+        String introduction = mapPublishDTO.getIntroduction();
+
         Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
         if (!byId.isPresent()) {
             return CommonResult.failed("场景不存在");
@@ -202,7 +215,42 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             // 更新到场景属性中
             String publishUrl = MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getMapStyleBucket(), objectKey);
             dscScene.setPublishUrl(publishUrl);
-            return CommonResult.success(publishUrl, "发布成功");
+
+            String publishTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+            // 复制缩略图
+            String sceneThumbnail = dscScene.getThumbnail();
+            String mapThumbnail = null;
+            String mapId = IdUtil.randomUUID();
+            if (!Objects.isNull(sceneThumbnail)) {
+                String objectKey1 = userId + File.separator + sceneId + ".png";
+                Path thumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + objectKey1);
+                String newObjectKey = userId + File.separator + mapId + ".png";
+                Path newThumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + newObjectKey);
+                try {
+                    Files.copy(thumbnailPath, newThumbnailPath, StandardCopyOption.REPLACE_EXISTING);
+                    mapThumbnail = MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), newObjectKey);
+                } catch (IOException e) {
+                    log.error("复制缩略图失败", e);
+                }
+            }
+
+            // 将发布的地图信息存入MongoDB
+            DscMap dscMap = new DscMap();
+            dscMap.setId(mapId)
+                    .setName(dscScene.getName())
+                    .setMapStyle(mapStyle)
+                    .setMapUrl(publishUrl)
+                    .setPublishTime(publishTime)
+                    .setThumbnail(mapThumbnail)
+                    .setIntroduction(introduction);
+            dscMapDao.insert(dscMap);
+
+            Map<String, String> resultMap = new HashMap<>();
+            resultMap.put("mapId", mapId);
+            resultMap.put("publishUrl", publishUrl);
+
+            return CommonResult.success(resultMap, "发布成功");
         } catch (Exception e) {
             log.error("发布失败" + e.getMessage());
             e.printStackTrace();

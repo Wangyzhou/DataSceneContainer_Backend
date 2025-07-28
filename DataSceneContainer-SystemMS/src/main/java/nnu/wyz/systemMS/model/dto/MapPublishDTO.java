@@ -13,5 +13,9 @@ public class MapPublishDTO {
 
     String sceneId;
 
+    String userId;
+
     JsonNode mapStyle;
+
+    String introduction;
 }

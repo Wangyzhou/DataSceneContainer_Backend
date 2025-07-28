@@ -10,12 +10,13 @@ import nnu.wyz.systemMS.model.entity.GDVSceneSource;
 import nnu.wyz.systemMS.model.entity.ServiceRefs;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DscGDVSceneService {
 
     CommonResult<DscScene> saveGDVScene(SaveGDVSceneDTO saveGDVSceneDTO);
 
-    CommonResult<String> publishMap(MapPublishDTO mapPublishDTO);
+    CommonResult<Map<String, String>> publishMap(MapPublishDTO mapPublishDTO);
 
     DscGDVSceneConfig getGDVSceneConfig(String sceneId);
 

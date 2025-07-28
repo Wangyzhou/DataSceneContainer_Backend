@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -48,7 +49,7 @@ public class DscGDVSceneController {
     }
 
     @PostMapping("/publishMap")
-    public CommonResult<String> publishMap(@RequestBody MapPublishDTO mapPublishDTO) {
+    public CommonResult<Map<String, String>> publishMap(@RequestBody MapPublishDTO mapPublishDTO) {
         return dscGDVSceneService.publishMap(mapPublishDTO);
     }
 
