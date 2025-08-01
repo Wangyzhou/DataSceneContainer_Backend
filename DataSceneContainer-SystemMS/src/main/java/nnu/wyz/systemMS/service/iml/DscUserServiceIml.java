@@ -113,133 +113,152 @@ public class DscUserServiceIml implements DscUserService {
         dscUser.setActiveCode(activeCode);
         dscUserDAO.insert(dscUser);
         logger.info("用户：" + userRegisterDTO.getUsername() + "注册成功！(未激活)");
-        //TODO: 之后设计到的一些权限开通、其他模块的添加
-        //发邮件
-        String subject = "数据场景容器平台注册激活邮件";
-        String context = "<head>\n" +
-                "    <base target=\"_blank\" />\n" +
-                "    <style type=\"text/css\">\n" +
-                "        ::-webkit-scrollbar {\n" +
-                "            display: none;\n" +
-                "        }\n" +
-                "    </style>\n" +
-                "    <style id=\"cloudAttachStyle\" type=\"text/css\">\n" +
-                "        #divNeteaseBigAttach,\n" +
-                "        #divNeteaseBigAttach_bak {\n" +
-                "            display: none;\n" +
-                "        }\n" +
-                "    </style>\n" +
-                "    <style id=\"blockquoteStyle\" type=\"text/css\">\n" +
-                "        blockquote {\n" +
-                "            display: none;\n" +
-                "        }\n" +
-                "    </style>\n" +
-                "    <style type=\"text/css\">\n" +
-                "        body {\n" +
-                "            font-size: 14px;\n" +
-                "            font-family: arial, verdana, sans-serif;\n" +
-                "            line-height: 1.666;\n" +
-                "            padding: 0;\n" +
-                "            margin: 0;\n" +
-                "            overflow: auto;\n" +
-                "            white-space: normal;\n" +
-                "            word-wrap: break-word;\n" +
-                "            min-height: 100px\n" +
-                "        }\n" +
-                "\n" +
-                "        td,\n" +
-                "        input,\n" +
-                "        button,\n" +
-                "        select,\n" +
-                "        body {\n" +
-                "            font-family: Helvetica, 'Microsoft Yahei', verdana\n" +
-                "        }\n" +
-                "\n" +
-                "        pre {\n" +
-                "            white-space: pre-wrap;\n" +
-                "            white-space: -moz-pre-wrap;\n" +
-                "            white-space: -pre-wrap;\n" +
-                "            white-space: -o-pre-wrap;\n" +
-                "            word-wrap: break-word;\n" +
-                "            width: 95%\n" +
-                "        }\n" +
-                "\n" +
-                "        th,\n" +
-                "        td {\n" +
-                "            font-family: arial, verdana, sans-serif;\n" +
-                "            line-height: 1.666\n" +
-                "        }\n" +
-                "\n" +
-                "        img {\n" +
-                "            border: 0\n" +
-                "        }\n" +
-                "\n" +
-                "        header,\n" +
-                "        footer,\n" +
-                "        section,\n" +
-                "        aside,\n" +
-                "        article,\n" +
-                "        nav,\n" +
-                "        hgroup,\n" +
-                "        figure,\n" +
-                "        figcaption {\n" +
-                "            display: block\n" +
-                "        }\n" +
-                "\n" +
-                "        blockquote {\n" +
-                "            margin-right: 0px\n" +
-                "        }\n" +
-                "    </style>\n" +
-                "</head>\n" +
-                "\n" +
-                "<body tabindex=\"0\" role=\"listitem\">\n" +
-                "    <table width=\"700\" border=\"0\" align=\"center\" cellspacing=\"0\" style=\"width:700px;\">\n" +
-                "        <tbody>\n" +
-                "            <tr>\n" +
-                "                <td>\n" +
-                "                    <div style=\"width:700px;margin:0 auto;border-bottom:1px solid #ccc;margin-bottom:30px;\">\n" +
-                "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"700\" height=\"39\"\n" +
-                "                            style=\"font:12px Tahoma, Arial, 宋体;\">\n" +
-                "                            <tbody>\n" +
-                "                                <tr>\n" +
-                "                                    <td width=\"210\"></td>\n" +
-                "                                </tr>\n" +
-                "                            </tbody>\n" +
-                "                        </table>\n" +
-                "                    </div>\n" +
-                "                    <div style=\"width:680px;padding:0 10px;margin:0 auto;\">\n" +
-                "                        <div style=\"line-height:1.5;font-size:14px;margin-bottom:25px;color:#4d4d4d;\">\n" +
-                "                            <strong style=\"display:block;margin-bottom:15px;\">尊敬的" + userRegisterDTO.getUsername() + "老师：<span\n" +
-                "                                    style=\"color:#f60;font-size: 16px;\"></span>您好！</strong>\n" +
-                "                            <strong style=\"display:block;margin-bottom:15px;\">\n" +
-                "                                您正在进行<span style=\"color: red\">账号激活</span>操作，请点击右侧链接进行账号激活：<a href=\"" + MessageFormat.format(frontend_url, activeCode) + "\">点击激活</a>\n" +
-                "                            </strong>\n" +
-                "                        </div>\n" +
-                "                        <div style=\"margin-bottom:30px;\">\n" +
-                "                            <small style=\"display:block;margin-bottom:20px;font-size:12px;\">\n" +
-                "                                <p style=\"color:#747474;\">\n" +
-                "                                    注意：此操作将会开通该账号的全部权限，如非本人操作，请勿随意激活！\n" +
-                "                                    <br>（工作人员不会向你索取激活链接，请勿泄漏！)\n" +
-                "                                </p>\n" +
-                "                            </small>\n" +
-                "                        </div>\n" +
-                "                    </div>\n" +
-                "                    <div style=\"width:700px;margin:0 auto;\">\n" +
-                "                        <div\n" +
-                "                            style=\"padding:10px 10px 0;border-top:1px solid #ccc;color:#747474;margin-bottom:20px;line-height:1.3em;font-size:12px;\">\n" +
-                "                            <p>此为系统邮件，请勿回复<br>\n" +
-                "                                请保管好您的邮箱，避免账号被他人盗用\n" +
-                "                            </p>\n" +
-                "                            <p>OpenGMS团队</p>\n" +
-                "                        </div>\n" +
-                "                    </div>\n" +
-                "                </td>\n" +
-                "            </tr>\n" +
-                "        </tbody>\n" +
-                "    </table>\n" +
-                "</body>";
-        iMailService.sendHtmlMail(userRegisterDTO.getEmail(), subject, context);
-        return CommonResult.success(activeCode, "注册成功！激活邮件已发送至您注册的邮箱中，请根据邮件提示完成用户激活！激活有效期24小时。");
+        //自动激活
+        dscUser.setEnabled(1);
+        dscUserDAO.save(dscUser);
+        //TODO: 其他模块的开通工作
+        logger.info("用户：" + dscUser.getUserName() + "激活账户成功！");
+        dscCatalogService.createRootCatalog(dscUser.getId());
+        logger.info("用户：" + dscUser.getUserName() + "创建根目录。");
+        dscCatalogService.createSceneDataRootCatalog(dscUser.getId());
+        logger.info("用户：" + dscUser.getUserName() + "创建场景数据根目录。");
+//        dscCatalogService.createWorkflowModelCatalog(dscUser.getId());
+//        logger.info("用户：" + dscUser.getUserName() + "创建workflowModel根目录。");
+//        dscCatalogService.createCustomModelCatalog(dscUser.getId());
+//        logger.info("用户：" + dscUser.getUserName() + "创建customModel根目录。");
+        return CommonResult.success("已启用自动激活！");
+//        dscUser.setEnabled(0);
+//        String activeCode = RandomUtil.randomString(5);
+//        dscUser.setActiveCode(activeCode);
+//        dscUserDAO.insert(dscUser);
+//        logger.info("用户：" + userRegisterDTO.getUsername() + "注册成功！(未激活)");
+//        //TODO: 之后设计到的一些权限开通、其他模块的添加
+//        //发邮件
+//        String subject = "数据场景容器平台注册激活邮件";
+//        String context = "<head>\n" +
+//                "    <base target=\"_blank\" />\n" +
+//                "    <style type=\"text/css\">\n" +
+//                "        ::-webkit-scrollbar {\n" +
+//                "            display: none;\n" +
+//                "        }\n" +
+//                "    </style>\n" +
+//                "    <style id=\"cloudAttachStyle\" type=\"text/css\">\n" +
+//                "        #divNeteaseBigAttach,\n" +
+//                "        #divNeteaseBigAttach_bak {\n" +
+//                "            display: none;\n" +
+//                "        }\n" +
+//                "    </style>\n" +
+//                "    <style id=\"blockquoteStyle\" type=\"text/css\">\n" +
+//                "        blockquote {\n" +
+//                "            display: none;\n" +
+//                "        }\n" +
+//                "    </style>\n" +
+//                "    <style type=\"text/css\">\n" +
+//                "        body {\n" +
+//                "            font-size: 14px;\n" +
+//                "            font-family: arial, verdana, sans-serif;\n" +
+//                "            line-height: 1.666;\n" +
+//                "            padding: 0;\n" +
+//                "            margin: 0;\n" +
+//                "            overflow: auto;\n" +
+//                "            white-space: normal;\n" +
+//                "            word-wrap: break-word;\n" +
+//                "            min-height: 100px\n" +
+//                "        }\n" +
+//                "\n" +
+//                "        td,\n" +
+//                "        input,\n" +
+//                "        button,\n" +
+//                "        select,\n" +
+//                "        body {\n" +
+//                "            font-family: Helvetica, 'Microsoft Yahei', verdana\n" +
+//                "        }\n" +
+//                "\n" +
+//                "        pre {\n" +
+//                "            white-space: pre-wrap;\n" +
+//                "            white-space: -moz-pre-wrap;\n" +
+//                "            white-space: -pre-wrap;\n" +
+//                "            white-space: -o-pre-wrap;\n" +
+//                "            word-wrap: break-word;\n" +
+//                "            width: 95%\n" +
+//                "        }\n" +
+//                "\n" +
+//                "        th,\n" +
+//                "        td {\n" +
+//                "            font-family: arial, verdana, sans-serif;\n" +
+//                "            line-height: 1.666\n" +
+//                "        }\n" +
+//                "\n" +
+//                "        img {\n" +
+//                "            border: 0\n" +
+//                "        }\n" +
+//                "\n" +
+//                "        header,\n" +
+//                "        footer,\n" +
+//                "        section,\n" +
+//                "        aside,\n" +
+//                "        article,\n" +
+//                "        nav,\n" +
+//                "        hgroup,\n" +
+//                "        figure,\n" +
+//                "        figcaption {\n" +
+//                "            display: block\n" +
+//                "        }\n" +
+//                "\n" +
+//                "        blockquote {\n" +
+//                "            margin-right: 0px\n" +
+//                "        }\n" +
+//                "    </style>\n" +
+//                "</head>\n" +
+//                "\n" +
+//                "<body tabindex=\"0\" role=\"listitem\">\n" +
+//                "    <table width=\"700\" border=\"0\" align=\"center\" cellspacing=\"0\" style=\"width:700px;\">\n" +
+//                "        <tbody>\n" +
+//                "            <tr>\n" +
+//                "                <td>\n" +
+//                "                    <div style=\"width:700px;margin:0 auto;border-bottom:1px solid #ccc;margin-bottom:30px;\">\n" +
+//                "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"700\" height=\"39\"\n" +
+//                "                            style=\"font:12px Tahoma, Arial, 宋体;\">\n" +
+//                "                            <tbody>\n" +
+//                "                                <tr>\n" +
+//                "                                    <td width=\"210\"></td>\n" +
+//                "                                </tr>\n" +
+//                "                            </tbody>\n" +
+//                "                        </table>\n" +
+//                "                    </div>\n" +
+//                "                    <div style=\"width:680px;padding:0 10px;margin:0 auto;\">\n" +
+//                "                        <div style=\"line-height:1.5;font-size:14px;margin-bottom:25px;color:#4d4d4d;\">\n" +
+//                "                            <strong style=\"display:block;margin-bottom:15px;\">尊敬的" + userRegisterDTO.getUsername() + "老师：<span\n" +
+//                "                                    style=\"color:#f60;font-size: 16px;\"></span>您好！</strong>\n" +
+//                "                            <strong style=\"display:block;margin-bottom:15px;\">\n" +
+//                "                                您正在进行<span style=\"color: red\">账号激活</span>操作，请点击右侧链接进行账号激活：<a href=\"" + MessageFormat.format(frontend_url, activeCode) + "\">点击激活</a>\n" +
+//                "                            </strong>\n" +
+//                "                        </div>\n" +
+//                "                        <div style=\"margin-bottom:30px;\">\n" +
+//                "                            <small style=\"display:block;margin-bottom:20px;font-size:12px;\">\n" +
+//                "                                <p style=\"color:#747474;\">\n" +
+//                "                                    注意：此操作将会开通该账号的全部权限，如非本人操作，请勿随意激活！\n" +
+//                "                                    <br>（工作人员不会向你索取激活链接，请勿泄漏！)\n" +
+//                "                                </p>\n" +
+//                "                            </small>\n" +
+//                "                        </div>\n" +
+//                "                    </div>\n" +
+//                "                    <div style=\"width:700px;margin:0 auto;\">\n" +
+//                "                        <div\n" +
+//                "                            style=\"padding:10px 10px 0;border-top:1px solid #ccc;color:#747474;margin-bottom:20px;line-height:1.3em;font-size:12px;\">\n" +
+//                "                            <p>此为系统邮件，请勿回复<br>\n" +
+//                "                                请保管好您的邮箱，避免账号被他人盗用\n" +
+//                "                            </p>\n" +
+//                "                            <p>OpenGMS团队</p>\n" +
+//                "                        </div>\n" +
+//                "                    </div>\n" +
+//                "                </td>\n" +
+//                "            </tr>\n" +
+//                "        </tbody>\n" +
+//                "    </table>\n" +
+//                "</body>";
+//        iMailService.sendHtmlMail(userRegisterDTO.getEmail(), subject, context);
+//        return CommonResult.success(activeCode, "注册成功！激活邮件已发送至您注册的邮箱中，请根据邮件提示完成用户激活！激活有效期24小时。");
     }
 
     @Override
