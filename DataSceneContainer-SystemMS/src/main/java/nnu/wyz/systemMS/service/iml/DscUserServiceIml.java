@@ -20,7 +20,7 @@ import nnu.wyz.systemMS.model.dto.*;
 import nnu.wyz.systemMS.model.entity.DscUser;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscUserService;
-import nnu.wyz.systemMS.service.MailService;
+//import nnu.wyz.systemMS.service.MailService;
 //import nnu.wyz.systemMS.service.UserAuthService;
 import nnu.wyz.systemMS.utils.MimeTypesUtil;
 import nnu.wyz.systemMS.utils.RedisCache;
@@ -74,8 +74,8 @@ public class DscUserServiceIml implements DscUserService {
     private AmazonS3 amazonS3;
     @Autowired
     private MinioConfig minioConfig;
-    @Autowired
-    private MailService iMailService;
+//    @Autowired
+//    private MailService iMailService;
     @Autowired
     private RedisCache redisCache;
 
@@ -398,7 +398,7 @@ public class DscUserServiceIml implements DscUserService {
                 "    </tbody>\n" +
                 "</table>\n" +
                 "</body>\n";
-        iMailService.sendHtmlMail(email, subject, context);
+//        iMailService.sendHtmlMail(email, subject, context);
         return CommonResult.success("重置密码验证码已发送至您邮箱，请注意查收！有效期：5分钟。");
     }
 

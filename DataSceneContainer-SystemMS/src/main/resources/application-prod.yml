@@ -29,18 +29,18 @@ spring:
 #    password: dsc123
     hikari:
       connection-timeout: 60000
-  mail:
-    host: smtp.qq.com
-    protocol: smtps
-    username: 2740962735@qq.com
-    from: 2740962735@qq.com
-    password: ktllrsdzptdfdfed
-    port: 465
-    properties:
-      mail:
-        smtp:
-          ssl:
-            enable: true
+#  mail:
+#    host: smtp.qq.com
+#    protocol: smtps
+#    username: 2740962735@qq.com
+#    from: 2740962735@qq.com
+#    password: ktllrsdzptdfdfed
+#    port: 465
+#    properties:
+#      mail:
+#        smtp:
+#          ssl:
+#            enable: true
   redis:                          #redis存jwt黑名单
     host: redis-cache
     port: 6379
