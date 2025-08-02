@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class MapPublishDTO {
+    String mapName;
 
     String sceneId;
 

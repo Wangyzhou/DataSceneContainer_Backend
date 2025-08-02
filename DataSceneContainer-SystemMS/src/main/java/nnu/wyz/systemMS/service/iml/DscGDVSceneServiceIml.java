@@ -187,6 +187,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
         String userId = mapPublishDTO.getUserId();
         JsonNode mapStyle = mapPublishDTO.getMapStyle();
         String introduction = mapPublishDTO.getIntroduction();
+        String mapName = mapPublishDTO.getMapName();
 
         Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
         if (!byId.isPresent()) {
@@ -238,7 +239,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             // 将发布的地图信息存入MongoDB
             DscMap dscMap = new DscMap();
             dscMap.setId(mapId)
-                    .setName(dscScene.getName())
+                    .setName(mapName)
                     .setMapStyle(mapStyle)
                     .setMapUrl(publishUrl)
                     .setPublishTime(publishTime)
