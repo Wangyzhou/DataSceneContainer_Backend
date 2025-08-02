@@ -43,5 +43,4 @@ public class DscUser implements Serializable {
 
     private String role;
 
-
 }

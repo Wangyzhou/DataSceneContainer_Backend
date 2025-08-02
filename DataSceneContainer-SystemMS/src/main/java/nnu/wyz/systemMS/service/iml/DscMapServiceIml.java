@@ -35,15 +35,17 @@ public class DscMapServiceIml implements DscMapService {
         Integer pageIndex = pageableDTO.getPageIndex();
         Integer pageSize = pageableDTO.getPageSize();
 
-        List<String> mapIds;
-        mapIds = dscMapDao.findAll().stream().map(DscMap::getId).toList();
+        List<String> mapIds = dscMapDao.findAll().stream()
+                .map(DscMap::getId)
+                .collect(Collectors.toList());
 
         List<DscMap> mapListNoLimit = mapIds.stream()
                 .map(dscMapDao::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(info -> info.getName().contains(keyword)) // 根据关键词进行模糊匹配
-                .sorted(Comparator.comparing(DscMap::getPublishTime).reversed()).toList();
+                .sorted(Comparator.comparing(DscMap::getPublishTime).reversed())
+                .collect(Collectors.toList());
 
         List<DscMap> mapList = mapListNoLimit
                 .stream()

@@ -24,6 +24,9 @@ spring:
     url: jdbc:postgresql://postgres-db:5432/${POSTGRES_DB:dsc_postdb}
     username: postgres
     password: ${POSTGRES_PASSWORD:dsc123}
+#    url: jdbc:postgresql://postgres-db:5432/dsc_postdb
+#    username: postgres
+#    password: dsc123
     hikari:
       connection-timeout: 60000
   mail:

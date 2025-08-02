@@ -94,7 +94,8 @@ public class InitMinioListener implements ApplicationListener<ContextRefreshedEv
                  InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
                  XmlParserException e) {
             e.printStackTrace();
-            log.error("文件桶创建失败");
+            log.error("文件桶创建失败：");
+            log.error(e.getMessage());
         }
     }
 }
