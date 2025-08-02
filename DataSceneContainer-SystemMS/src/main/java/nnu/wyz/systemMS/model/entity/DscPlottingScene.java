@@ -7,19 +7,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * @description:
- * @author: yzwang
- * @time: 2023/9/12 20:22
+ * @author tjk
+ * @date 2025/8/1
+ * @Description
  */
+@ApiModel(value = "标绘场景实体")
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "场景实体")
 @AllArgsConstructor
 @NoArgsConstructor
-public class DscScene {
-
+public class DscPlottingScene {
     @Id
     @ApiModelProperty(value = "标识")
     private String id;
@@ -27,31 +27,19 @@ public class DscScene {
     @ApiModelProperty(value = "场景名称")
     private String name;
 
-    @ApiModelProperty(value = "场景类型")
-    private String type;
+    @ApiModelProperty(value = "SML文件字符串")
+    private String smlString;
 
-    @ApiModelProperty(value = "缩略图")
+    @ApiModelProperty(value = "缩略图URL")
     private String thumbnail;
 
     @ApiModelProperty(value = "创建用户")
     private String createdUser;
 
-    @ApiModelProperty(value = "编辑计数")
-    private Long editCount;
-
-    @ApiModelProperty(value = "创建日期")
+    @ApiModelProperty(value = "创建时间")
     private String createdTime;
 
-    @ApiModelProperty(value = "更新日期")
+    @ApiModelProperty(value = "更新时间")
     private String updatedTime;
-
-    @ApiModelProperty(value = "是否锁定")
-    private Boolean isLocked;
-
-    @ApiModelProperty(value = "权限范围")
-    private Integer permissionRange;
-
-    @ApiModelProperty(value = "发布链接")
-    private String publishUrl;
-
 }
+

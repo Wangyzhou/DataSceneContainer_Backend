@@ -5,14 +5,19 @@ import cn.hutool.core.util.IdUtil;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.minio.PutObjectArgs;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.config.MongoTransactional;
 import nnu.wyz.systemMS.dao.DscGDVSceneConfigDAO;
+import nnu.wyz.systemMS.dao.DscMapDao;
 import nnu.wyz.systemMS.dao.DscSceneDAO;
 import nnu.wyz.systemMS.dao.DscUserSceneDAO;
+import nnu.wyz.systemMS.model.dto.MapPublishDTO;
 import nnu.wyz.systemMS.model.dto.SaveGDVSceneDTO;
 import nnu.wyz.systemMS.model.entity.*;
 import nnu.wyz.systemMS.service.DscGDVSceneService;
@@ -25,11 +30,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -53,6 +59,9 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
     private DscSceneDAO dscSceneDAO;
 
     @Autowired
+    private DscMapDao dscMapDao;
+
+    @Autowired
     private DscUserSceneDAO dscUserSceneDAO;
 
     @Autowired
@@ -66,6 +75,9 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
 
     @Value("${fileTempPath}")
     private String fileTempPath;
+
+    @Value("${fileSavePath}")
+    private String rootPath;
 
     private final static String SCENE_TYPE = "GDV";
 
@@ -111,7 +123,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
             DscScene dscScene;
             if (!byId.isPresent()) {
-                dscScene = new DscScene(sceneId, saveGDVSceneDTO.getName(), SCENE_TYPE, MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), objectKey), userId, 1L, createdTime, createdTime, false, 16);
+                dscScene = new DscScene(sceneId, saveGDVSceneDTO.getName(), SCENE_TYPE, MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), objectKey), userId, 1L, createdTime, createdTime, false, 16, null);
             } else {
                 dscScene = byId.get();
                 dscScene.setName(saveGDVSceneDTO.getName());
@@ -152,7 +164,8 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
                     .setSources(saveGDVSceneDTO.getSources())
                     .setLayers(saveGDVSceneDTO.getLayers())
                     .setPos(saveGDVSceneDTO.getPos())
-                    .setMapParams(saveGDVSceneDTO.getMapParams());
+                    .setMapParams(saveGDVSceneDTO.getMapParams())
+                    .setSprite(saveGDVSceneDTO.getSprite());
             dscGDVSceneConfigDAO.save(dscGDVSceneConfig);
             return CommonResult.success(dscScene, "场景保存成功！");
         } catch (IOException e) {
@@ -166,6 +179,83 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
     @Override
     public DscGDVSceneConfig getGDVSceneConfig(String sceneId) {
         return dscGDVSceneConfigDAO.findBySceneId(sceneId);
+    }
+
+    @Override
+    public CommonResult<Map<String, String>> publishMap(MapPublishDTO mapPublishDTO) {
+        String sceneId = mapPublishDTO.getSceneId();
+        String userId = mapPublishDTO.getUserId();
+        JsonNode mapStyle = mapPublishDTO.getMapStyle();
+        String introduction = mapPublishDTO.getIntroduction();
+
+        Optional<DscScene> byId = dscSceneDAO.findById(sceneId);
+        if (!byId.isPresent()) {
+            return CommonResult.failed("场景不存在");
+        }
+        DscScene dscScene = byId.get();
+        try {
+            // 把 JsonNode 转换为字符串
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonContent = objectMapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(mapStyle);
+            byte[] contentBytes = jsonContent.getBytes(StandardCharsets.UTF_8);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(contentBytes.length);
+            metadata.setContentType("application/json");
+            // 上传到 MinIO
+            String filename = IdUtil.randomUUID() + ".json";
+            String objectKey = MessageFormat.format("{0}/{1}", sceneId, filename);
+            boolean isFileExist = amazonS3.doesObjectExist(minioConfig.getMapStyleBucket(), objectKey);
+            if (isFileExist) {
+                amazonS3.deleteObject(minioConfig.getMapStyleBucket(), objectKey);
+            }
+            PutObjectRequest putObjectRequest = new PutObjectRequest(minioConfig.getMapStyleBucket(), objectKey, inputStream, metadata);
+            amazonS3.putObject(putObjectRequest);
+            // 更新到场景属性中
+            String publishUrl = MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getMapStyleBucket(), objectKey);
+            dscScene.setPublishUrl(publishUrl);
+
+            String publishTime = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+            // 复制缩略图
+            String sceneThumbnail = dscScene.getThumbnail();
+            String mapThumbnail = null;
+            String mapId = IdUtil.randomUUID();
+            if (!Objects.isNull(sceneThumbnail)) {
+                String objectKey1 = userId + File.separator + sceneId + ".png";
+                Path thumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + objectKey1);
+                String newObjectKey = userId + File.separator + mapId + ".png";
+                Path newThumbnailPath = Paths.get(rootPath + minioConfig.getSceneThumbnailsBucket() + File.separator + newObjectKey);
+                try {
+                    Files.copy(thumbnailPath, newThumbnailPath, StandardCopyOption.REPLACE_EXISTING);
+                    mapThumbnail = MessageFormat.format("{0}/{1}/{2}", minioConfig.getEndpoint(), minioConfig.getSceneThumbnailsBucket(), newObjectKey);
+                } catch (IOException e) {
+                    log.error("复制缩略图失败", e);
+                }
+            }
+
+            // 将发布的地图信息存入MongoDB
+            DscMap dscMap = new DscMap();
+            dscMap.setId(mapId)
+                    .setName(dscScene.getName())
+                    .setMapStyle(mapStyle)
+                    .setMapUrl(publishUrl)
+                    .setPublishTime(publishTime)
+                    .setThumbnail(mapThumbnail)
+                    .setIntroduction(introduction);
+            dscMapDao.insert(dscMap);
+
+            Map<String, String> resultMap = new HashMap<>();
+            resultMap.put("mapId", mapId);
+            resultMap.put("publishUrl", publishUrl);
+
+            return CommonResult.success(resultMap, "发布成功");
+        } catch (Exception e) {
+            log.error("发布失败" + e.getMessage());
+            e.printStackTrace();
+            return CommonResult.failed("发布失败");
+        }
     }
 
     /**

@@ -13,4 +13,6 @@ import java.util.List;
 public class MapParamsDTO {
     private List<Double> center;
     private Double zoom;
+    private int historyMap;
+    private int mapMode; // 0:'mercator',1:'globe'
 }
