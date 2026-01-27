@@ -9,6 +9,8 @@ import nnu.wyz.systemMS.service.DscMapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Api(value = "DscMapController", tags = "战例底图接口")
 @RequestMapping("/dsc-map")
@@ -26,8 +28,18 @@ public class DscMapController {
         return dscMapService.getMapList(pageableDTO);
     }
 
+    @GetMapping("/getAllMapList")
+    public CommonResult<List<DscMap>> getAllMapList() {
+        return dscMapService.getAllMap();
+    }
+
     @DeleteMapping("/delete/{userId}/{mapId}")
     public CommonResult<String> deleteMap(@PathVariable("mapId") String mapId, @PathVariable("userId") String userId) {
         return dscMapService.deleteMap(mapId, userId);
+    }
+
+    @GetMapping("/getMapUrl/{id}")
+    public CommonResult<String> getMapUrl(@PathVariable("id") String id) {
+        return dscMapService.getMapUrl(id);
     }
 }

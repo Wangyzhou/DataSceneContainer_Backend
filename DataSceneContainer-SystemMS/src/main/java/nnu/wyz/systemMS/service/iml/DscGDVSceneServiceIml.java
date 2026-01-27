@@ -240,7 +240,7 @@ public class DscGDVSceneServiceIml implements DscGDVSceneService {
             DscMap dscMap = new DscMap();
             dscMap.setId(mapId)
                     .setName(mapName)
-                    .setMapStyle(mapStyle)
+                    .setMapStyle(String.valueOf(mapStyle))
                     .setMapUrl(publishUrl)
                     .setPublishTime(publishTime)
                     .setThumbnail(mapThumbnail)

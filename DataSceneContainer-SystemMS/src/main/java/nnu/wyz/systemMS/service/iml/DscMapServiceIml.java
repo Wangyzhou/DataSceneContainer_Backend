@@ -82,4 +82,17 @@ public class DscMapServiceIml implements DscMapService {
         }
         return CommonResult.success("删除战例底图成功！");
     }
+
+    @Override
+    public CommonResult<String> getMapUrl(String mapId) {
+        Optional<DscMap> map = dscMapDao.findById(mapId);
+        return map.<CommonResult<String>>map(dscMap -> CommonResult.success(dscMap.getMapUrl())).orElseGet(() -> CommonResult.failed("底图不存在！"));
+    }
+
+    @Override
+    public CommonResult<List<DscMap>> getAllMap() {
+        List<DscMap> maps = dscMapDao.findAll();
+        log.info("所有战例底图"+maps.toString());
+        return CommonResult.success(maps);
+    }
 }

@@ -1,6 +1,7 @@
 package nnu.wyz.systemMS.model.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.jayway.jsonpath.internal.filter.ValueNodes;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,7 +25,7 @@ public class DscMap {
     private String name;
 
     @ApiModelProperty(value = "地图样式")
-    private JsonNode mapStyle;
+    private String mapStyle;
 
     @ApiModelProperty(value = "地图发布链接")
     private String mapUrl;

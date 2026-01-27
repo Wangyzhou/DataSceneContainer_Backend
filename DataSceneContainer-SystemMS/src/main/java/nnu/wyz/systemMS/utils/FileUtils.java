@@ -205,37 +205,42 @@ public class FileUtils {
         // 压缩的文件的路径
         List<JSONObject> fileList = new ArrayList<>();
         File srcFile = new File(inputDir);
-        if (!srcFile.exists()) {
-            throw new Exception(srcFile.getPath() + "所指文件不存在");
-        }
-        // 第二个参数设置编码，防止处理文件名存在中文的zip包时，控制台报错
-        long start = System.currentTimeMillis();
-        ZipFile zipFile = new ZipFile(srcFile, Charset.forName("GBK"));
-        Enumeration<?> entries = zipFile.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = (ZipEntry) entries.nextElement();
-            // 如果是文件夹，则不管，默认zip不能有文件夹
-            if (entry.isDirectory()) {
-                // String dirPath = destDirPath + "/" + entry.getName();
-                // srcFile.mkdirs();
-            } else {
-                // 如果是文件，就先创建一个文件，然后用io流把内容copy过去
-                String uploadPath = destDir + "/" + entry.getName();
-                File targetFile = new File(uploadPath);
-                mkFile(targetFile);
-                // 将压缩文件内容写入到这个文件中
-                uploadFileByBufferStream(zipFile.getInputStream(entry), targetFile);
-
-                //把文件绝对路径加到pathList里
-                JSONObject o = new JSONObject();
-                o.put("fileName", targetFile.getName());
-                o.put("path", uploadPath);
-                fileList.add(o);
+        try{
+            if (!srcFile.exists()) {
+                throw new Exception(srcFile.getPath() + "所指文件不存在");
             }
+            // 第二个参数设置编码，防止处理文件名存在中文的zip包时，控制台报错
+            long start = System.currentTimeMillis();
+            ZipFile zipFile = new ZipFile(srcFile, Charset.forName("GBK"));
+            Enumeration<?> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = (ZipEntry) entries.nextElement();
+                // 如果是文件夹，则不管，默认zip不能有文件夹
+                if (entry.isDirectory()) {
+                    // String dirPath = destDirPath + "/" + entry.getName();
+                    // srcFile.mkdirs();
+                } else {
+                    // 如果是文件，就先创建一个文件，然后用io流把内容copy过去
+                    String uploadPath = destDir + "/" + entry.getName();
+                    File targetFile = new File(uploadPath);
+                    mkFile(targetFile);
+                    // 将压缩文件内容写入到这个文件中
+                    uploadFileByBufferStream(zipFile.getInputStream(entry), targetFile);
+
+                    //把文件绝对路径加到pathList里
+                    JSONObject o = new JSONObject();
+                    o.put("fileName", targetFile.getName());
+                    o.put("path", uploadPath);
+                    fileList.add(o);
+                }
+            }
+            zipFile.close();
+            long end = System.currentTimeMillis();
+            log.info("zip uncompress success");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        zipFile.close();
-        long end = System.currentTimeMillis();
-        log.info("zip uncompress success");
+
         return fileList;
     }
 

@@ -74,7 +74,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
     private String msName;
 
     @Override
-    public CommonResult<String> publishShp2VectorS(PublishShapefileDTO publishShapefileDTO) {
+    public CommonResult<String> publishShp2VectorS (PublishShapefileDTO publishShapefileDTO) {
         if (Pattern.matches("[0-9].*", publishShapefileDTO.getName())) {
             return CommonResult.failed("服务名称不能以数字开头");
         }
@@ -190,6 +190,7 @@ public class DscVectorSServiceIml implements DscVectorSService {
             return CommonResult.failed("发布失败！");
         } catch (IOException e) {
             e.printStackTrace();
+            log.error(e.getMessage());
             return CommonResult.failed("发布失败！");
         }
     }

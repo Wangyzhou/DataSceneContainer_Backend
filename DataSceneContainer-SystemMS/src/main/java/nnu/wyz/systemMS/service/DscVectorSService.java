@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface DscVectorSService {
 
-    CommonResult<String> publishShp2VectorS(PublishShapefileDTO publishShapefileDTO);
+    CommonResult<String> publishShp2VectorS (PublishShapefileDTO publishShapefileDTO);
 
     void getMvt(int zoom, int x, int y, String tableName, HttpServletResponse response);
 
