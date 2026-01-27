@@ -23,7 +23,7 @@ public class DscGeoAnalysisToolController {
     private DscGeoAnalysisToolService dscGeoAnalysisToolService;
 
     @GetMapping(value = "/getGATool/{toolId}")
-    public CommonResult<DscGeoAnalysisTool> getGATool(@PathVariable("toolId") String toolId) {
+    public CommonResult<?> getGATool(@PathVariable("toolId") String toolId) {
         return dscGeoAnalysisToolService.getGeoAnalysisTool(toolId);
     }
 
@@ -41,5 +41,10 @@ public class DscGeoAnalysisToolController {
 //    public CommonResult<String> convertData2CSV(){
 //        return
 //    }
+
+    @GetMapping("/get-category-tree")
+    public CommonResult<?> getToolCategory() {
+        return dscGeoAnalysisToolService.getToolCategory();
+    }
 
 }

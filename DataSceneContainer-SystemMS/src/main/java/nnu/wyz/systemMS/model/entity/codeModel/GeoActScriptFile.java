@@ -27,6 +27,9 @@ public class GeoActScriptFile {
     @ApiModelProperty(value = "父文件夹")
     private String parentId;
 
+    @ApiModelProperty(value = "执行副本id")
+    private String exScriptId;
+
     @ApiModelProperty(value = "场景id")
     private String sceneId;
 
@@ -45,6 +48,7 @@ public class GeoActScriptFile {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String nowStr = LocalDateTime.now().format(formatter);
         this.id = UUID.randomUUID().toString();
+        this.exScriptId = "ex-" + this.id;
         this.fileName = geoActScriptDTO.getFileName();
         this.type = geoActScriptDTO.getType();
         this.parentId = geoActScriptDTO.getParentId();

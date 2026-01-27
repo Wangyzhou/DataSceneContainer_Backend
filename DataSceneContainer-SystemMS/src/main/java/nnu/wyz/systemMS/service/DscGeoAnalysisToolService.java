@@ -9,10 +9,11 @@ import java.util.List;
 
 public interface DscGeoAnalysisToolService {
 
-    CommonResult<DscGeoAnalysisTool> getGeoAnalysisTool(String toolId);
+    CommonResult<?> getGeoAnalysisTool(String toolId);
 
 
     CommonResult<String> convertSgrd2Geotiff(ConvertSgrd2GeoTIFFDTO convertSgrd2GeoTIFFDTO);
 
     CommonResult<List<JSONObject>> getGeoAnalysisToolList();
+    CommonResult<?> getToolCategory();
 }

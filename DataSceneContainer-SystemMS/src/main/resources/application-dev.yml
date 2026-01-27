@@ -70,7 +70,8 @@ codeOutPutHub: /home/code/Excute_Output
 DIFY_API_BASE: http://223.2.37.45/v1
 DIFY_KB_API_KEY: app-uGnqzpt9jDNuAKBJTR7Bqxt6
 JupyterInnerOutPutHub: /app/Excute_Output
-physicalOutPutHub: /home/ubuntu/kernel-gateway-docker/Excute_Output
+physicalOutPutHub: ${HOST_CODE_OUTPUT:/home/ubuntu/kernel-gateway-docker/Excute_Output}
+PythonDocker: ${PYTHON_DOCKER:119.45.181.127:8888}
 
 docker:
   docker_url: ${DOCKER_LOCAL_HOST:172.21.252.218}:${DOCKER_LOCAL_PORT:2375}

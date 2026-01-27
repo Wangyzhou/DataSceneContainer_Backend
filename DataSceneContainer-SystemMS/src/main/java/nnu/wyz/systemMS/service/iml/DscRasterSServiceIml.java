@@ -455,10 +455,17 @@ public class DscRasterSServiceIml implements DscRasterSService {
 
     @Override
     public CommonResult<String> addRasterSCopy(GetRasterSCopyDTO getRasterSCopyDTO) {
-//        DscUserScene byUserIdAndSceneId = dscUserSceneDAO.findByUserIdAndSceneId(getRasterSCopyDTO.getUserId(), getRasterSCopyDTO.getSceneId());
-//        if (Objects.isNull(byUserIdAndSceneId)) {
-//            return CommonResult.failed("场景不存在！");
-//        }
+        //如果该服务已在当前场景发布过，直接返回
+        DscRasterService service = dscRasterSDAO.findDscRasterServiceById(getRasterSCopyDTO.getRasterSId());
+        // 检查服务是否已在当前场景发布
+        if (service != null && service.getReferences() != null) {
+            for (RasterSRef ref : service.getReferences()) {
+                if (ref.getSceneId().equals(getRasterSCopyDTO.getSceneId())) {
+                    return CommonResult.success(ref.getUrl(), "服务已在当前场景发布");
+                }
+            }
+        }
+
         Optional<DscScene> byId2 = dscSceneDAO.findById(getRasterSCopyDTO.getSceneId());
         if (!byId2.isPresent()) {
             return CommonResult.failed("场景不存在！");

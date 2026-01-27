@@ -15,6 +15,8 @@ public interface DscFileDAO extends MongoRepository<DscFileInfo, String> {
 
     List<DscFileInfo> findAllByCreatedUser(String userId);
 
+
+
     @Query("{'_id': {$in: ?0}}")
     List<DscFileInfo> findAllByIds(List<String> ids);
 }

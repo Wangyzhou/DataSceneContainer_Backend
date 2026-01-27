@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import nnu.wyz.domain.CommonResult;
 import nnu.wyz.systemMS.config.MinioConfig;
 import nnu.wyz.systemMS.dao.DscCode.DscCodeModelDAO;
+import nnu.wyz.systemMS.dao.DscCode.GeoActModelDAO;
 import nnu.wyz.systemMS.dao.DscFileDAO;
 import nnu.wyz.systemMS.dao.DscGeoAnalysisDAO;
 import nnu.wyz.systemMS.model.DscGeoAnalysis.DscGeoAnalysisTool;
@@ -15,6 +16,7 @@ import nnu.wyz.systemMS.model.dto.TaskInfoDTO;
 import nnu.wyz.systemMS.model.dto.UploadFileDTO;
 import nnu.wyz.systemMS.model.entity.DscFileInfo;
 import nnu.wyz.systemMS.model.entity.codeModel.DscCodeModel;
+import nnu.wyz.systemMS.model.entity.codeModel.GeoActModel;
 import nnu.wyz.systemMS.model.param.InitTaskParam;
 import nnu.wyz.systemMS.service.DscCatalogService;
 import nnu.wyz.systemMS.service.DscFileService;
@@ -31,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -62,12 +65,18 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
     @Autowired
     private DscCodeModelDAO dscCodeModelDAO;
 
+    @Autowired
+    private GeoActModelDAO geoActModelDAO;
+
     @Value("${fileSavePath}")
     private String root;
 
     @Override
-    public CommonResult<DscGeoAnalysisTool> getGeoAnalysisTool(String toolId) {
-        Optional<DscGeoAnalysisTool> byId = dscGeoAnalysisDAO.findById(toolId);
+    public CommonResult<?> getGeoAnalysisTool(String toolId) {
+        Optional<?> byId = dscGeoAnalysisDAO.findById(toolId);
+        if(!byId.isPresent()){
+            byId = geoActModelDAO.findById(toolId);
+        }
         return byId.map(dscGeoAnalysisTool -> CommonResult.success(dscGeoAnalysisTool, "获取工具成功")).orElseGet(() -> CommonResult.failed("未找到该工具"));
     }
 
@@ -119,6 +128,7 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
     public CommonResult<List<JSONObject>> getGeoAnalysisToolList() {
         HashMap<String, List<DscGeoAnalysisTool>> map = new HashMap<>();
         HashMap<String, List<DscCodeModel>> mapCode = new HashMap<>();
+        HashMap<String, List<GeoActModel>> mapGeoAct = new HashMap<>();
         dscGeoAnalysisDAO.findAll().forEach(dscGeoAnalysisTool -> {
             List<DscGeoAnalysisTool> orDefault = map.getOrDefault(dscGeoAnalysisTool.getCategory(), new ArrayList<>());
             orDefault.add(dscGeoAnalysisTool);
@@ -128,6 +138,11 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
             List<DscCodeModel> orDefault = mapCode.getOrDefault(dscCodeModel.getCategory(), new ArrayList<>());
             orDefault.add(dscCodeModel);
             mapCode.put(dscCodeModel.getCategory(), orDefault);
+        });
+        geoActModelDAO.findAll().forEach(geoActModel -> {
+            List<GeoActModel> orDefault = mapGeoAct.getOrDefault(geoActModel.getCategory(), new ArrayList<>());
+            orDefault.add(geoActModel);
+            mapGeoAct.put(geoActModel.getCategory(), orDefault);
         });
         ArrayList<JSONObject> treeData = new ArrayList<>();
         for (Map.Entry<String, List<DscGeoAnalysisTool>> entry : map.entrySet()) {
@@ -166,6 +181,110 @@ public class DscGeoAnalysisToolServiceIml implements DscGeoAnalysisToolService {
             treeNode.put("children", children);
             treeData.add(treeNode);
         }
+        for (Map.Entry<String, List<GeoActModel>> entry : mapGeoAct.entrySet()) {
+            JSONObject treeNode = new JSONObject();
+            treeNode.put("id", IdUtil.randomUUID());
+            treeNode.put("label", entry.getKey());
+            treeNode.put("isLeaf", false);
+            ArrayList<JSONObject> children = new ArrayList<>();
+            for (GeoActModel geoActModel : entry.getValue()) {
+                JSONObject child = new JSONObject();
+                child.put("id", geoActModel.getId());
+                child.put("label", geoActModel.getName());
+                child.put("isLeaf", true);
+                child.put("isEnabled", geoActModel.getIsEnabled());
+                child.put("category", geoActModel.getSubCategory());
+                children.add(child);
+            }
+            treeNode.put("children", children);
+            treeData.add(treeNode);
+        }
         return CommonResult.success(treeData, "获取工具列表成功");
     }
+
+    @Override
+    public CommonResult<?> getToolCategory() {
+        // 一级目录 -> 二级目录 -> 三级目录列表
+        Map<String, Map<String, List<String>>> categoryMap = new LinkedHashMap<>();
+        Map<String, Boolean> hasDirectItemMap = new HashMap<>(); // 记录一级目录是否直接有条目
+
+        geoActModelDAO.findAll().forEach(geoActModel -> {
+            String category = geoActModel.getCategory();
+            String subCategory = geoActModel.getSubCategory();
+
+            if (category == null || category.trim().isEmpty()) {
+                return; // 跳过空category
+            }
+
+            // 初始化一级目录
+            Map<String, List<String>> level2Map = categoryMap.computeIfAbsent(category, k -> new LinkedHashMap<>());
+
+            if (subCategory == null || subCategory.trim().isEmpty()) {
+                // 一级目录直接存在条目
+                hasDirectItemMap.put(category, true);
+                return;
+            }
+
+            String[] parts = subCategory.split("_");
+            if (parts.length == 1) {
+                // 二级目录，三级为空
+                String level2 = parts[0].trim();
+                level2Map.computeIfAbsent(level2, k -> new ArrayList<>());
+            } else if (parts.length == 2) {
+                // 三级目录
+                String level2 = parts[0].trim();
+                String level3 = parts[1].trim();
+                List<String> level3List = level2Map.computeIfAbsent(level2, k -> new ArrayList<>());
+                if (!level3List.contains(level3)) {
+                    level3List.add(level3);
+                }
+            }
+        });
+
+        // 构造树形结构
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Map.Entry<String, Map<String, List<String>>> catEntry : categoryMap.entrySet()) {
+            String category = catEntry.getKey();
+            Map<String, List<String>> level2Map = catEntry.getValue();
+
+            List<Map<String, Object>> level2List = new ArrayList<>();
+            for (Map.Entry<String, List<String>> level2Entry : level2Map.entrySet()) {
+                String level2 = level2Entry.getKey();
+                List<String> level3List = level2Entry.getValue().stream().distinct().collect(Collectors.toList());
+
+                List<Map<String, Object>> level3Nodes = new ArrayList<>();
+                for (String level3 : level3List) {
+                    if (!level3.isEmpty()) {
+                        Map<String, Object> level3Node = new LinkedHashMap<>();
+                        level3Node.put("label", level3);
+                        level3Node.put("value", level3);
+                        level3Nodes.add(level3Node);
+                    }
+                }
+
+                Map<String, Object> level2Node = new LinkedHashMap<>();
+                level2Node.put("label", level2);
+                level2Node.put("value", level2);
+                level2Node.put("children", level3Nodes.isEmpty() ? null : level3Nodes);
+                level2List.add(level2Node);
+            }
+
+            Map<String, Object> categoryNode = new LinkedHashMap<>();
+            categoryNode.put("label", category);
+            categoryNode.put("value", category);
+
+            // 如果一级目录下既没有二级目录，也有直接条目，则 children = null
+            if (level2List.isEmpty() && hasDirectItemMap.getOrDefault(category, false)) {
+                categoryNode.put("children", null);
+            } else {
+                categoryNode.put("children", level2List.isEmpty() ? null : level2List);
+            }
+
+            result.add(categoryNode);
+        }
+
+        return CommonResult.success(result, "获取目录成功");
+    }
+
+
 }

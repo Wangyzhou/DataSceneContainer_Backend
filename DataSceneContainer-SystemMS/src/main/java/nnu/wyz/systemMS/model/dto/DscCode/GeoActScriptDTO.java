@@ -21,6 +21,12 @@ public class GeoActScriptDTO {
     @ApiModelProperty(value = "具体文件内容")
     private String script;
 
+    @ApiModelProperty(value = "执行副本")
+    private String exScript;
+
+    @ApiModelProperty(value = "执行副本id")
+    private String exScriptId;
+
     @ApiModelProperty(value = "场景id")
     private String sceneId;
 
